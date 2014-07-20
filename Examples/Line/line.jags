@@ -2,7 +2,7 @@
 */
 model in line.bugs
 data in line-data.R
-compile, nchains(2)
+compile, nchains(3)
 inits in line-inits.R
 initialize
 update 1000

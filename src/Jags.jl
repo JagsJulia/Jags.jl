@@ -1,5 +1,20 @@
+using DataFrames
+
 module Jags
 
-# package code goes here
+  using DataFrames
+
+  #### Includes ####
+  
+  include("jagscode.jl")
+
+  #### Exports ####
+  
+  export
+    read_jagsfiles
+  
+  #### Deprecated ####
+  
+  include("deprecated.jl")
 
 end # module
