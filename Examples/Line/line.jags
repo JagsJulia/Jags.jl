@@ -1,4 +1,5 @@
-/* Trivial linear regression model
+/* 
+  Trivial linear regression model
 */
 model in line.bugs
 data in line-data.R
