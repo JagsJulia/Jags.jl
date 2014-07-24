@@ -22,4 +22,7 @@ catch e
   cd(old)
 end
 
+println()
+samples[1][:samples] |> display
+
 cd(old)
