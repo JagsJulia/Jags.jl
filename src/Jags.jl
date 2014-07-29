@@ -14,8 +14,7 @@ module Jags
   export
     read_jagsfiles,
     update_model_file,
-    update_inits_file,
-    update_data_file
+    update_R_file
   
   #### Deprecated ####
   

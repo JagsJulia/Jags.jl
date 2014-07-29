@@ -26,7 +26,7 @@ line[:x] = [1, 2, 3, 4, 5]
 line[:y] = [1, 3, 3, 3, 5]
 line[:n] = 5
 
-update_data_file(ProjDir*"/test-data.R", line)
+update_R_file(ProjDir*"/line-data.R", line)
 
 inits = (Symbol => Any)[
   :alpha => 0,
@@ -34,7 +34,7 @@ inits = (Symbol => Any)[
   :tau => 1
 ]
 
-update_data_file(ProjDir*"/test-inits.R", inits)
+update_R_file(ProjDir*"/line-inits.R", inits)
 
 idx = 0
 samples = 0
@@ -59,6 +59,6 @@ println()
 inits |> display
 println()
 samples[1][:samples] |> display
-println()
+#println()
 
 cd(old)
