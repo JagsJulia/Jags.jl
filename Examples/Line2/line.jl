@@ -59,6 +59,5 @@ println()
 inits |> display
 println()
 samples[1][:samples] |> display
-#println()
 
 cd(old)
