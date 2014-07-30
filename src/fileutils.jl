@@ -12,7 +12,7 @@ function update_model_file(file::String, str::String)
     write(strmout, str)
     close(strmout)
   else
-    println("File $(file) ok.")
+    println("\nFile $(file) ok.\n")
   end
 end
 

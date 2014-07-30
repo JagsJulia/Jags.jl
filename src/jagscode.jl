@@ -1,3 +1,27 @@
+function fit(model::Jagsmodel, dir=pwd(); data=Nothing)
+  
+  old = pwd()
+  
+  idx = Dict()
+  chains = Dict[]
+  try
+    cd(ProjDir)
+    for i in 1:4
+      isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
+    end
+    isfile("CODAindex.txt") && rm("CODAindex.txt")
+    
+    jfile = ProjDir*"/$(model.jags_file)"
+    @time run(`jags $(jfile)`)
+    (idx, chains) = read_jagsfiles()
+
+  catch e
+    println(e)
+    cd(old)
+  end
+  (idx, chains)
+end
+
 #### use readdlm to read in all chains and create a DataFrame
 
 function read_jagsfiles(;chains::Int64=4)
