@@ -14,12 +14,7 @@ module Jags
     Jagsmodel,
     
     # From jagscode.jl
-    fit,
-    read_jagsfiles,
-    
-    # From fileutils.jl
-    update_model_file,
-    update_R_file
+    jags
   
   #### Deprecated ####
   

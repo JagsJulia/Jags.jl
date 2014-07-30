@@ -1,15 +1,17 @@
-function fit(model::Jagsmodel, dir=pwd(); data=Nothing)
+function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing)
   
   old = pwd()
   
   idx = Dict()
   chains = Dict[]
   try
-    cd(dir)
-    for i in 1:8
+    cd(ProjDir)
+    for i in 1:model.chains
       isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
     end
     isfile("CODAindex.txt") && rm("CODAindex.txt")
+    
+    update_jags_file(model)
     
     jfile = "$(model.jags_file)"
     @time run(`jags $(jfile)`)
@@ -19,6 +21,7 @@ function fit(model::Jagsmodel, dir=pwd(); data=Nothing)
     println(e)
     cd(old)
   end
+  cd(old)
   (idx, chains)
 end
 

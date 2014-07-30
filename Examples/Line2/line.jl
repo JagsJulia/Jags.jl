@@ -30,11 +30,9 @@ inits = (Symbol => Any)[
   :tau => 1
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, data=data, init=inits);
+jagsmodel = Jagsmodel(name="line", model=line, data=data, init=inits)
 (idx, chains) = jags(jagsmodel, ProjDir)
 
-println("\nJagsmodel:\n")
-jagsmodel |> display
 println()
 data |> display
 println()
@@ -42,6 +40,8 @@ inits |> display
 println()
 idx |> display
 println()
-chains[1][:samples] |> display
+jagsmodel |> display
 println()
+chains[1][:samples] |> display
+
 cd(old)

@@ -1,3 +1,7 @@
+function update_jags_file(model::Jagsmodel)
+  println("\nJagsmodel updated.\n")
+end
+
 function update_model_file(file::String, str::String)
   str2 = ""
   if isfile(file)
@@ -5,7 +9,7 @@ function update_model_file(file::String, str::String)
     str != str2 && rm(file)
   end
   if str != str2
-    println("File $(file) will be updated.")
+    println("\nFile $(file) will be updated.\n")
     strmout = open(file, "w")
     write(strmout, str)
     close(strmout)

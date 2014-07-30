@@ -2,19 +2,34 @@ using Jags
 using Base.Test
 
 old = pwd()
-ProjDir = Pkg.dir("Jags")*"/Examples/Line/"
-cd(ProjDir)
-println("Moving to directory: $(dir)")
 
-for i in 1:8
-  isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
+using Base.Test
+
+code_tests = [
+  "test_cmd.jl"
+]
+
+execution_tests = [
+  "test_line.jl"
+]
+
+println("Running tests:")
+
+for my_test in code_tests
+    println("\n  * $(my_test) *")
+    include(my_test)
 end
-isfile("CODAindex.txt") && rm("CODAindex.txt")
 
-include(ProjDir*"line.jl")
+try
+  for my_test in execution_tests
+      println("\n  * $(my_test) *")
+      include(my_test)
+  end
+  println()
+catch e
+   println("Is Jags properly installed?")
+   println(e)
+   println("No simulation runs have been performed.")
+end 
 
-for i in 1:8
-  isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
-end
-isfile("CODAindex.txt") && rm("CODAindex.txt")
-
+cd(old)
