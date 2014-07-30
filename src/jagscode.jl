@@ -5,13 +5,13 @@ function fit(model::Jagsmodel, dir=pwd(); data=Nothing)
   idx = Dict()
   chains = Dict[]
   try
-    cd(ProjDir)
-    for i in 1:4
+    cd(dir)
+    for i in 1:8
       isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
     end
     isfile("CODAindex.txt") && rm("CODAindex.txt")
     
-    jfile = ProjDir*"/$(model.jags_file)"
+    jfile = "$(model.jags_file)"
     @time run(`jags $(jfile)`)
     (idx, chains) = read_jagsfiles()
 

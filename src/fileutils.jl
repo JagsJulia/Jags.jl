@@ -1,5 +1,3 @@
-ProjDir = homedir()*"/.julia/v0.3/Jags/Examples/Line2"
-
 function update_model_file(file::String, str::String)
   str2 = ""
   if isfile(file)

@@ -3,7 +3,7 @@
 using Jags
 
 old = pwd()
-ProjDir = homedir()*"/.julia/v0.3//Jags/Examples/Line2"
+ProjDir = homedir()*"/.julia/v0.3/Jags/Examples/Line"
 
 line = "
 model {

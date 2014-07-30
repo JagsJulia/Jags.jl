@@ -23,15 +23,15 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
   init::Dict=Dict(), init_file::String="")
   
   if length(model) > 0
-    update_model_file(ProjDir*"/$(name).bugs", strip(model))
+    update_model_file("$(name).bugs", strip(model))
   end
   
   if length(keys(data)) > 0
-    update_R_file(ProjDir*"/$(name)-data.R", data)
+    update_R_file("$(name)-data.R", data)
   end
   
   if length(keys(init)) > 0
-    update_R_file(ProjDir*"/$(name)-inits.R", init)
+    update_R_file("$(name)-inits.R", init)
   end
   
   model_file = "$(name).bugs";
