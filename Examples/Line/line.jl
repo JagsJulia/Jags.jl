@@ -4,6 +4,7 @@ using Jags
 
 old = pwd()
 ProjDir = homedir()*"/.julia/v0.3/Jags/Examples/Line"
+cd(ProjDir)
 
 line = "
 model {
