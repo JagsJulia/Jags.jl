@@ -1,7 +1,6 @@
 /*
 	Generated line.jags command file
-/*
-
+*/
 model in line.bugs
 data in line-data.R
 compile, nchains(4)
