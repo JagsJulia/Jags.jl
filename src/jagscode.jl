@@ -1,4 +1,4 @@
-function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing)
+function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Bool=true)
   
   old = pwd()
   
@@ -11,7 +11,7 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing)
     end
     isfile("CODAindex.txt") && rm("CODAindex.txt")
     
-    update_jags_file(model)
+    updatejagsfile && update_jags_file(model)
     
     jfile = "$(model.jags_file)"
     @time run(`jags $(jfile)`)

@@ -1,15 +1,16 @@
-/* 
-  Trivial linear regression model
-*/
+/*
+	Generated line.jags command file
+/*
+
 model in line.bugs
 data in line-data.R
-compile, nchains(3)
+compile, nchains(4)
 inits in line-inits.R
 initialize
 update 1000
 monitor alpha
 monitor beta
-monitor sigma 
-monitor tau 
-update 10000 
+monitor sigma
+monitor tau
+update 10000
 coda *

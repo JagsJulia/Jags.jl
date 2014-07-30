@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This is a very preliminary (basically a template) package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3.
+This is a very preliminary (basically a template) package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc1
 
 Version 0.0.1 contains an example template in the directory "Pkg_dir"/Examples/Line.
 
