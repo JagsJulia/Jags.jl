@@ -43,6 +43,10 @@ inits |> display
 println()
 idx |> display
 println()
-chains[1][:samples] |> display
-println()
+
+if (length(chains) > 0)
+  chains[1][:samples] |> display
+  println()
+end
+
 cd(old)
