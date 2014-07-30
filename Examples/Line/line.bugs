@@ -1,7 +1,7 @@
 model {
-  for (i in 1:N) {
+  for (i in 1:n) {
         mu[i] <- alpha + beta*(x[i] - x.bar);
-        Y[i]   ~ dnorm(mu[i],tau);
+        y[i]   ~ dnorm(mu[i],tau);
   }
   x.bar   <- mean(x[]);
   alpha    ~ dnorm(0.0,1.0E-4);
