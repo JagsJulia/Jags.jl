@@ -13,6 +13,7 @@ isfile("CODAindex.txt") && rm("CODAindex.txt")
 isfile("line-data.R") && rm("line-data.R")
 isfile("line-inits.R") && rm("line-inits.R")
 isfile("line.bugs") && rm("line.bugs")
+isfile("line.jags") && rm("line.jags")
 
 include(ProjDir*"line.jl")
 

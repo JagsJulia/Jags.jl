@@ -1,22 +1,18 @@
 function update_jags_file(model::Jagsmodel)
-  println("\nFile $(model.jags_file) updated.\n")
-  strmout = open(model.jags_file, "w")
-  write(strmout, "/*\n")
-  write(strmout, "\tGenerated $(model.name).jags command file\n")
-  write(strmout, "*/\n")
-  write(strmout, "model in $(model.model_file)\n")
-  write(strmout, "data in $(model.data_file)\n")
-  write(strmout, "compile, nchains($(model.chains))\n")
-  write(strmout, "inits in $(model.init_file)\n")
-  write(strmout, "initialize\n")
-  write(strmout, "update $(model.adapt)\n")
-  write(strmout, "monitor alpha\n")
-  write(strmout, "monitor beta\n")
-  write(strmout, "monitor sigma\n")
-  write(strmout, "monitor tau\n")
-  write(strmout, "update $(model.update)\n")
-  write(strmout, "coda *\n")
-  close(strmout)
+  jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
+  jagsstr = jagsstr*"model in $(model.model_file)\n"
+  jagsstr = jagsstr*"data in $(model.data_file)\n"
+  jagsstr = jagsstr*"compile, nchains($(model.chains))\n"
+  jagsstr = jagsstr*"inits in $(model.init_file)\n"
+  jagsstr = jagsstr*"initialize\n"
+  jagsstr = jagsstr*"update $(model.adapt)\n"
+  jagsstr = jagsstr*"monitor alpha\n"
+  jagsstr = jagsstr*"monitor beta\n"
+  jagsstr = jagsstr*"monitor sigma\n"
+  jagsstr = jagsstr*"monitor tau\n"
+  jagsstr = jagsstr*"update $(model.update)\n"
+  jagsstr = jagsstr*"coda *\n"
+  update_model_file(model.jags_file, jagsstr)
 end
 
 function update_model_file(file::String, str::String)
@@ -31,7 +27,7 @@ function update_model_file(file::String, str::String)
     write(strmout, str)
     close(strmout)
   else
-    println("\nFile $(file) ok.\n")
+    #println("\nFile $(file) ok.\n")
   end
 end
 
