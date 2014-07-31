@@ -6,10 +6,14 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"inits in $(model.init_file)\n"
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
-  jagsstr = jagsstr*"monitor alpha\n"
-  jagsstr = jagsstr*"monitor beta\n"
-  jagsstr = jagsstr*"monitor sigma\n"
-  jagsstr = jagsstr*"monitor tau\n"
+  for entry in model.monitors
+    if entry[2]
+      jagsstr = jagsstr*"monitor $(string(entry[1]))\n"
+    end
+  end
+  #jagsstr = jagsstr*"monitor beta\n"
+  #jagsstr = jagsstr*"monitor sigma\n"
+  #jagsstr = jagsstr*"monitor tau\n"
   jagsstr = jagsstr*"update $(model.update)\n"
   jagsstr = jagsstr*"coda *\n"
   update_model_file(model.jags_file, jagsstr)

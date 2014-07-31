@@ -31,7 +31,15 @@ inits = (Symbol => Any)[
   :tau => 1
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, data=data, init=inits);
+monitors = (Symbol => Bool)[
+  :alpha => true,
+  :beta => true,
+  :tau => true,
+  :sigma => true
+]
+
+jagsmodel = Jagsmodel(name="line", model=line, data=data,
+  init=inits, monitors=monitors);
 (idx, chains) = jags(jagsmodel, ProjDir)
 
 println("\nJagsmodel:\n")

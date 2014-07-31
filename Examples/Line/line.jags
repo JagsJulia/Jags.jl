@@ -7,9 +7,9 @@ compile, nchains(4)
 inits in line-inits.R
 initialize
 update 1000
+monitor tau
+monitor sigma
 monitor alpha
 monitor beta
-monitor sigma
-monitor tau
 update 10000
 coda *
