@@ -79,7 +79,8 @@ monitors = (Symbol => Bool)[
 ]
 ```
 
-Variables to be monitored (if => true).
+Variables to be monitored (if => true). If monitors is not passed
+to jagsmodel, all keys (symbols) in inits will be monitored.
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
