@@ -60,6 +60,14 @@ function update_R_file(file::String, dct::Dict{Symbol, Any})
     #println(entry[2], " => ", typeof(entry[2]))
     str = "\""*string(entry[1])*"\""*" <- "
     val = entry[2]
+    if true in isnan(entry[2])
+      val = convert(DataArray, entry[2])
+      for i in 1:length(val)
+        if isnan(val[i])
+          val[i] = NA
+        end
+      end
+    end
     if length(val)==1 && length(size(val))==0
       # Scalar
       str = str*"$(val)\n"
@@ -73,6 +81,16 @@ function update_R_file(file::String, dct::Dict{Symbol, Any})
         end
       end
       str = str*"), .Dim=c($(length(val))))\n"
+    elseif length(val)>1 && length(size(val))>1
+      # Array
+      str = str*"structure(c("
+      for i in 1:length(val)
+        str = str*"$(val[i])"
+        if i < length(val)
+          str = str*", "
+        end
+      end
+      str = str*"), .Dim=c($(size(val))))\n"
     else
       # Matrix or more
       println(size(val))
