@@ -31,7 +31,7 @@ function update_model_file(file::String, str::String)
   end
 end
 
-function update_R_file(file::String, dct::Dict{Symbol, Any})
+function update_R_file(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   
@@ -56,7 +56,7 @@ function update_R_file(file::String, dct::Dict{Symbol, Any})
     #println(entry[2], " => ", typeof(entry[2]))
     str = "\""*string(entry[1])*"\""*" <- "
     val = entry[2]
-    if true in isnan(entry[2])
+    if replaceNaNs && true in isnan(entry[2])
       val = convert(DataArray, entry[2])
       for i in 1:length(val)
         if isnan(val[i])
@@ -86,7 +86,8 @@ function update_R_file(file::String, dct::Dict{Symbol, Any})
           str = str*", "
         end
       end
-      str = str*"), .Dim=c($(size(val))))\n"
+      dimstr = "c"*string(size(val))
+      str = str*"), .Dim=$(dimstr))\n"
     else
       # Matrix or more
       println(size(val))

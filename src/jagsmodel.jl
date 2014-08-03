@@ -32,7 +32,7 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
   end
   
   if length(keys(init)) > 0
-    update_R_file("$(name)-inits.R", init)
+    update_R_file("$(name)-inits.R", init, replaceNaNs=false)
   end
   
   if length(monitors) == 0 && length(init) > 0
