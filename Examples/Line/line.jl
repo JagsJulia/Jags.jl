@@ -28,7 +28,7 @@ data[:n] = 5
 inits = (Symbol => Any)[
   :alpha => 0,
   :beta => 0,
-  :tau => 1
+  :tau => 1,
 ]
 
 monitors = (Symbol => Bool)[
@@ -40,11 +40,10 @@ monitors = (Symbol => Bool)[
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
   init=inits, monitors=monitors);
-(idx, chains) = jags(jagsmodel, ProjDir)
+(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
-println("\nJagsmodel:\n")
+println("\nJagsmodel:")
 jagsmodel |> display
-println()
 data |> display
 println()
 inits |> display

@@ -8,14 +8,12 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"update $(model.adapt)\n"
   for entry in model.monitors
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1]))\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
     end
   end
-  #jagsstr = jagsstr*"monitor beta\n"
-  #jagsstr = jagsstr*"monitor sigma\n"
-  #jagsstr = jagsstr*"monitor tau\n"
   jagsstr = jagsstr*"update $(model.update)\n"
   jagsstr = jagsstr*"coda *\n"
+  jagsstr = jagsstr*"exit\n"
   update_model_file(model.jags_file, jagsstr)
 end
 
@@ -30,8 +28,6 @@ function update_model_file(file::String, str::String)
     strmout = open(file, "w")
     write(strmout, str)
     close(strmout)
-  else
-    #println("\nFile $(file) ok.\n")
   end
 end
 
