@@ -14,7 +14,9 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
     updatejagsfile && update_jags_file(model)
     
     jfile = "$(model.jags_file)"
-    @time run(`jags $(jfile)`)
+    cmd = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
+    
+    @time run(cmd)
     (idx, chains) = read_jagsfiles()
 
   catch e
