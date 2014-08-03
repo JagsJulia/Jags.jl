@@ -71,7 +71,7 @@ inits = (Symbol => Any)[
 Initial values for parameters.
 
 ```
-monitors = (Symbol => Bool)[
+monitor = (Symbol => Bool)[
   :alpha => true,
   :beta => true,
   :tau => true,
@@ -79,12 +79,12 @@ monitors = (Symbol => Bool)[
 ]
 ```
 
-Variables to be monitored (if => true). If monitors is not passed
+Variables to be monitored (if => true). If monitor is not passed
 to jagsmodel, all keys (symbols) in inits will be monitored.
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitors=monitors);
+  init=inits, monitor=monitors);
 ```
 
 A Jagsmodel is created and initialized.

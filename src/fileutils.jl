@@ -6,7 +6,7 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"inits in $(model.init_file)\n"
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
-  for entry in model.monitors
+  for entry in model.monitor
     if entry[2]
       jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
     end

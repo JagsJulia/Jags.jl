@@ -39,7 +39,7 @@ monitors = (Symbol => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitors=monitors);
+  init=inits, monitor=monitors);
 (idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println("\nJagsmodel:")
