@@ -3,7 +3,7 @@
 using Jags
 
 old = pwd()
-path = @windows ? "\Examples\Line" : "/Examples/Line"
+path = @windows ? "\\Examples\\Line" : "/Examples/Line"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 
