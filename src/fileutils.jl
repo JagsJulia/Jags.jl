@@ -3,7 +3,7 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"model in $(model.model_file)\n"
   jagsstr = jagsstr*"data in $(model.data_file)\n"
   jagsstr = jagsstr*"compile, nchains($(model.chains))\n"
-  jagsstr = jagsstr*"inits in $(model.init_file)\n"
+  jagsstr = jagsstr*"parameters in $(model.init_file)\n"
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
   for entry in model.monitor

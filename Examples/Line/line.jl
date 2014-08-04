@@ -3,7 +3,8 @@
 using Jags
 
 old = pwd()
-ProjDir = homedir()*"/.julia/v0.3/Jags/Examples/Line"
+path = @windows ? "\Examples\Line" : "/Examples/Line"
+ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 
 line = "
