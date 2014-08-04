@@ -4,3 +4,7 @@
 *.csv
 *.o
 CODA*.txt
+line.jags
+line.bugs
+line-inits.R
+line-data.R
