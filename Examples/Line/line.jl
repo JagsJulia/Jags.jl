@@ -41,8 +41,8 @@ monitors = (Symbol => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitor=monitors, dic=true);
-(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+  init=inits, monitor=monitors, dic=true, popt=true);
+(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=false)
 
 println("\nJagsmodel:")
 jagsmodel |> display
@@ -55,6 +55,17 @@ println()
 
 if (length(chains) > 0)
   chains[1][:samples] |> display
+  println()
+end
+
+if jagsmodel.dic
+  (idx0, chain0) = Jags.read_pDfile()
+  idx0 |> display
+  println()
+  chain0[1][:samples] |> display
+end
+
+if jagsmodel.popt
   println()
 end
 

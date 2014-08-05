@@ -11,6 +11,10 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"update $(model.adapt)\n"
   if model.dic
     jagsstr = jagsstr*"monitor pD\n"
+    jagsstr = jagsstr*"monitor pD, type(mean)\n"
+  end
+  if model.popt
+    jagsstr = jagsstr*"monitor popt, type(mean)\n"
   end
   for entry in model.monitor
     if entry[2]
