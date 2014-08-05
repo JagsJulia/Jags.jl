@@ -7,6 +7,7 @@ type Jagsmodel
   update::Int64
   thin::Int64
   monitor::Dict
+  dic::Bool
   jags_file::String
   model::String
   model_file::String
@@ -18,7 +19,7 @@ end
 
 function Jagsmodel(;name::String="Noname", chains::Number=4,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
-  monitor::Dict=Dict(), jags_file::String="",
+  monitor::Dict=Dict(), dic::Bool=false, jags_file::String="",
   model::String="", model_file::String="",
   data::Dict=Dict(), data_file::String="",
   init::Dict=Dict(), init_file::String="")
@@ -47,7 +48,7 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
   init_file = "$(name)-inits.R"
   jags_file = "$(name).jags"
   
-  Jagsmodel(name, chains, adapt, update, thin, monitor,
+  Jagsmodel(name, chains, adapt, update, thin, monitor, dic,
     jags_file, model, model_file, data, data_file, init, init_file);
 end
 
@@ -62,6 +63,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     println("  update =                  $(m.update)")
     println("  thin =                    $(m.thin)")
     println("  monitor =                 $(m.monitor)")
+    println("  dic =                     $(m.dic)")
     println("  jags_file =               \"$(m.jags_file)\"")
     #println("  model =                   $(model)")
     println("  model_file =              \"$(m.model_file)\"")

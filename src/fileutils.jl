@@ -1,11 +1,17 @@
 function update_jags_file(model::Jagsmodel)
   jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
+    if model.dic
+      jagsstr = jagsstr*"load dic\n"
+    end
   jagsstr = jagsstr*"model in $(model.model_file)\n"
   jagsstr = jagsstr*"data in $(model.data_file)\n"
   jagsstr = jagsstr*"compile, nchains($(model.chains))\n"
   jagsstr = jagsstr*"parameters in $(model.init_file)\n"
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
+  if model.dic
+    jagsstr = jagsstr*"monitor pD\n"
+  end
   for entry in model.monitor
     if entry[2]
       jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"

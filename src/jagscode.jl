@@ -6,10 +6,12 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
   chains = Dict[]
   try
     cd(ProjDir)
-    for i in 1:model.chains
+    for i in 0:model.chains
       isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
     end
-    isfile("CODAindex.txt") && rm("CODAindex.txt")
+    for i in 0:1
+      isfile("CODAindex$(i).txt") && rm("CODAindex$(i).txt")
+    end
     
     updatejagsfile && update_jags_file(model)
     
