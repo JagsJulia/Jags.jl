@@ -54,6 +54,7 @@ function read_jagsfiles(;chains::Int64=4)
   ## tdict contains the arrays of values ##
   tdict = Dict()
   
+  println()
   for i in 1:chains
     tdict = Dict()
     if isfile("CODAchain$(i).txt")
@@ -148,4 +149,20 @@ function read_pDfile()
     end
   end
   (idxdct, chainarray)
+end
+
+function read_table_file(model::Jagsmodel, len::Int64)
+  pdpopt = Dict[]
+  res = readdlm("CODAtable0.txt", header=false)
+  if model.dic && model.popt
+    pdpopt = [:pD => res[1:len, 2]]
+    pdpopt = merge(pdpopt, [:popt => res[len+1:2len, 2]])
+  else
+    if model.dic
+      pdpopt = [:pD => res[1:len, 2]]
+    else
+      pdpopt = [:popt => res[1:len, 2]]
+    end
+  end
+  pdpopt
 end

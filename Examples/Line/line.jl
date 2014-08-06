@@ -42,13 +42,17 @@ monitors = (Symbol => Bool)[
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
   init=inits, monitor=monitors, dic=true, popt=true);
-(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=false)
 
-println("\nJagsmodel:")
+println("\nJagsmodel that will be used:")
 jagsmodel |> display
+println("Input observed data dictionary:")
 data |> display
-println()
+println("\nInput initial values dictionary:")
 inits |> display
+println()
+
+(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+
 println()
 idx |> display
 println()
@@ -63,10 +67,10 @@ if jagsmodel.dic
   idx0 |> display
   println()
   chain0[1][:samples] |> display
-end
-
-if jagsmodel.popt
+  
   println()
+  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data[:n])
+  pDmeanAndpopt |> display
 end
 
 cd(old)
