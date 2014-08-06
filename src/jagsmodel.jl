@@ -3,9 +3,9 @@ importall Base
 type Jagsmodel
   name::String
   chains::Int
-  adapt::Int64
-  update::Int64
-  thin::Int64
+  adapt::Int
+  update::Int
+  thin::Int
   monitor::Dict
   dic::Bool
   popt::Bool

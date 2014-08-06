@@ -30,7 +30,7 @@ end
 
 #### use readdlm to read in all chains and create a Dict
 
-function read_jagsfiles(nochains::Int64)
+function read_jagsfiles(nochains::Int)
   index = readdlm("CODAindex.txt", header=false)
   idxdct = Dict()
   for row in 1:size(index)[1]
@@ -151,7 +151,7 @@ function read_pDfile()
   (idxdct, chainarray)
 end
 
-function read_table_file(model::Jagsmodel, len::Int64)
+function read_table_file(model::Jagsmodel, len::Int)
   pdpopt = Dict[]
   res = readdlm("CODAtable0.txt", header=false)
   if model.dic && model.popt
