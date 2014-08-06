@@ -41,7 +41,7 @@ monitors = (Symbol => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitor=monitors, dic=true, popt=true);
+  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -67,7 +67,9 @@ if jagsmodel.dic
   idx0 |> display
   println()
   chain0[1][:samples] |> display
+end
   
+if jagsmodel.dic || jagsmodel.popt
   println()
   pDmeanAndpopt = Jags.read_table_file(jagsmodel, data[:n])
   pDmeanAndpopt |> display

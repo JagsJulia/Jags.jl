@@ -1,6 +1,6 @@
 function update_jags_file(model::Jagsmodel)
   jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
-    if model.dic
+    if model.deviance || model.dic || model.popt
       jagsstr = jagsstr*"load dic\n"
     end
   jagsstr = jagsstr*"model in $(model.model_file)\n"
@@ -9,6 +9,9 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"parameters in $(model.init_file)\n"
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
+  if model.deviance
+    jagsstr = jagsstr*"monitor deviance\n"
+  end
   if model.dic
     jagsstr = jagsstr*"monitor pD\n"
     jagsstr = jagsstr*"monitor pD, type(mean)\n"

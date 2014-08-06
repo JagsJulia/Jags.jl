@@ -7,6 +7,7 @@ type Jagsmodel
   update::Int
   thin::Int
   monitor::Dict
+  deviance::Bool
   dic::Bool
   popt::Bool
   jags_file::String
@@ -20,7 +21,8 @@ end
 
 function Jagsmodel(;name::String="Noname", chains::Number=4,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
-  monitor::Dict=Dict(), dic::Bool=false, popt::Bool=false,
+  monitor::Dict=Dict(), deviance::Bool=false,
+  dic::Bool=false, popt::Bool=false,
   jags_file::String="",
   model::String="", model_file::String="",
   data::Dict=Dict(), data_file::String="",
@@ -50,7 +52,7 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
   init_file = "$(name)-inits.R"
   jags_file = "$(name).jags"
   
-  Jagsmodel(name, chains, adapt, update, thin, monitor, dic, popt,
+  Jagsmodel(name, chains, adapt, update, thin, monitor, deviance, dic, popt,
     jags_file, model, model_file, data, data_file, init, init_file);
 end
 
@@ -65,6 +67,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     println("  update =                  $(m.update)")
     println("  thin =                    $(m.thin)")
     println("  monitor =                 $(m.monitor)")
+    println("  deviance =                $(m.deviance)")
     println("  dic =                     $(m.dic)")
     println("  popt =                    $(m.popt)")
     println("  jags_file =               \"$(m.jags_file)\"")
