@@ -18,7 +18,7 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
     cmd = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
     
     @time run(cmd)
-    (idx, chains) = read_jagsfiles(chains=model.chains)
+    (idx, chains) = read_jagsfiles(model.chains)
     
   catch e
     println(e)
@@ -30,7 +30,7 @@ end
 
 #### use readdlm to read in all chains and create a Dict
 
-function read_jagsfiles(;chains::Int64=4)
+function read_jagsfiles(nochains::Int64)
   index = readdlm("CODAindex.txt", header=false)
   idxdct = Dict()
   for row in 1:size(index)[1]
@@ -55,7 +55,7 @@ function read_jagsfiles(;chains::Int64=4)
   tdict = Dict()
   
   println()
-  for i in 1:chains
+  for i in 1:nochains
     tdict = Dict()
     if isfile("CODAchain$(i).txt")
       println("Reading CODAchain$(i).txt")
