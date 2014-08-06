@@ -1,3 +1,5 @@
+import Base: isidentifier, is_id_start_char, is_id_char
+
 function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Bool=true)
   
   old = pwd()
@@ -28,6 +30,55 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
   (idx, chains)
 end
 
+
+# Taken from DataFrames until stable enough to import DataFrames 
+const RESERVED_WORDS = Set(["begin", "while", "if", "for", "try",
+    "return", "break", "continue", "function", "macro", "quote", "let",
+    "local", "global", "const", "abstract", "typealias", "type", "bitstype",
+    "immutable", "ccall", "do", "module", "baremodule", "using", "import",
+    "export", "importall", "end", "else", "elseif", "catch", "finally"])
+
+
+function identifier(s::String)
+    s = normalize_string(s)
+    if !isidentifier(s)
+        s = makeidentifier(s)
+    end
+    symbol(in(s, RESERVED_WORDS) ? "_"*s : s)
+end
+
+function makeidentifier(s::String)
+    i = start(s)
+    done(s, i) && return "x"
+
+    res = IOBuffer(sizeof(s) + 1)
+
+    (c, i) = next(s, i)
+    under = if is_id_start_char(c)
+        write(res, c)
+        c == '_'
+    elseif is_id_char(c)
+        write(res, 'x', c)
+        false
+    else
+        write(res, '_')
+        true
+    end
+
+    while !done(s, i)
+        (c, i) = next(s, i)
+        if c != '_' && is_id_char(c)
+            write(res, c)
+            under = false
+        elseif !under
+            write(res, '_')
+            under = true
+        end
+    end
+
+    return takebuf_string(res)
+end
+
 #### use readdlm to read in all chains and create a Dict
 
 function read_jagsfiles(nochains::Int)
@@ -35,9 +86,9 @@ function read_jagsfiles(nochains::Int)
   idxdct = Dict()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = [convert(Symbol, index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]]
+      idxdct = [identifier(index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]]
     else
-      merge!(idxdct, [convert(Symbol, index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]])
+      merge!(idxdct, [identifier(index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]])
     end
   end
 
@@ -61,7 +112,7 @@ function read_jagsfiles(nochains::Int)
       println("Reading CODAchain$(i).txt")
       res = readdlm("CODAchain$(i).txt", header=false)
       for key in index[:, 1]
-        s = convert(Symbol, key)
+        s = identifier(key)
         indx1 = idxdct[s][1]
         indx2 = idxdct[s][2]
         if length(keys(tdict)) == 0
@@ -74,8 +125,8 @@ function read_jagsfiles(nochains::Int)
       ## If any keys were found, merge it in the rtdict ##
       
       if length(keys(tdict)) > 0
-        #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-        rtdict = merge(rtdict, [convert(Symbol, res_type) => tdict])
+        #println("Merging $(identifier(res_type)) with keys $(keys(tdict))")
+        rtdict = merge(rtdict, [identifier(res_type) => tdict])
         tdict = Dict()
       end
     end
@@ -96,9 +147,9 @@ function read_pDfile()
   idxdct = Dict()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = [convert(Symbol, index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]]
+      idxdct = [identifier(index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]]
     else
-      merge!(idxdct, [convert(Symbol, index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]])
+      merge!(idxdct, [identifier(index[row, 1]) => [int(index[row, 2]), int(index[row, 3])]])
     end
   end
 
@@ -121,7 +172,7 @@ function read_pDfile()
       println("Reading CODAchain$(i).txt")
       res = readdlm("CODAchain$(i).txt", header=false)
       for key in index[:, 1]
-        s = convert(Symbol, key)
+        s = identifier(key)
         indx1 = idxdct[s][1]
         indx2 = idxdct[s][2]
         if length(keys(tdict)) == 0
@@ -134,8 +185,8 @@ function read_pDfile()
       ## If any keys were found, merge it in the rtdict ##
       
       if length(keys(tdict)) > 0
-        #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-        rtdict = merge(rtdict, [convert(Symbol, res_type) => tdict])
+        #println("Merging $(identifier(res_type)) with keys $(keys(tdict))")
+        rtdict = merge(rtdict, [identifier(res_type) => tdict])
         tdict = Dict()
       end
     end

@@ -1,6 +1,6 @@
 module Jags
   
-  using DataArrays
+  using DataArrays, DataFrames
 
   #### Includes ####
   
