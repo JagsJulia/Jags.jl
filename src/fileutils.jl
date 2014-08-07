@@ -5,8 +5,11 @@ function update_jags_file(model::Jagsmodel)
     end
   jagsstr = jagsstr*"model in $(model.model_file)\n"
   jagsstr = jagsstr*"data in $(model.data_file)\n"
-  jagsstr = jagsstr*"compile, nchains($(model.chains))\n"
-  jagsstr = jagsstr*"parameters in $(model.init_file)\n"
+  jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
+  for i in 1:model.nchains
+    fname = model.init_file_array[i]
+    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
+  end
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
   if model.deviance
@@ -110,7 +113,7 @@ function update_R_file(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=t
   close(strmout)
 end
 
-function update_init_R_files(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=true)
+function update_init_R_files(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=false)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   

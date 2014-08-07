@@ -2,7 +2,7 @@ importall Base
 
 type Jagsmodel
   name::String
-  chains::Int
+  nchains::Int
   adapt::Int
   update::Int
   thin::Int
@@ -16,17 +16,17 @@ type Jagsmodel
   data::Dict
   data_file::String
   init::Dict
-  init_file::String
+  init_file_array::Array{String, 1}
 end
 
-function Jagsmodel(;name::String="Noname", chains::Number=4,
+function Jagsmodel(;name::String="Noname", nchains::Number=4,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
   monitor::Dict=Dict(), deviance::Bool=false,
   dic::Bool=false, popt::Bool=false,
   jags_file::String="",
   model::String="", model_file::String="",
   data::Dict=Dict(), data_file::String="",
-  init::Dict=Dict(), init_file::String="")
+  init::Dict=Dict(), init_file_array::Array{String, 1}=String[])
   
   if length(model) > 0
     update_model_file("$(name).bugs", strip(model))
@@ -36,8 +36,10 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
     update_R_file("$(name)-data.R", data)
   end
   
-  if length(keys(init)) > 0
-    update_R_file("$(name)-inits.R", init, replaceNaNs=false)
+  for i in 1:nchains
+    if length(keys(init)) > 0
+      update_R_file("$(name)-inits$(i).R", init, replaceNaNs=false)
+    end
   end
   
   if length(monitor) == 0 && length(init) > 0
@@ -49,20 +51,20 @@ function Jagsmodel(;name::String="Noname", chains::Number=4,
   model_file = "$(name).bugs";
   jags_file = "$(name).jags"
   data_file = "$(name)-data.R"
-  init_file = "$(name)-inits.R"
+  init_file_array = ["$(name)-inits$(i).R" for i in 1:nchains]
   jags_file = "$(name).jags"
   
-  Jagsmodel(name, chains, adapt, update, thin, monitor, deviance, dic, popt,
-    jags_file, model, model_file, data, data_file, init, init_file);
+  Jagsmodel(name, nchains, adapt, update, thin, monitor, deviance, dic, popt,
+    jags_file, model, model_file, data, data_file, init, init_file_array);
 end
 
 function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
   if compact==true
-    println("Jagsmodel(", m.name, m.chains, m.adapt, m.update,
-      m.thin, m.monitor, m.model_file, m.init_file, m.data_file)
+    println("Jagsmodel(", m.name, m.nchains, m.adapt, m.update,
+      m.thin, m.monitor, m.model_file, m.init_file_array, m.data_file)
   else
     println("  name =                    \"$(m.name)\"")
-    println("  chains =                  $(m.chains)")
+    println("  nchains =                 $(m.nchains)")
     println("  adapt =                   $(m.adapt)")
     println("  update =                  $(m.update)")
     println("  thin =                    $(m.thin)")
@@ -74,7 +76,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     #println("  model =                   $(model)")
     println("  model_file =              \"$(m.model_file)\"")
     #println("  init =                    $(init)")
-    println("  init_file =               \"$(m.init_file)\"")
+    println("  init_file_array =         \"$(m.init_file_array)\"")
     #println("  data =                    $(data)")
     println("  data_file =               \"$(m.data_file)\"")
   end
