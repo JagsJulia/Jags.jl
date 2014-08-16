@@ -47,30 +47,16 @@ function update_model_file(file::String, str::String)
   end
 end
 
-function update_R_file(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=true)
+function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
-  
-  #
-  # Example of entry in inits.R and data.R files
-  #
-  # "v" <- structure(c(5), .Dim=c(1))
-  # "v" <- structure(c(1, 2, 3), .Dim=c(3))
-  # "v" <- structure(c(1, 2, 3, 4, 5, 6), .Dim=c(3, 2))
-  #
-  # v =[ 1, 2, 3, 4, 5, 6]
-  # m = reshape(v, 3, 2)
-  # size(m) => (3,2)
-  # length(m) => 6
-  # m[5] => 5
-  #
   
   str = ""
   for entry in dct
     #println(entry)
-    #println(symbol(entry[1]))
+    #println(entry[1])
     #println(entry[2], " => ", typeof(entry[2]))
-    str = "\""*string(entry[1])*"\""*" <- "
+    str = "\""*entry[1]*"\""*" <- "
     val = entry[2]
     if replaceNaNs && true in isnan(entry[2])
       val = convert(DataArray, entry[2])
@@ -113,13 +99,13 @@ function update_R_file(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=t
   close(strmout)
 end
 
-function update_init_R_files(file::String, dct::Dict{Symbol, Any}; replaceNaNs::Bool=false)
+function update_init_R_files(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=false)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   
   str = ""
   for entry in dct
-    str = "\""*string(entry[1])*"\""*" <- "
+    str = "\""*entry[1]*"\""*" <- "
     val = entry[2]
     if replaceNaNs && true in isnan(entry[2])
       val = convert(DataArray, entry[2])

@@ -1,0 +1,23 @@
+/*
+	Generated rats.jags command file
+*/
+load dic
+model in rats.bugs
+data in rats-data.R
+compile, nchains(4)
+parameters in rats-inits1.R, chain(1)
+parameters in rats-inits2.R, chain(2)
+parameters in rats-inits3.R, chain(3)
+parameters in rats-inits4.R, chain(4)
+initialize
+update 2500
+monitor deviance
+monitor pD
+monitor pD, type(mean)
+monitor popt, type(mean)
+monitor sigma, thin(2)
+monitor beta.c, thin(2)
+monitor alpha0, thin(2)
+update 7500
+coda *
+exit

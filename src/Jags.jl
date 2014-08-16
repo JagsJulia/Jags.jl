@@ -12,8 +12,9 @@ module Jags
   
   export
   
-  # From modeltype.jl
+  # From jagsmodel.jl
     Jagsmodel,
+    DictOrDictArray,
     
     # From jagscode.jl
     jags

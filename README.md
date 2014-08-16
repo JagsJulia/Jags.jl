@@ -14,7 +14,15 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
 
-A possible way to get started is to copy all of the "Pkg_dir"/Examples/Line files to a project directory, adjust the ProjDir (line 6 in ./Examples/Line/line.jl) and try it out.
+
+## Dependencies
+
+This version of the package relies on DataArrays and on Mamba.
+Mamba is right now not in METADATA The package can be installed using:
+
+```
+Pkg.clone("https://github.com/brian-j-smith/Mamba.jl")
+```
 
 ## A walk through example
 
@@ -52,30 +60,31 @@ Variable `line` holds the model which will be writtten to a file
 named `model_name.bugs`. model_name is set later on.
 
 ```
-data = Dict{Symbol, Any}()
-data[:x] = [1, 2, 3, 4, 5]
-data[:y] = [1, 3, 3, 3, 5]
-data[:n] = 5
+data = Dict{ASCIIString, Any}()
+data["x"] = [1, 2, 3, 4, 5]
+data["y"] = [1, 3, 3, 3, 5]
+data["n"] = 5
 ```
 
 Input data for the simulation.
 
 ```
-inits = (Symbol => Any)[
-  :alpha => 0,
-  :beta => 0,
-  :tau => 1
+inits = [
+  (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
+  (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
 ]
 ```
 
 Initial values for parameters.
 
 ```
-monitor = (Symbol => Bool)[
-  :alpha => true,
-  :beta => true,
-  :tau => true,
-  :sigma => true
+monitors = (ASCIIString => Bool)[
+  "alpha" => true,
+  "beta" => true,
+  "tau" => true,
+  "sigma" => true,
 ]
 ```
 
@@ -111,7 +120,7 @@ Show input dictionaries and the resulting chain index dictionary.
 
 ```
 if (length(chains) > 0)
-  chains[1][:samples] |> display
+  chains[1]["samples"] |> display
   println()
 end
 ```
@@ -120,6 +129,13 @@ If all goes well, by default 4 chains will be returned. Show the contents
 of the first chain dictionary.
 
 ```
+for i in 1:jagsmodel.nchains
+  println()
+  println("mean(chains[$i][\"samples\"][\"alpha\"]) = ", mean(chains[i]["samples"]["alpha"]))
+  println("mean(chains[$i][\"samples\"][\"beta\"]) = ", mean(chains[i]["samples"]["beta"]))
+  println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))
+end
+
 cd(old)
 ```
 

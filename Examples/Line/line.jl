@@ -1,6 +1,6 @@
 ######### Jags batch program example  ###########
 
-using Jags
+using Mamba, Jags
 
 old = pwd()
 path = @windows ? "\\Examples\\Line" : "/Examples/Line"
@@ -21,23 +21,23 @@ model {
 }
 "
 
-data = Dict{Symbol, Any}()
-data[:x] = [1, 2, 3, 4, 5]
-data[:y] = [1, 3, 3, 3, 5]
-data[:n] = 5
+data = Dict{ASCIIString, Any}()
+data["x"] = [1, 2, 3, 4, 5]
+data["y"] = [1, 3, 3, 3, 5]
+data["n"] = 5
 
-inits = (Symbol => Any)[
-  :alpha => 0,
-  :beta => 0,
-  :tau => 1,
-  
+inits = [
+  (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
+  (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
 ]
 
-monitors = (Symbol => Bool)[
-  :alpha => true,
-  :beta => true,
-  :tau => true,
-  :sigma => true,
+monitors = (ASCIIString => Bool)[
+  "alpha" => true,
+  "beta" => true,
+  "tau" => true,
+  "sigma" => true,
 ]
 
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
@@ -58,7 +58,7 @@ idx |> display
 println()
 
 if (length(chains) > 0)
-  chains[1][:samples] |> display
+  chains[1]["samples"] |> display
   println()
 end
 
@@ -66,13 +66,20 @@ if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile()
   idx0 |> display
   println()
-  chain0[1][:samples] |> display
+  chain0[1]["samples"] |> display
 end
   
 if jagsmodel.dic || jagsmodel.popt
   println()
-  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data[:n])
+  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
   pDmeanAndpopt |> display
+end
+
+for i in 1:jagsmodel.nchains
+  println()
+  println("mean(chains[$i][\"samples\"][\"alpha\"]) = ", mean(chains[i]["samples"]["alpha"]))
+  println("mean(chains[$i][\"samples\"][\"beta\"]) = ", mean(chains[i]["samples"]["beta"]))
+  println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))
 end
 
 cd(old)

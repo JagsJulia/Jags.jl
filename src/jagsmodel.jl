@@ -15,9 +15,11 @@ type Jagsmodel
   model_file::String
   data::Dict
   data_file::String
-  init::Dict
-  init_file_array::Array{String, 1}
+  init::Array{Dict{ASCIIString,Any},1}
+  init_file_array::Array{ASCIIString, 1}
 end
+
+DictOrDictArray = Union(Dict{ASCIIString, Any}, Array{Dict{ASCIIString, Any}, 1})
 
 function Jagsmodel(;name::String="Noname", nchains::Number=4,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
@@ -25,8 +27,10 @@ function Jagsmodel(;name::String="Noname", nchains::Number=4,
   dic::Bool=false, popt::Bool=false,
   jags_file::String="",
   model::String="", model_file::String="",
-  data::Dict=Dict(), data_file::String="",
-  init::Dict=Dict(), init_file_array::Array{String, 1}=String[])
+  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
+  data_file::String="",
+  init::Array{Dict{ASCIIString,Any},1}=Array{Dict{ASCIIString,Any},1}[], 
+  init_file_array::Vector{String}=String[])
   
   if length(model) > 0
     update_model_file("$(name).bugs", strip(model))
@@ -37,14 +41,23 @@ function Jagsmodel(;name::String="Noname", nchains::Number=4,
   end
   
   for i in 1:nchains
-    if length(keys(init)) > 0
-      update_R_file("$(name)-inits$(i).R", init, replaceNaNs=false)
+    if length(init) == nchains
+      if length(keys(init[i])) > 0
+        update_R_file("$(name)-inits$(i).R", init[i])
+      end
+    else
+      if length(keys(init[1])) > 0
+        if i == 1
+          println("\nLength of init array not equal to nchains, first element used repeatedly.")
+        end
+        update_R_file("$(name)-inits$(i).R", init[1])
+      end
     end
   end
   
   if length(monitor) == 0 && length(init) > 0
     for entry in init
-      monitor = merge(monitor, [symbol(entry[1]) => true])
+      monitor = merge(monitor, [entry[1] => true])
     end
   end
   
@@ -63,6 +76,14 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     println("Jagsmodel(", m.name, m.nchains, m.adapt, m.update,
       m.thin, m.monitor, m.model_file, m.init_file_array, m.data_file)
   else
+    fstr = "["
+    for i in 1:m.nchains
+      fstr = fstr*"\""*m.init_file_array[i]*"\""
+      if i < m.nchains
+        fstr = fstr*", "
+      end
+    end
+    fstr = fstr*"]"
     println("  name =                    \"$(m.name)\"")
     println("  nchains =                 $(m.nchains)")
     println("  adapt =                   $(m.adapt)")
@@ -76,7 +97,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     #println("  model =                   $(model)")
     println("  model_file =              \"$(m.model_file)\"")
     #println("  init =                    $(init)")
-    println("  init_file_array =         \"$(m.init_file_array)\"")
+    println("  init_file_array =         $(fstr)")
     #println("  data =                    $(data)")
     println("  data_file =               \"$(m.data_file)\"")
   end
