@@ -156,8 +156,8 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt |> display
 end
 
-println()
 for i in 1:jagsmodel.nchains
+  println()
   println("mean(chains[$i][\"samples\"][\"alpha0\"]) = ", mean(chains[i]["samples"]["alpha0"]))
   println("mean(chains[$i][\"samples\"][\"beta.c\"]) = ", mean(chains[i]["samples"]["beta.c"]))
   println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))

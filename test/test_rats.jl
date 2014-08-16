@@ -2,32 +2,32 @@ using Jags
 using Base.Test
 
 old = pwd()
-ProjDir = Pkg.dir("Jags")*"/Examples/Line/"
+ProjDir = Pkg.dir("Jags")*"/Examples/Rats/Jags/"
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
 for i in 0:8
   isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
-  isfile("line-inits$(i).R") && rm("line-inits$(i).R")
+  isfile("rats-inits$(i).R") && rm("rats-inits$(i).R")
 end
 isfile("CODAindex.txt") && rm("CODAindex.txt")
 isfile("CODAindex0.txt") && rm("CODAindex0.txt")
 isfile("CODAtable0.txt") && rm("CODAtable0.txt")
-isfile("line-data.R") && rm("line-data.R")
-isfile("line.bugs") && rm("line.bugs")
-isfile("line.jags") && rm("line.jags")
+isfile("rats-data.R") && rm("rats-data.R")
+isfile("rats.bugs") && rm("rats.bugs")
+isfile("rats.jags") && rm("rats.jags")
 
-include(ProjDir*"line.jl")
+include(ProjDir*"jrats.jl")
 
 for i in 0:8
   isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
-  isfile("line-inits$(i).R") && rm("line-inits$(i).R")
+  isfile("rats-inits$(i).R") && rm("rats-inits$(i).R")
 end
 isfile("CODAindex.txt") && rm("CODAindex.txt")
 isfile("CODAindex0.txt") && rm("CODAindex0.txt")
 isfile("CODAtable0.txt") && rm("CODAtable0.txt")
-isfile("line-data.R") && rm("line-data.R")
-isfile("line.bugs") && rm("line.bugs")
-isfile("line.jags") && rm("line.jags")
+isfile("rats-data.R") && rm("rats-data.R")
+isfile("rats.bugs") && rm("rats.bugs")
+isfile("rats.jags") && rm("rats.jags")
 
 cd(old)

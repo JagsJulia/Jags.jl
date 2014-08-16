@@ -19,8 +19,6 @@ type Jagsmodel
   init_file_array::Array{ASCIIString, 1}
 end
 
-DictOrDictArray = Union(Dict{ASCIIString, Any}, Array{Dict{ASCIIString, Any}, 1})
-
 function Jagsmodel(;name::String="Noname", nchains::Number=4,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
   monitor::Dict=Dict(), deviance::Bool=false,
@@ -29,7 +27,7 @@ function Jagsmodel(;name::String="Noname", nchains::Number=4,
   model::String="", model_file::String="",
   data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
   data_file::String="",
-  init::Array{Dict{ASCIIString,Any},1}=Array{Dict{ASCIIString,Any},1}[], 
+  init::Array{Dict{ASCIIString,Any},1}=[], 
   init_file_array::Vector{String}=String[])
   
   if length(model) > 0

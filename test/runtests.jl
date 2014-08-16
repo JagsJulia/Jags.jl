@@ -10,7 +10,9 @@ code_tests = [
 ]
 
 execution_tests = [
-  "test_line.jl"
+  "test_line.jl",
+  "test_rats.jl",
+  "test_dyes.jl"
 ]
 
 println("Running tests:")
