@@ -65,49 +65,33 @@ model {
 "
 
 ## Initial Values
-#=
+#=  # Inits for Mamba
 [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
  :mu_alpha => 100, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
  :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+[:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
  :mu_alpha => 150, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
  :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+[:y => rats[:y], :alpha => fill(200, 30), :beta => fill(6, 30),
  :mu_alpha => 200, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
  :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+[:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
  :mu_alpha => 250, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
  :s2_beta => 1]
 =#
 inits = [
-  ["alpha" => fill(250, 30), 
-  "beta" => fill(6, 30),
-  "alpha.c" => 100, 
-  "beta.c" => 2, 
-  "tau.c" => 1, 
-  "tau.alpha" => 1,
-  "tau.beta" => 1],
-  ["alpha" => fill(150, 30), 
-  "beta" => fill(3, 30),
-  "alpha.c" => 150, 
-  "beta.c" => 2, 
-  "tau.c" => 1, 
-  "tau.alpha" => 1,
-  "tau.beta" => 1],
-  ["alpha" => fill(200, 30), 
-  "beta" => fill(6, 30),
-  "alpha.c" => 200, 
-  "beta.c" => 1, 
-  "tau.c" => 1, 
-  "tau.alpha" => 1,
-  "tau.beta" => 1],
-  ["alpha" => fill(150, 30), 
-  "beta" => fill(3, 30),
-  "alpha.c" => 250, 
-  "beta.c" => 1, 
-  "tau.c" => 1, 
-  "tau.alpha" => 1,
-  "tau.beta" => 1]
+  ["alpha" => fill(250, 30), "beta" => fill(6, 30),
+  "alpha.c" => 100, "beta.c" => 2, 
+  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
+  ["alpha" => fill(150, 30), "beta" => fill(3, 30),
+  "alpha.c" => 150, "beta.c" => 2, 
+  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
+  ["alpha" => fill(200, 30), "beta" => fill(6, 30),
+  "alpha.c" => 200, "beta.c" => 1, 
+  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
+  ["alpha" => fill(150, 30), "beta" => fill(3, 30),
+  "alpha.c" => 250, "beta.c" => 1, 
+  "tau.c" => 1, "tau.alpha" => 1,"tau.beta" => 1]
 ]
 
 monitors = (ASCIIString => Bool)[
@@ -117,9 +101,9 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=7500, thin=2, deviance=true, dic=true, popt=true);
+  monitor=monitors, adapt=2500, update=7500, thin=2);
   
-println("\nJagsmodel that will be used:")
+println("Jagsmodel that will be used:")
 jagsmodel |> display
 println("Input observed data dictionary:")
 rats |> display

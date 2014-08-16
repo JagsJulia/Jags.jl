@@ -53,9 +53,6 @@ function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::B
   
   str = ""
   for entry in dct
-    #println(entry)
-    #println(entry[1])
-    #println(entry[2], " => ", typeof(entry[2]))
     str = "\""*entry[1]*"\""*" <- "
     val = entry[2]
     if replaceNaNs && true in isnan(entry[2])
@@ -98,53 +95,3 @@ function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::B
   end
   close(strmout)
 end
-
-function update_init_R_files(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=false)
-  isfile(file) && rm(file)
-  strmout = open(file, "w")
-  
-  str = ""
-  for entry in dct
-    str = "\""*entry[1]*"\""*" <- "
-    val = entry[2]
-    if replaceNaNs && true in isnan(entry[2])
-      val = convert(DataArray, entry[2])
-      for i in 1:length(val)
-        if isnan(val[i])
-          val[i] = NA
-        end
-      end
-    end
-    if length(val)==1 && length(size(val))==0
-      # Scalar
-      str = str*"$(val)\n"
-    elseif length(val)>1 && length(size(val))==1
-      # Vector
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      str = str*"), .Dim=c($(length(val))))\n"
-    elseif length(val)>1 && length(size(val))>1
-      # Array
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      dimstr = "c"*string(size(val))
-      str = str*"), .Dim=$(dimstr))\n"
-    else
-      # Matrix or more
-      println(size(val))
-    end
-    write(strmout, str)
-  end
-  close(strmout)
-end
-

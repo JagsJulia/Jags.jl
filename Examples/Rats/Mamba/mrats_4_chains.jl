@@ -115,13 +115,13 @@ inits = [
   [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
    :mu_alpha => 100, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+  [:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
    :mu_alpha => 150, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+  [:y => rats[:y], :alpha => fill(200, 30), :beta => fill(6, 30),
    :mu_alpha => 200, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
+  [:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
    :mu_alpha => 250, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1]
 ]
@@ -137,39 +137,8 @@ setsamplers!(model, scheme)
 
 
 ## MCMC Simulations, 2 chains
-isfile("rats_1.svg") && rm("rats_1.svg")
-isfile("rats_2.svg") && rm("rats_2.svg")
-isfile("rats_3.svg") && rm("rats_3.svg")
-isfile("rats_4.svg") && rm("rats_4.svg")
 isfile("rats_5.svg") && rm("rats_5.svg")
 isfile("rats_6.svg") && rm("rats_6.svg")
-isfile("rats_7.svg") && rm("rats_7.svg")
-isfile("rats_8.svg") && rm("rats_8.svg")
-
-sim1 = mcmc(model, rats, inits, 10000, burnin=2500, thin=2, chains=2)
-describe(sim1)
-
-## Plot results
-myplot1 = plot(sim1, legend=true);
-draw(myplot1, nrow=3, ncol=2, filename="rats_1.svg")
-run(`open -a "Google Chrome.app" "rats_1.svg"`)
-
-myplot2 = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)];
-draw(myplot2, nrow=2, ncol=3, filename="rats_2.svg")
-run(`open -a "Google Chrome.app" "rats_2.svg"`)
-
-println("Continue sampling")
-sim2 = mcmc(sim1, 10000)
-describe(sim2)
-
-## Plot results
-myplot3 = plot(sim2, legend=true);
-draw(myplot3, nrow=3, ncol=2, filename="rats_3.svg")
-run(`open -a "Google Chrome.app" "rats_3.svg"`)
-
-myplot4 = [plot(sim2, :autocor) plot(sim2, :mean, legend=true)];
-draw(myplot4, nrow=2, ncol=3, filename="rats_4.svg")
-run(`open -a "Google Chrome.app" "rats_4.svg"`)
 
 ## MCMC Simulations, 4 chains
 sim3 = mcmc(model, rats, inits, 10000, burnin=2500, thin=2, chains=4)
@@ -184,6 +153,7 @@ myplot6 = [plot(sim3, :autocor) plot(sim3, :mean, legend=true)];
 draw(myplot6, nrow=2, ncol=3, filename="rats_6.svg")
 run(`open -a "Google Chrome.app" "rats_6.svg"`)
 
+#=
 println("Continue sampling")
 sim4 = mcmc(sim3, 10000)
 describe(sim4)
@@ -196,5 +166,6 @@ run(`open -a "Google Chrome.app" "rats_7.svg"`)
 myplot8 = [plot(sim4, :autocor) plot(sim4, :mean, legend=true)];
 draw(myplot8, nrow=2, ncol=3, filename="rats_8.svg")
 run(`open -a "Google Chrome.app" "rats_8.svg"`)
+=#
 
 cd(old)
