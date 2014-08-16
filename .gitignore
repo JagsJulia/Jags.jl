@@ -3,6 +3,7 @@
 *.d
 *.csv
 *.o
+*.svg
 CODA*.txt
 line.jags
 line.bugs
