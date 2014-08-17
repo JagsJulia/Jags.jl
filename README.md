@@ -6,7 +6,7 @@
 
 This is a very preliminary (basically a template) package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc1
 
-Version 0.0.1 contains an example template in the directory "Pkg_dir"/Examples/Line.
+Version 0.0.0- contains an example template in the directory "Pkg_dir"/Examples/Line.
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
@@ -17,8 +17,8 @@ This version of the package assumes that Jags is installed and the jags binary i
 
 ## Dependencies
 
-This version of the package relies on DataArrays and on Mamba.
-Mamba is right now not in METADATA The package can be installed using:
+This version of the package relies on DataArrays, Cairo, Gadfly and on Mamba (0.0.0-).
+Mamba is right now not in METADATA. The package can be installed using:
 
 ```
 Pkg.clone("https://github.com/brian-j-smith/Mamba.jl")
