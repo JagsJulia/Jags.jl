@@ -27,12 +27,11 @@ Pkg.clone("https://github.com/brian-j-smith/Mamba.jl")
 ## A walk through example
 
 ```
-######### Jags batch program example  ###########
-
-using Jags
+using Cairo, Mamba, Jags
 
 old = pwd()
-ProjDir = homedir()*"/.julia/v0.3/Jags/Examples/Line"
+path = @windows ? "\\Examples\\Line\\Jags" : "/Examples/Line/Jags"
+ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 ```
 
@@ -66,7 +65,7 @@ data["y"] = [1, 3, 3, 3, 5]
 data["n"] = 5
 ```
 
-Input data for the simulation.
+Input data for the simulation of 4 chains.
 
 ```
 inits = [
@@ -77,7 +76,8 @@ inits = [
 ]
 ```
 
-Initial values for parameters.
+Initial values for parameters. If the array of dictionaries has
+not enough elements, only the first elemnt is used for all chains.
 
 ```
 monitors = (ASCIIString => Bool)[
@@ -93,13 +93,13 @@ to jagsmodel, all keys (symbols) in inits will be monitored.
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitor=monitors);
+  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
 ```
 
 A Jagsmodel is created and initialized.
 
 ```
-(idx, chains) = jags(jagsmodel, ProjDir)
+(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 ```
 
 Results of the mcmc simulation.
@@ -119,25 +119,57 @@ println()
 Show input dictionaries and the resulting chain index dictionary.
 
 ```
-if (length(chains) > 0)
-  chains[1]["samples"] |> display
+gelmandiag(sim1, mpsrf=true, transform=true) |> display
+
+gewekediag(sim1) |> display
+
+describe(sim1)
+
+hpd(sim1) |> display
+
+cor(sim1) |> display
+
+autocor(sim1) |> display
+
+println()
+if jagsmodel.dic
+  (idx0, chain0) = Jags.read_pDfile()
+  idx0 |> display
   println()
+  chain0[1]["samples"] |> display
+end
+  
+if jagsmodel.dic || jagsmodel.popt
+  println()
+  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
+  pDmeanAndpopt |> display
 end
 ```
 
-If all goes well, by default 4 chains will be returned. Show the contents
-of the first chain dictionary.
+If all goes well, by default 4 chains will be returned. Plot the results:
 
 ```
-for i in 1:jagsmodel.nchains
-  println()
-  println("mean(chains[$i][\"samples\"][\"alpha\"]) = ", mean(chains[i]["samples"]["alpha"]))
-  println("mean(chains[$i][\"samples\"][\"beta\"]) = ", mean(chains[i]["samples"]["beta"]))
-  println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))
-end
+p = plot(sim1[:, ["alpha", "beta",  "sigma"], :], legend=true)
+draw(p, filename="jlinesummaryplot.svg")
+p = [plot(sim1[:, ["alpha", "beta",  "sigma"], :], :autocor) plot(sim1[:, ["alpha",     "beta",  "sigma"], :], :mean, legend=true)].'
+draw(p, nrow=3, ncol=2, filename="jlineautocormeanplot.svg")
+
+
+p = plot(sim1[:, ["deviance", "sigma"], :], legend=true)
+draw(p, filename="jlinesummaryplot2.svg")
+```
+
+On OSX, in the correct directory:
+
+```
+run(`open -a "Google Chrome.app" "jlinesummaryplot.svg"`)
+run(`open -a "Google Chrome.app" "jlineautocormeanplot.svg"`)
+run(`open -a "Google Chrome.app" "jlinesummaryplot2.svg"`)
 
 cd(old)
 ```
+
+
 
 ## To do
 

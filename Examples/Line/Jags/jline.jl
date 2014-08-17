@@ -1,6 +1,6 @@
-######### Jags batch program example  ###########
+######### Jags program example  ###########
 
-using Mamba, Jags
+using Cairo, Mamba, Jags
 
 old = pwd()
 path = @windows ? "\\Examples\\Line\\Jags" : "/Examples/Line/Jags"
