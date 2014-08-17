@@ -25,13 +25,13 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
     cd(old)
   end
   cd(old)
-  (idx, mambachain(chains))
+  (idx, mambachain(chains, model.thin))
 end
 
 
 #### Create a Mamba::Chains result
 
-function mambachain(c::Array{Dict{ASCIIString,Any},1})
+function mambachain(c::Array{Dict{ASCIIString,Any},1}, thin::Integer)
   colnames = String[]
   for key in keys(c[1]["samples"])
     append!(colnames, [string(key)])
@@ -48,7 +48,7 @@ function mambachain(c::Array{Dict{ASCIIString,Any},1})
     end
   end
   sr = StepRange[1:1:iters]
-  Chains(a3d, start=1, thin=1, names=colnames, chains=[i for i in 1:chns])
+  Chains(a3d, start=1, thin=thin, names=colnames, chains=[i for i in 1:chns])
 end
 
 

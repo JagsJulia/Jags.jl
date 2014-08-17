@@ -101,7 +101,7 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=7500, thin=2);
+  monitor=monitors, adapt=2500, update=7500, thin=2, thin=2, deviance=true, dic=true, popt=true);
   
 println("Jagsmodel that will be used:")
 jagsmodel |> display
@@ -138,33 +138,6 @@ autocor(sim1) |> display
 ## Deviance Information Criterion
 #dic(sim1) |> display
 
-## Plotting
-
-## Default summary plot (trace and density plots)
-p = plot(sim1)
-
-## Write plot to file
-draw(p, filename="ratssummaryplot.svg")
-#draw(p, filename="ratssummaryplot", fmt=:pdf)
-
-## Autocorrelation and running mean plots
-p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
-draw(p, nrow=3, ncol=2, filename="ratsautocormeanplot.svg")
-
-run(`open -a "Google Chrome.app" "ratssummaryplot.svg"`)
-run(`open -a "Google Chrome.app" "ratsautocormeanplot.svg"`)
-
-
-## Obtain deviance etc.
-
-jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=7500, thin=1, deviance=true, dic=true, popt=true);
-
-(idx, sim2) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-## Summary Statistics
-describe(sim2)
-
 println()
 if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile()
@@ -179,12 +152,28 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt |> display
 end
 
+## Plotting
+
 ## Default summary plot (trace and density plots)
-p = plot(sim2[:, ["deviance", "sigma"], :])
+p = plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :])
 
 ## Write plot to file
-draw(p, filename="ratssummaryplot2.svg")
-run(`open -a "Google Chrome.app" "ratssummaryplot2.svg"`)
+draw(p, filename="jratssummaryplot.svg")
+#draw(p, filename="jratssummaryplot", fmt=:pdf)
+
+## Autocorrelation and running mean plots
+p = [plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :], :autocor) plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :], :mean, legend=true)].'
+draw(p, nrow=3, ncol=2, filename="jratsautocormeanplot.svg")
+
+run(`open -a "Google Chrome.app" "jratssummaryplot.svg"`)
+run(`open -a "Google Chrome.app" "jratsautocormeanplot.svg"`)
+
+## Default summary plot (deviance and sigma)
+p = plot(sim1[:, ["deviance", "sigma"], :])
+
+## Write plot to file
+draw(p, filename="jratssummaryplot2.svg")
+run(`open -a "Google Chrome.app" "jratssummaryplot2.svg"`)
 
 
 cd(old)

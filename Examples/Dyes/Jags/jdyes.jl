@@ -64,17 +64,34 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println()
 idx |> display
 println()
 
-if (length(chains) > 0)
-  chains[1]["samples"] |> display
-  println()
-end
+## Brooks, Gelman and Rubin Convergence Diagnostic
+gelmandiag(sim1, mpsrf=true, transform=true) |> display
 
+## Geweke Convergence Diagnostic
+gewekediag(sim1) |> display
+
+## Summary Statistics
+describe(sim1)
+
+## Highest Posterior Density Intervals
+hpd(sim1) |> display
+
+## Cross-Correlations
+cor(sim1) |> display
+
+## Lag-Autocorrelations
+autocor(sim1) |> display
+
+## Deviance Information Criterion
+#dic(sim1) |> display
+
+println()
 if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile()
   idx0 |> display
@@ -88,14 +105,27 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt |> display
 end
 
-for i in 1:jagsmodel.nchains
-  println()
-  println("mean(chains[$i][\"samples\"][\"theta\"]) = ",
-    mean(chains[i]["samples"]["theta"]))
-  println("mean(chains[$i][\"samples\"][\"s2.within\"]) = ",
-    mean(chains[i]["samples"]["s2.within"]))
-  println("mean(chains[$i][\"samples\"][\"s2.between\"]) = ",
-    mean(chains[i]["samples"]["s2.between"]))
-end
+## Plotting
+
+## Default summary plot (trace and density plots)
+p = plot(sim1[:, ["theta", "s2.within",  "s2.between"], :], legend=true)
+
+## Write plot to file
+draw(p, filename="jdyessummaryplot.svg")
+#draw(p, filename="jdyessummaryplot", fmt=:pdf)
+
+## Autocorrelation and running mean plots
+p = [plot(sim1[:, ["theta", "s2.within",  "s2.between"], :], :autocor) plot(sim1[:, ["theta", "s2.within",  "s2.between"], :], :mean, legend=true)].'
+draw(p, nrow=3, ncol=2, filename="jdyesautocormeanplot.svg")
+
+run(`open -a "Google Chrome.app" "jdyessummaryplot.svg"`)
+run(`open -a "Google Chrome.app" "jdyesautocormeanplot.svg"`)
+
+## Default summary plot (deviance and sigma)
+p = plot(sim1[:, ["deviance", "s2.within",  "s2.between"], :], legend=true)
+
+## Write plot to file
+draw(p, filename="jdyessummaryplot2.svg")
+run(`open -a "Google Chrome.app" "jdyessummaryplot2.svg"`)
 
 cd(old)

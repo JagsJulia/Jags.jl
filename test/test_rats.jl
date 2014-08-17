@@ -16,6 +16,9 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("rats-data.R") && rm("rats-data.R")
 isfile("rats.bugs") && rm("rats.bugs")
 isfile("rats.jags") && rm("rats.jags")
+isfile("jratsautocormeanplot.svg") && rm("jratsautocormeanplot.svg")
+isfile("jratssummaryplot.svg") && rm("jratssummaryplot.svg")
+isfile("jratssummaryplot2.svg") && rm("jratssummaryplot2.svg")
 
 include(ProjDir*"jrats.jl")
 
@@ -29,5 +32,8 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("rats-data.R") && rm("rats-data.R")
 isfile("rats.bugs") && rm("rats.bugs")
 isfile("rats.jags") && rm("rats.jags")
+#isfile("jratsautocormeanplot.svg") && rm("jratsautocormeanplot.svg")
+#isfile("jratssummaryplot.svg") && rm("jratssummaryplot.svg")
+#isfile("jratssummaryplot2.svg") && rm("jratssummaryplot2.svg")
 
 cd(old)

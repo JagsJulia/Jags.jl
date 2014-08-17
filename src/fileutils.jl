@@ -24,7 +24,7 @@ function update_jags_file(model::Jagsmodel)
   end
   for entry in model.monitor
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
     end
   end
   jagsstr = jagsstr*"update $(model.update)\n"

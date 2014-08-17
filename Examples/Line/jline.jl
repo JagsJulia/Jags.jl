@@ -51,17 +51,34 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println()
 idx |> display
 println()
 
-if (length(chains) > 0)
-  chains[1]["samples"] |> display
-  println()
-end
+## Brooks, Gelman and Rubin Convergence Diagnostic
+gelmandiag(sim1, mpsrf=true, transform=true) |> display
 
+## Geweke Convergence Diagnostic
+gewekediag(sim1) |> display
+
+## Summary Statistics
+describe(sim1)
+
+## Highest Posterior Density Intervals
+hpd(sim1) |> display
+
+## Cross-Correlations
+cor(sim1) |> display
+
+## Lag-Autocorrelations
+autocor(sim1) |> display
+
+## Deviance Information Criterion
+#dic(sim1) |> display
+
+println()
 if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile()
   idx0 |> display
@@ -75,11 +92,27 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt |> display
 end
 
-for i in 1:jagsmodel.nchains
-  println()
-  println("mean(chains[$i][\"samples\"][\"alpha\"]) = ", mean(chains[i]["samples"]["alpha"]))
-  println("mean(chains[$i][\"samples\"][\"beta\"]) = ", mean(chains[i]["samples"]["beta"]))
-  println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))
-end
+## Plotting
+
+## Default summary plot (trace and density plots)
+p = plot(sim1[:, ["alpha", "beta",  "sigma"], :], legend=true)
+
+## Write plot to file
+draw(p, filename="jlinesummaryplot.svg")
+#draw(p, filename="jlinesummaryplot", fmt=:pdf)
+
+## Autocorrelation and running mean plots
+p = [plot(sim1[:, ["alpha", "beta",  "sigma"], :], :autocor) plot(sim1[:, ["alpha", "beta",  "sigma"], :], :mean, legend=true)].'
+draw(p, nrow=3, ncol=2, filename="jlineautocormeanplot.svg")
+
+run(`open -a "Google Chrome.app" "jlinesummaryplot.svg"`)
+run(`open -a "Google Chrome.app" "jlineautocormeanplot.svg"`)
+
+## Default summary plot (deviance and sigma)
+p = plot(sim1[:, ["deviance", "sigma"], :], legend=true)
+
+## Write plot to file
+draw(p, filename="jlinesummaryplot2.svg")
+run(`open -a "Google Chrome.app" "jlinesummaryplot2.svg"`)
 
 cd(old)

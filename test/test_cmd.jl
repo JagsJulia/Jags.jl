@@ -1,4 +1,4 @@
-using Jags
+using Jags, Mamba
 using Base.Test
 
 old = pwd()

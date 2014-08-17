@@ -16,6 +16,9 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("dyes-data.R") && rm("dyes-data.R")
 isfile("dyes.bugs") && rm("dyes.bugs")
 isfile("dyes.jags") && rm("dyes.jags")
+isfile("jdyesautocormeanplot.svg") && rm("jdyesautocormeanplot.svg")
+isfile("jdyessummaryplot.svg") && rm("jdyessummaryplot.svg")
+isfile("jdyessummaryplot2.jags") && rm("jdyessummaryplot2.jags")
 
 include(ProjDir*"jdyes.jl")
 
@@ -29,5 +32,8 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("dyes-data.R") && rm("dyes-data.R")
 isfile("dyes.bugs") && rm("dyes.bugs")
 isfile("dyes.jags") && rm("dyes.jags")
+#isfile("jdyesautocormeanplot.svg") && rm("jdyesautocormeanplot.svg")
+#isfile("jdyessummaryplot.svg") && rm("jdyessummaryplot.svg")
+#isfile("jdyessummaryplot2.jags") && rm("jdyessummaryplot2.jags")
 
 cd(old)

@@ -16,8 +16,11 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("line-data.R") && rm("line-data.R")
 isfile("line.bugs") && rm("line.bugs")
 isfile("line.jags") && rm("line.jags")
+isfile("jlineautocormeanplot.svg") && rm("jlineautocormeanplot.svg")
+isfile("jlinesummaryplot.svg") && rm("jlinesummaryplot.svg")
+isfile("jlinesummaryplot2.jags") && rm("jlinesummaryplot2.jags")
 
-include(ProjDir*"line.jl")
+include(ProjDir*"jline.jl")
 
 for i in 0:8
   isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
@@ -29,5 +32,8 @@ isfile("CODAtable0.txt") && rm("CODAtable0.txt")
 isfile("line-data.R") && rm("line-data.R")
 isfile("line.bugs") && rm("line.bugs")
 isfile("line.jags") && rm("line.jags")
+#isfile("jlineautocormeanplot.svg") && rm("jlineautocormeanplot.svg")
+#isfile("jlinesummaryplot.svg") && rm("jlinesummaryplot.svg")
+#isfile("jlinesummaryplot2.jags") && rm("jlinesummaryplot2.jags")
 
 cd(old)
