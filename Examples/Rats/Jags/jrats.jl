@@ -141,16 +141,15 @@ autocor(sim1) |> display
 ## Plotting
 
 ## Default summary plot (trace and density plots)
-p = plot(sim1[:, ["sigma", "beta.c", "alpha0"], :])
+p = plot(sim1)
 
 ## Write plot to file
 draw(p, filename="ratssummaryplot.svg")
-draw(p, filename="ratssummaryplot", fmt=:pdf)
+#draw(p, filename="ratssummaryplot", fmt=:pdf)
 
 ## Autocorrelation and running mean plots
 p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
 draw(p, nrow=3, ncol=2, filename="ratsautocormeanplot.svg")
-draw(p, nrow=3, ncol=2, filename="ratsautocormeanplot", fmt=:pdf)
 
 run(`open -a "Google Chrome.app" "ratssummaryplot.svg"`)
 run(`open -a "Google Chrome.app" "ratsautocormeanplot.svg"`)
@@ -179,6 +178,13 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt = Jags.read_table_file(jagsmodel, rats["N"])
   pDmeanAndpopt |> display
 end
+
+## Default summary plot (trace and density plots)
+p = plot(sim2[:, ["deviance", "sigma"], :])
+
+## Write plot to file
+draw(p, filename="ratssummaryplot2.svg")
+run(`open -a "Google Chrome.app" "ratssummaryplot2.svg"`)
 
 
 cd(old)
