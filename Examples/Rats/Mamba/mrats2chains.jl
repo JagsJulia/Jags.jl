@@ -109,21 +109,14 @@ model = Model(
 
 )
 
-
 ## Initial Values
 inits = [
   [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
    :mu_alpha => 100, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
+  [:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
    :mu_alpha => 150, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
    :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(200, 30), :beta => fill(6, 30),
-   :mu_alpha => 200, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
-   :s2_beta => 1],
-  [:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
-   :mu_alpha => 250, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
-   :s2_beta => 1]
 ]
 
 
@@ -137,35 +130,20 @@ setsamplers!(model, scheme)
 
 
 ## MCMC Simulations, 2 chains
-isfile("rats_5.svg") && rm("rats_5.svg")
-isfile("rats_6.svg") && rm("rats_6.svg")
+isfile("mrats_2_summaryplot.svg") && rm("mrats_2_summaryplot.svg")
+isfile("mrats_2_autocormeanplot.svg") && rm("mrats_2_autocormeanplot.svg")
 
-## MCMC Simulations, 4 chains
-sim3 = mcmc(model, rats, inits, 10000, burnin=2500, thin=2, chains=4)
-describe(sim3)
-
-## Plot results
-myplot5 = plot(sim3, legend=true);
-draw(myplot5, nrow=3, ncol=2, filename="rats_5.svg")
-run(`open -a "Google Chrome.app" "rats_5.svg"`)
-
-myplot6 = [plot(sim3, :autocor) plot(sim3, :mean, legend=true)];
-draw(myplot6, nrow=2, ncol=3, filename="rats_6.svg")
-run(`open -a "Google Chrome.app" "rats_6.svg"`)
-
-#=
-println("Continue sampling")
-sim4 = mcmc(sim3, 10000)
-describe(sim4)
+sim1 = mcmc(model, rats, inits, 10000, burnin=2500, thin=2, chains=2)
+describe(sim1)
 
 ## Plot results
-myplot7 = plot(sim4, legend=true);
-draw(myplot7, nrow=3, ncol=2, filename="rats_7.svg")
-run(`open -a "Google Chrome.app" "rats_7.svg"`)
+myplot1 = plot(sim1, legend=true);
+draw(myplot1, nrow=3, ncol=2, filename="mrats_2_summaryplot.svg")
+run(`open -a "Google Chrome.app" "mrats_2_summaryplot.svg"`)
 
-myplot8 = [plot(sim4, :autocor) plot(sim4, :mean, legend=true)];
-draw(myplot8, nrow=2, ncol=3, filename="rats_8.svg")
-run(`open -a "Google Chrome.app" "rats_8.svg"`)
-=#
+myplot2 = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)];
+draw(myplot2, nrow=2, ncol=3, filename="mrats_2_autocormeanplot.svg")
+run(`open -a "Google Chrome.app" "mrats_2_autocormeanplot.svg"`)
+
 
 cd(old)

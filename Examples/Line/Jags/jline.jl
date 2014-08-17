@@ -3,7 +3,7 @@
 using Mamba, Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Line" : "/Examples/Line"
+path = @windows ? "\\Examples\\Line\\Jags" : "/Examples/Line/Jags"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 

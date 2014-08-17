@@ -74,56 +74,21 @@ scheme = [NUTS([:mu, :theta]),
 setsamplers!(model, scheme)
 
 
-## MCMC Simulations
-sim1 = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=2)
-describe(sim1)
-
-## Plot results
-myplot1 = plot(sim1, legend=true);
-draw(myplot1, nrow=3, ncol=2, filename="dyes_1.svg")
-run(`open -a "Google Chrome.app" "dyes_1.svg"`)
-
-myplot2 = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)];
-draw(myplot2, nrow=2, ncol=3, filename="dyes_2.svg")
-run(`open -a "Google Chrome.app" "dyes_2.svg"`)
-
-println("Continue sampling")
-sim2 = mcmc(sim1, 10000)
-describe(sim2)
-
-## Plot results
-myplot3 = plot(sim2, legend=true);
-draw(myplot3, nrow=3, ncol=2, filename="dyes_3.svg")
-run(`open -a "Google Chrome.app" "dyes_3.svg"`)
-
-myplot4 = [plot(sim2, :autocor) plot(sim2, :mean, legend=true)];
-draw(myplot4, nrow=2, ncol=3, filename="dyes_4.svg")
-run(`open -a "Google Chrome.app" "dyes_4.svg"`)
-
 ## MCMC Simulations, 4 chains
 sim3 = mcmc(model, dyes, inits, 10000, burnin=2500, thin=2, chains=4)
 describe(sim3)
 
+
 ## Plot results
+isfile("mdyessummaryplot.svg") && rm("mdyessummaryplot.svg")
+isfile("mdyesautocormean.svg") && rm("mrats_4_autocormean.svg")
+
 myplot5 = plot(sim3, legend=true);
-draw(myplot5, nrow=3, ncol=2, filename="dyes_5.svg")
-run(`open -a "Google Chrome.app" "dyes_5.svg"`)
+draw(myplot5, nrow=3, ncol=2, filename="mdyessummaryplot.svg")
+run(`open -a "Google Chrome.app" "mdyessummaryplot.svg"`)
 
 myplot6 = [plot(sim3, :autocor) plot(sim3, :mean, legend=true)];
-draw(myplot6, nrow=2, ncol=3, filename="dyes_6.svg")
-run(`open -a "Google Chrome.app" "dyes_6.svg"`)
-
-println("Continue sampling")
-sim4 = mcmc(sim3, 10000)
-describe(sim4)
-
-## Plot results
-myplot7 = plot(sim4, legend=true);
-draw(myplot7, nrow=3, ncol=2, filename="dyes_7.svg")
-run(`open -a "Google Chrome.app" "dyes_7.svg"`)
-
-myplot8 = [plot(sim4, :autocor) plot(sim4, :mean, legend=true)];
-draw(myplot8, nrow=2, ncol=3, filename="dyes_8.svg")
-run(`open -a "Google Chrome.app" "dyes_8.svg"`)
+draw(myplot6, nrow=2, ncol=3, filename="mdyesautocormean.svg")
+run(`open -a "Google Chrome.app" "mdyesautocormean.svg"`)
 
 cd(old)
