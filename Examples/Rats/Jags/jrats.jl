@@ -111,22 +111,62 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println()
 idx |> display
 println()
 
-if (length(chains) > 0)
-  chains[1]["samples"] |> display
-  println()
-end
+## Brooks, Gelman and Rubin Convergence Diagnostic
+gelmandiag(sim1, mpsrf=true, transform=true) |> display
 
-if (length(chains) > 1)
-  chains[2]["samples"] |> display
-  println()
-end
+## Geweke Convergence Diagnostic
+gewekediag(sim1) |> display
 
+## Summary Statistics
+describe(sim1)
+
+## Highest Posterior Density Intervals
+hpd(sim1) |> display
+
+## Cross-Correlations
+cor(sim1) |> display
+
+## Lag-Autocorrelations
+autocor(sim1) |> display
+
+## Deviance Information Criterion
+#dic(sim1) |> display
+
+## Plotting
+
+## Default summary plot (trace and density plots)
+p = plot(sim1[:, ["sigma", "beta.c", "alpha0"], :])
+
+## Write plot to file
+draw(p, filename="ratssummaryplot.svg")
+draw(p, filename="ratssummaryplot", fmt=:pdf)
+
+## Autocorrelation and running mean plots
+p = [plot(sim1, :autocor) plot(sim1, :mean, legend=true)].'
+draw(p, nrow=3, ncol=2, filename="ratsautocormeanplot.svg")
+draw(p, nrow=3, ncol=2, filename="ratsautocormeanplot", fmt=:pdf)
+
+run(`open -a "Google Chrome.app" "ratssummaryplot.svg"`)
+run(`open -a "Google Chrome.app" "ratsautocormeanplot.svg"`)
+
+
+## Obtain deviance etc.
+
+jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
+  monitor=monitors, adapt=2500, update=7500, thin=1, deviance=true, dic=true, popt=true);
+
+(idx, sim2) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+
+## Summary Statistics
+describe(sim2)
+
+println()
 if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile()
   idx0 |> display
@@ -140,11 +180,5 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt |> display
 end
 
-for i in 1:jagsmodel.nchains
-  println()
-  println("mean(chains[$i][\"samples\"][\"alpha0\"]) = ", mean(chains[i]["samples"]["alpha0"]))
-  println("mean(chains[$i][\"samples\"][\"beta.c\"]) = ", mean(chains[i]["samples"]["beta.c"]))
-  println("mean(chains[$i][\"samples\"][\"sigma\"]) = ", mean(chains[i]["samples"]["sigma"]))
-end
 
 cd(old)

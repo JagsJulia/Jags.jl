@@ -1,6 +1,6 @@
 module Jags
   
-  using DataArrays, DataFrames
+  using DataArrays, DataFrames, Mamba
 
   #### Includes ####
   
@@ -14,7 +14,6 @@ module Jags
   
   # From jagsmodel.jl
     Jagsmodel,
-    DictOrDictArray,
     
     # From jagscode.jl
     jags

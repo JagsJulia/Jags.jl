@@ -25,7 +25,30 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
     cd(old)
   end
   cd(old)
-  (idx, chains)
+  (idx, mambachain(chains))
+end
+
+
+#### Create a Mamba::Chains result
+
+function mambachain(c::Array{Dict{ASCIIString,Any},1})
+  colnames = String[]
+  for key in keys(c[1]["samples"])
+    append!(colnames, [string(key)])
+  end
+  iters = length(c[1]["samples"][colnames[1]])
+  vars = length(c[1]["samples"])
+  chns = length(c)
+  a3d = fill(0.0, iters, vars, chns)
+  j = 0
+  for key in keys(c[1]["samples"])
+    j += 1
+    for i in 1:chns
+      a3d[:, j, i] = c[i]["samples"][key]
+    end
+  end
+  sr = StepRange[1:1:iters]
+  Chains(a3d, start=1, thin=1, names=colnames, chains=[i for i in 1:chns])
 end
 
 
