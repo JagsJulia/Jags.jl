@@ -26,6 +26,10 @@ Pkg.clone("https://github.com/brian-j-smith/Mamba.jl")
 
 ## A walk through example
 
+As the Jags program produces results file in the current directory,
+it is useful to control the current working directory and restore
+the original directory at the end of the script.
+
 ```
 using Cairo, Mamba, Jags
 
@@ -35,9 +39,8 @@ ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 ```
 
-As the Jags program produces results file in the current directory,
-it is useful to control the current working directory and restore
-the original directory at teh end of the script.
+Variable `line` holds the model which will be writtten to a file
+named `model_name.bugs`. model_name is set later on.
 
 ```
 line = "
@@ -55,17 +58,20 @@ model {
 "
 ```
 
-Variable `line` holds the model which will be writtten to a file
-named `model_name.bugs`. model_name is set later on.
+Input data for the simulation:
 
 ```
 data = Dict{ASCIIString, Any}()
 data["x"] = [1, 2, 3, 4, 5]
 data["y"] = [1, 3, 3, 3, 5]
 data["n"] = 5
+
+println()
+data |> display
 ```
 
-Input data for the simulation of 4 chains.
+Initial values for parameters. If the array of dictionaries has
+not enough elements, only the first elemnt is used for all chains.
 
 ```
 inits = [
@@ -74,10 +80,13 @@ inits = [
   (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
   (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
 ]
+
+println()
+inits |> display
 ```
 
-Initial values for parameters. If the array of dictionaries has
-not enough elements, only the first elemnt is used for all chains.
+Variables to be monitored (if => true). If monitor is not passed
+to jagsmodel, all keys (symbols) in inits will be monitored.
 
 ```
 monitors = (ASCIIString => Bool)[
@@ -88,35 +97,27 @@ monitors = (ASCIIString => Bool)[
 ]
 ```
 
-Variables to be monitored (if => true). If monitor is not passed
-to jagsmodel, all keys (symbols) in inits will be monitored.
+A Jagsmodel is created and initialized:
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line, data=data,
   init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
+
+println("\nJagsmodel:\n")
+jagsmodel |> display
 ```
 
-A Jagsmodel is created and initialized.
+Run the mcmc simulation and show the resulting chain index dictionary:
 
 ```
 (idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-```
 
-Results of the mcmc simulation.
-
-```
-println("\nJagsmodel:\n")
-jagsmodel |> display
-println()
-data |> display
-println()
-inits |> display
 println()
 idx |> display
 println()
 ```
 
-Show input dictionaries and the resulting chain index dictionary.
+If all goes well, by default 4 chains will be returned. Show the results:
 
 ```
 gelmandiag(sim1, mpsrf=true, transform=true) |> display
@@ -146,20 +147,22 @@ if jagsmodel.dic || jagsmodel.popt
 end
 ```
 
-If all goes well, by default 4 chains will be returned. Plot the results:
+And the plots, use svg format (default) or 'fmt=:pdf':
 
 ```
 p = plot(sim1[:, ["alpha", "beta",  "sigma"], :], legend=true)
 draw(p, filename="jlinesummaryplot.svg")
+
 p = [plot(sim1[:, ["alpha", "beta",  "sigma"], :], :autocor) plot(sim1[:, ["alpha",     "beta",  "sigma"], :], :mean, legend=true)].'
 draw(p, nrow=3, ncol=2, filename="jlineautocormeanplot.svg")
+draw(p, nrow=3, ncol=2, filename="mlineautocormeanplot", fmt=:pdf)
 
 
 p = plot(sim1[:, ["deviance", "sigma"], :], legend=true)
 draw(p, filename="jlinesummaryplot2.svg")
 ```
 
-On OSX, in the correct directory:
+To display the plots, e.g. on OSX:
 
 ```
 run(`open -a "Google Chrome.app" "jlinesummaryplot.svg"`)
