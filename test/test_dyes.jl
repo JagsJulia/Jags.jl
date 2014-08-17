@@ -2,7 +2,8 @@ using Jags
 using Base.Test
 
 old = pwd()
-ProjDir = Pkg.dir("Jags")*"/Examples/Dyes/Jags/"
+path = @windows ? "\\Examples\\Dyes\\Jags" : "/Examples/Dyes/Jags"
+ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
@@ -18,9 +19,9 @@ isfile("dyes.bugs") && rm("dyes.bugs")
 isfile("dyes.jags") && rm("dyes.jags")
 isfile("jdyesautocormeanplot.svg") && rm("jdyesautocormeanplot.svg")
 isfile("jdyessummaryplot.svg") && rm("jdyessummaryplot.svg")
-isfile("jdyessummaryplot2.jags") && rm("jdyessummaryplot2.jags")
+isfile("jdyessummaryplot2.svg") && rm("jdyessummaryplot2.svg")
 
-include(ProjDir*"jdyes.jl")
+include(ProjDir*@windows ? "\\" : "/"*"jdyes.jl")
 
 for i in 0:8
   isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
@@ -34,6 +35,6 @@ isfile("dyes.bugs") && rm("dyes.bugs")
 isfile("dyes.jags") && rm("dyes.jags")
 #isfile("jdyesautocormeanplot.svg") && rm("jdyesautocormeanplot.svg")
 #isfile("jdyessummaryplot.svg") && rm("jdyessummaryplot.svg")
-#isfile("jdyessummaryplot2.jags") && rm("jdyessummaryplot2.jags")
+#isfile("jdyessummaryplot2.svg") && rm("jdyessummaryplot2.svg")
 
 cd(old)

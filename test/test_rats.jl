@@ -2,7 +2,8 @@ using Jags
 using Base.Test
 
 old = pwd()
-ProjDir = Pkg.dir("Jags")*"/Examples/Rats/Jags/"
+path = @windows ? "\\Examples\\Rats\\Jags" : "/Examples/Rats/Jags"
+ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
@@ -20,7 +21,7 @@ isfile("jratsautocormeanplot.svg") && rm("jratsautocormeanplot.svg")
 isfile("jratssummaryplot.svg") && rm("jratssummaryplot.svg")
 isfile("jratssummaryplot2.svg") && rm("jratssummaryplot2.svg")
 
-include(ProjDir*"jrats.jl")
+include(ProjDir*@windows ? "\\" : "/"*"jrats.jl")
 
 for i in 0:8
   isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")

@@ -4,9 +4,9 @@
 
 ## Purpose
 
-This is a very preliminary (basically a template) package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc1
+This is a very preliminary package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc4. Some testing has taken place on Windows.
 
-Version 0.0.0- contains an example template in the directory "Pkg_dir"/Examples/Line.
+Version 0.0.0- contains several examples for Jags (and equivalent Mamba versions).
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
