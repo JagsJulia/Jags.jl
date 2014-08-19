@@ -10,6 +10,8 @@ Version 0.0.0- contains several examples for Jags (and equivalent Mamba versions
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
+Branches on Github will contain Jags-jx.x-vx.x.x
+
 ## Usage
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
