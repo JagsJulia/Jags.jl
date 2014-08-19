@@ -58,7 +58,12 @@ idx |> display
 println()
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
-gelmandiag(sim1, mpsrf=true, transform=true) |> display
+try
+  gelmandiag(sim1, mpsrf=true, transform=true) |> display
+catch e
+  println(e)
+  gelmandiag(sim1, mpsrf=false, transform=true) |> display
+end
 
 ## Geweke Convergence Diagnostic
 gewekediag(sim1) |> display
