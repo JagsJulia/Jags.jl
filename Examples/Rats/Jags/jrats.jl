@@ -101,7 +101,7 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=7500, thin=2, thin=2, deviance=true, dic=true, popt=true);
+  monitor=monitors, adapt=2500, update=11000, thin=7, deviance=true, dic=true, popt=true);
   
 println("Jagsmodel that will be used:")
 jagsmodel |> display
@@ -111,11 +111,7 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-println()
-idx |> display
-println()
+sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
 gelmandiag(sim1, mpsrf=true, transform=true) |> display

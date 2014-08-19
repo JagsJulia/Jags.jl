@@ -64,11 +64,7 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-println()
-idx |> display
-println()
+sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
 gelmandiag(sim1, mpsrf=true, transform=true) |> display

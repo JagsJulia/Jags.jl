@@ -109,14 +109,10 @@ println("\nJagsmodel:\n")
 jagsmodel |> display
 ```
 
-Run the mcmc simulation and show the resulting chain index dictionary:
+Run the mcmc simulation:
 
 ```
-(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-println()
-idx |> display
-println()
+sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
 ```
 
 If all goes well, by default 4 chains will be returned. Show the results:

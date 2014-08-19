@@ -40,7 +40,7 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, data=data,
+jagsmodel = Jagsmodel(name="line", model=line, data=data, thin=2,
   init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
 
 println("\nJagsmodel that will be used:")
@@ -51,11 +51,7 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(idx, sim1) = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-println()
-idx |> display
-println()
+sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 ## Brooks, Gelman and Rubin Convergence Diagnostic
 try
