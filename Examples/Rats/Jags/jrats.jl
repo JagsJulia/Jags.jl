@@ -101,7 +101,7 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=11000, thin=7, deviance=true, dic=true, popt=true);
+  monitor=monitors, adapt=2500, update=10000, thin=7, deviance=true, dic=true, popt=true);
   
 println("Jagsmodel that will be used:")
 jagsmodel |> display
