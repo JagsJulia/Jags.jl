@@ -46,7 +46,8 @@ function Jagsmodel(;name::String="Noname", nchains::Number=4,
     else
       if length(keys(init[1])) > 0
         if i == 1
-          println("\nLength of init array not equal to nchains, first element used repeatedly.")
+          println("\nLength of init array is not equal to nchains,")
+          println("the first element will used for all chains.")
         end
         update_R_file("$(name)-inits$(i).R", init[1])
       end
@@ -158,9 +159,6 @@ function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::B
       end
       dimstr = "c"*string(size(val))
       str = str*"), .Dim=$(dimstr))\n"
-    else
-      # Matrix or more
-      println(size(val))
     end
     write(strmout, str)
   end

@@ -6,7 +6,6 @@ module Jags
   
   include("jagsmodel.jl")
   include("jagscode.jl")
-  #include("fileutils.jl")
   
   #### Exports ####
   

@@ -38,12 +38,7 @@ function mchain(m::Jagsmodel)
     append!(cnames, [index[i]])
   end
   
-  #println(index)
-  #println(cnames)
-  
   a3d = fill(0.0, int(index[1, 3]), size(index)[1], m.nchains)
-  res = 0
-  
   for i in 1:m.nchains
     if isfile("CODAchain$(i).txt")
       println("Reading CODAchain$(i).txt")
@@ -51,17 +46,12 @@ function mchain(m::Jagsmodel)
       j = 0
       for key in cnames
         j += 1
-        #println([key j index[j, 2] i res[index[j, 2], 2]])
         a3d[:, j, i] = res[index[j, 2]:index[j, 3], 2]
       end
     end
   end
-  
-  
   sr = getindex(a3d, [m.adapt:m.thin:size(a3d)[1]], [1:size(a3d)[2]], [1:size(a3d)[3]])
-  c = Chains(sr, start=m.adapt, thin=m.thin, names=cnames, chains=[i for i in 1:m.nchains])
-
-  c
+  Chains(sr, start=m.adapt, thin=m.thin, names=cnames, chains=[i for i in 1:m.nchains])
 end
 
 
