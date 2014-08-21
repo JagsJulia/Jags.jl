@@ -1,4 +1,4 @@
-using Mamba, Jags
+using Jags
 
 old = pwd()
 path = @windows ? "\\Examples\\Rats\\Jags" : "/Examples/Rats/Jags"
@@ -65,20 +65,6 @@ model {
 "
 
 ## Initial Values
-#=  # Inits for Mamba
-[:y => rats[:y], :alpha => fill(250, 30), :beta => fill(6, 30),
- :mu_alpha => 100, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
- :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
- :mu_alpha => 150, :mu_beta => 2, :s2_c => 1, :s2_alpha => 1,
- :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(200, 30), :beta => fill(6, 30),
- :mu_alpha => 200, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
- :s2_beta => 1],
-[:y => rats[:y], :alpha => fill(150, 30), :beta => fill(3, 30),
- :mu_alpha => 250, :mu_beta => 1, :s2_c => 1, :s2_alpha => 1,
- :s2_beta => 1]
-=#
 inits = [
   ["alpha" => fill(250, 30), "beta" => fill(6, 30),
   "alpha.c" => 100, "beta.c" => 2, 
@@ -111,65 +97,9 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
-
-## Brooks, Gelman and Rubin Convergence Diagnostic
-gelmandiag(sim1, mpsrf=true, transform=true) |> display
-
-## Geweke Convergence Diagnostic
-gewekediag(sim1) |> display
-
-## Summary Statistics
-describe(sim1)
-
-## Highest Posterior Density Intervals
-hpd(sim1) |> display
-
-## Cross-Correlations
-cor(sim1) |> display
-
-## Lag-Autocorrelations
-autocor(sim1) |> display
-
-## Deviance Information Criterion
-#dic(sim1) |> display
+(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println()
-if jagsmodel.dic
-  (idx0, chain0) = Jags.read_pDfile()
-  idx0 |> display
-  println()
-  chain0[1]["samples"] |> display
-end
-  
-if jagsmodel.dic || jagsmodel.popt
-  println()
-  pDmeanAndpopt = Jags.read_table_file(jagsmodel, rats["N"])
-  pDmeanAndpopt |> display
-end
-
-## Plotting
-
-## Default summary plot (trace and density plots)
-p = plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :])
-
-## Write plot to file
-draw(p, filename="jratssummaryplot.svg")
-#draw(p, filename="jratssummaryplot", fmt=:pdf)
-
-## Autocorrelation and running mean plots
-p = [plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :], :autocor) plot(sim1[:, ["alpha0", "beta.c",  "sigma"], :], :mean, legend=true)].'
-draw(p, nrow=3, ncol=2, filename="jratsautocormeanplot.svg")
-
-run(`open -a "Google Chrome.app" "jratssummaryplot.svg"`)
-run(`open -a "Google Chrome.app" "jratsautocormeanplot.svg"`)
-
-## Default summary plot (deviance and sigma)
-p = plot(sim1[:, ["deviance", "sigma"], :])
-
-## Write plot to file
-draw(p, filename="jratssummaryplot2.svg")
-run(`open -a "Google Chrome.app" "jratssummaryplot2.svg"`)
-
+chains[1]["samples"] |> display
 
 cd(old)

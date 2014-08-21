@@ -1,6 +1,6 @@
 module Jags
   
-  using DataArrays, DataFrames, Mamba
+  using DataArrays
 
   #### Includes ####
   

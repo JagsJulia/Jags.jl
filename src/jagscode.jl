@@ -2,8 +2,6 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
   
   old = pwd()
   
-  #idx = Dict()
-  #chains::Chains
   try
     cd(ProjDir)
     for i in 0:model.nchains
@@ -18,15 +16,76 @@ function jags(model::Jagsmodel, ProjDir=pwd(); data=Nothing, updatejagsfile::Boo
     cmd = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
     
     @time run(cmd)
-    chains = mchain(model)
+    (index, chns) = read_jagsfiles(model.nchains)
     cd(old)
-    return(chains)    
+    return((index, chns))    
   catch e
     println(e)
     cd(old)
   end
 end
 
+#### use readdlm to read in all chains and create a Dict
+
+function read_jagsfiles(nochains::Int)
+  index = readdlm("CODAindex.txt", header=false)
+  idxdct = Dict{ASCIIString, Any}()
+  for row in 1:size(index)[1]
+    if length(keys(idxdct)) == 0
+      idxdct = [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]]
+    else
+      merge!(idxdct, [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]])
+    end
+  end
+
+  ## Collect the results of a chain in an array ##
+  
+  chainarray = Dict{ASCIIString, Any}[]
+  
+  ## Each chain dictionary can contain up to 4 types of results ##
+  
+  result_type_files = ["samples"]
+  rtdict = Dict{ASCIIString, Any}()
+  res_type = result_type_files[1]
+  
+  ## tdict contains the arrays of values ##
+  tdict = Dict{ASCIIString, Any}()
+  
+  println()
+  for i in 1:nochains
+    tdict = Dict{ASCIIString, Any}()
+    if isfile("CODAchain$(i).txt")
+      println("Reading CODAchain$(i).txt")
+      res = readdlm("CODAchain$(i).txt", header=false)
+      for key in index[:, 1]
+        indx1 = idxdct[key][1]
+        indx2 = idxdct[key][2]
+        if length(keys(tdict)) == 0
+          tdict = [key => res[indx1:indx2, 2]]
+        else
+          tdict = merge(tdict, [key => res[indx1:indx2, 2]])
+        end
+      end
+      ## End of processing result type file ##
+      ## If any keys were found, merge it in the rtdict ##
+      
+      if length(keys(tdict)) > 0
+        #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
+        rtdict = merge(rtdict, [res_type => tdict])
+        tdict = Dict{ASCIIString, Any}()
+      end
+    end
+    
+    ## If rtdict has keys, push it to the chain array ##
+    
+    if length(keys(rtdict)) > 0
+      #println("Pushing the rtdict with keys $(keys(rtdict))")
+      push!(chainarray, rtdict)
+      rtdict = Dict{ASCIIString, Any}()
+    end
+  end
+  (idxdct, chainarray)
+end
 
 #### Create a Mamba::Chains result
 
