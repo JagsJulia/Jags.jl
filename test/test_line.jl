@@ -2,7 +2,7 @@ using Jags
 using Base.Test
 
 old = pwd()
-path = @windows ? "\\Examples\\Line\\Jags" : "/Examples/Line/Jags"
+path = @windows ? "\\Examples\\Line" : "/Examples/Line"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")

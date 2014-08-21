@@ -1,7 +1,7 @@
 using Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Rats\\Jags" : "/Examples/Rats/Jags"
+path = @windows ? "\\Examples\\Rats" : "/Examples/Rats"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 

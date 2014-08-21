@@ -36,7 +36,7 @@ the original directory at the end of the script.
 using Cairo, Mamba, Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Line\\Jags" : "/Examples/Line/Jags"
+path = @windows ? "\\Examples\\Line" : "/Examples/Line"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 ```
@@ -112,64 +112,15 @@ jagsmodel |> display
 Run the mcmc simulation:
 
 ```
-sim1 = jags(jagsmodel, ProjDir, updatejagsfile=true)
-```
+(indx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
-If all goes well, by default 4 chains will be returned. Show the results:
-
-```
-gelmandiag(sim1, mpsrf=true, transform=true) |> display
-
-gewekediag(sim1) |> display
-
-describe(sim1)
-
-hpd(sim1) |> display
-
-cor(sim1) |> display
-
-autocor(sim1) |> display
-
-println()
-if jagsmodel.dic
-  (idx0, chain0) = Jags.read_pDfile()
-  idx0 |> display
-  println()
-  chain0[1]["samples"] |> display
-end
-  
-if jagsmodel.dic || jagsmodel.popt
-  println()
-  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
-  pDmeanAndpopt |> display
-end
-```
-
-And the plots, use svg format (default) or 'fmt=:pdf':
-
-```
-p = plot(sim1[:, ["alpha", "beta",  "sigma"], :], legend=true)
-draw(p, filename="jlinesummaryplot.svg")
-
-p = [plot(sim1[:, ["alpha", "beta",  "sigma"], :], :autocor) plot(sim1[:, ["alpha",     "beta",  "sigma"], :], :mean, legend=true)].'
-draw(p, nrow=3, ncol=2, filename="jlineautocormeanplot.svg")
-draw(p, nrow=3, ncol=2, filename="mlineautocormeanplot", fmt=:pdf)
-
-
-p = plot(sim1[:, ["deviance", "sigma"], :], legend=true)
-draw(p, filename="jlinesummaryplot2.svg")
-```
-
-To display the plots, e.g. on OSX:
-
-```
-run(`open -a "Google Chrome.app" "jlinesummaryplot.svg"`)
-run(`open -a "Google Chrome.app" "jlineautocormeanplot.svg"`)
-run(`open -a "Google Chrome.app" "jlinesummaryplot2.svg"`)
+chains[1]["samples"] |> display
 
 cd(old)
 ```
 
+If all goes well, by default 4 chains will be returned. The results of the 1st chains
+is shown above.
 
 
 ## To do
