@@ -5,11 +5,18 @@ notifications:
   email: false
 env:
   matrix:
-    - JULIAVERSION="julianightlies"
+    - JULIAVERSION="juliareleases"
 before_install:
   - sudo add-apt-repository ppa:staticfloat/julia-deps -y
   - sudo add-apt-repository ppa:staticfloat/${JULIAVERSION} -y
   - sudo apt-get update -qq -y
   - sudo apt-get install libpcre3-dev julia -y
+  - git config --global user.name "Travis User"
+  - git config --global user.email "travis@example.net"
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 script:
-  - julia -e 'Pkg.init(); Pkg.clone(pwd()); Pkg.test("Jags")'
+  - julia -e 'Pkg.init(); Pkg.add("DataArrays"); run(`ln -s $(pwd()) $(Pkg.dir("Jags"))`); Pkg.pin("Jags"); Pkg.resolve()'
+  - julia -e 'using Jags; @assert isdefined(:Jags); @assert typeof(Jags) === Module'
+  - julia --code-coverage ./test/runtests.jl
+after_success:
+  - julia -e 'cd(Pkg.dir("Jags")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
