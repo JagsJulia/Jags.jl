@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 
+
+[![Build Status](https://travis-ci.org/goedman/Jags.jl.svg)](https://travis-ci.org/goedman/Jags.jl)
+
 ## Purpose
 
 This is a very preliminary package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc4. Some testing has taken place on Windows.
