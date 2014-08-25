@@ -1,7 +1,7 @@
 # Jags
 
 
-[![Jags](http://pkg.julialang.org/badges/Jags_0.3.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.3)
+[![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=release)
 
 ## Purpose
 
