@@ -7,7 +7,7 @@ path = @windows ? "\\Examples\\Line" : "/Examples/Line"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 
-line = "
+linemodel = "
 model {
   for (i in 1:n) {
         mu[i] <- alpha + beta*(x[i] - x.bar);
@@ -21,12 +21,12 @@ model {
 }
 "
 
-data = Dict{ASCIIString, Any}()
-data["x"] = [1, 2, 3, 4, 5]
-data["y"] = [1, 3, 3, 3, 5]
-data["n"] = 5
+linedata = Dict{ASCIIString, Any}()
+linedata["x"] = [1, 2, 3, 4, 5]
+linedata["y"] = [1, 3, 3, 3, 5]
+linedata["n"] = 5
 
-inits = [
+lineinits = [
   (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
   (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
   (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
@@ -40,18 +40,19 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, data=data, thin=2,
-  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
+#jagsmodel = Jagsmodel(name="line", model=linemodel, thin=2,
+#  deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="line", model=linemodel, thin=2);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
 println("Input observed data dictionary:")
-data |> display
+linedata |> display
 println("\nInput initial values dictionary:")
-inits |> display
+lineinits |> display
 println()
 
-(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir, data=linedata, init=lineinits, monitor=monitors)
 
 println()
 chains[1]["samples"] |> display

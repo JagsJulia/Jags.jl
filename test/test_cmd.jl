@@ -6,6 +6,30 @@ path = @windows ? "\\Examples\\Line" : "/Examples/Line"
 ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 
+inits1 = [
+  ["alpha" => 0,"beta" => 0,"tau" => 1],
+  ["alpha" => 1,"beta" => 2,"tau" => 1],
+  ["alpha" => 3,"beta" => 3,"tau" => 2],
+  #["alpha" => 3,"beta" => 3.0,"tau" => 2],
+  ["alpha" => 5,"beta" => 2,"tau" => 5]
+]
+
+function test(init::Array{Dict{ASCIIString, Int64},1})
+  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+end
+
+function test(init::Array{Dict{ASCIIString, Float64},1})
+  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+end
+
+function test(init::Array{Dict{ASCIIString, Number},1})
+  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+end
+
+function test(init::Array{Dict{ASCIIString, Any},1})
+  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+end
+
 line = "
 model {
   for (i in 1:n) {
@@ -25,12 +49,7 @@ data["x"] = [1, 2, 3, 4, 5]
 data["y"] = [1, 3, 3, 3, 5]
 data["n"] = 5
 
-inits = [
-  (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
-  (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
-  (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
-  (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
-]
+inits = test(inits1)
 
 monitors = (ASCIIString => Bool)[
   "alpha" => true,
@@ -39,8 +58,8 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="line", model=line,
+  deviance=true, dic=true, popt=true);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display

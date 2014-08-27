@@ -2,6 +2,7 @@ importall Base
 
 type Jagsmodel
   name::String
+  ncommands::Int
   nchains::Int
   adapt::Int
   update::Int
@@ -10,99 +11,46 @@ type Jagsmodel
   deviance::Bool
   dic::Bool
   popt::Bool
-  jags_file::String
   model::String
   model_file::String
   data::Dict
   data_file::String
   init::Array{Dict{ASCIIString,Any},1}
-  init_file_array::Array{ASCIIString, 1}
+  command::Array{Base.AbstractCmd, 1}
 end
 
-function Jagsmodel(;name::String="Noname", nchains::Number=4,
+function Jagsmodel(;name::String="Noname", 
+  ncommands::Number=4, nchains::Number=1,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
-  monitor::Dict=Dict(), deviance::Bool=false,
-  dic::Bool=false, popt::Bool=false,
-  jags_file::String="",
-  model::String="", model_file::String="",
-  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
-  data_file::String="",
-  init::Array{Dict{ASCIIString,Any},1}=[], 
-  init_file_array::Vector{String}=String[])
+  deviance::Bool=false, dic::Bool=false, popt::Bool=false,
+  model::String="")
+  
+  monitor=Dict()
+  data=Dict{ASCIIString, Any}() 
+  init=Array{Dict{ASCIIString,Any},1}[] 
+  cmdarray = fill(``, ncommands)
   
   if length(model) > 0
     update_model_file("$(name).bugs", strip(model))
   end
   
-  if length(keys(data)) > 0
-    update_R_file("$(name)-data.R", data)
-  end
-  
-  for i in 1:nchains
-    if length(init) == nchains
-      if length(keys(init[i])) > 0
-        update_R_file("$(name)-inits$(i).R", init[i])
-      end
-    else
-      if length(keys(init[1])) > 0
-        if i == 1
-          println("\nLength of init array is not equal to nchains,")
-          println("the first element will used for all chains.")
-        end
-        update_R_file("$(name)-inits$(i).R", init[1])
-      end
-    end
-  end
-  
-  if length(monitor) == 0 && length(init) > 0
-    for entry in init
-      monitor = merge(monitor, [entry[1] => true])
-    end
+  if (dic || popt) && nchains < 3
+    nchains = 3
   end
   
   model_file = "$(name).bugs";
-  jags_file = "$(name).jags"
   data_file = "$(name)-data.R"
-  init_file_array = ["$(name)-inits$(i).R" for i in 1:nchains]
-  jags_file = "$(name).jags"
   
-  Jagsmodel(name, nchains, adapt, update, thin, monitor, deviance, dic, popt,
-    jags_file, model, model_file, data, data_file, init, init_file_array);
-end
-
-function update_jags_file(model::Jagsmodel)
-  jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
-    if model.deviance || model.dic || model.popt
-      jagsstr = jagsstr*"load dic\n"
-    end
-  jagsstr = jagsstr*"model in $(model.model_file)\n"
-  jagsstr = jagsstr*"data in $(model.data_file)\n"
-  jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
-  for i in 1:model.nchains
-    fname = model.init_file_array[i]
-    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
-  end
-  jagsstr = jagsstr*"initialize\n"
-  jagsstr = jagsstr*"update $(model.adapt)\n"
-  if model.deviance
-    jagsstr = jagsstr*"monitor deviance\n"
-  end
-  if model.dic
-    jagsstr = jagsstr*"monitor pD\n"
-    jagsstr = jagsstr*"monitor pD, type(mean)\n"
-  end
-  if model.popt
-    jagsstr = jagsstr*"monitor popt, type(mean)\n"
-  end
-  for entry in model.monitor
-    if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
-    end
-  end
-  jagsstr = jagsstr*"update $(model.update)\n"
-  jagsstr = jagsstr*"coda *\n"
-  jagsstr = jagsstr*"exit\n"
-  update_model_file(model.jags_file, jagsstr)
+  Jagsmodel(name,
+    ncommands, nchains,
+    adapt, update, thin, 
+    monitor,
+    deviance, dic, popt,
+    model, model_file, 
+    data,
+    data_file, 
+    init, 
+    cmdarray);
 end
 
 function update_model_file(file::String, str::String)
@@ -112,73 +60,23 @@ function update_model_file(file::String, str::String)
     str != str2 && rm(file)
   end
   if str != str2
-    println("\nFile $(file) will be updated.\n")
+    println("\nFile $(file) will be updated.")
     strmout = open(file, "w")
     write(strmout, str)
     close(strmout)
   end
 end
 
-function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=true)
-  isfile(file) && rm(file)
-  strmout = open(file, "w")
-  
-  str = ""
-  for entry in dct
-    str = "\""*entry[1]*"\""*" <- "
-    val = entry[2]
-    if replaceNaNs && true in isnan(entry[2])
-      val = convert(DataArray, entry[2])
-      for i in 1:length(val)
-        if isnan(val[i])
-          val[i] = NA
-        end
-      end
-    end
-    if length(val)==1 && length(size(val))==0
-      # Scalar
-      str = str*"$(val)\n"
-    elseif length(val)>1 && length(size(val))==1
-      # Vector
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      str = str*"), .Dim=c($(length(val))))\n"
-    elseif length(val)>1 && length(size(val))>1
-      # Array
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      dimstr = "c"*string(size(val))
-      str = str*"), .Dim=$(dimstr))\n"
-    end
-    write(strmout, str)
-  end
-  close(strmout)
-end
-
 function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
   if compact==true
-    println("Jagsmodel(", m.name, m.nchains, m.adapt, m.update,
-      m.thin, m.monitor, m.model_file, m.init_file_array, m.data_file)
+    println("Jagsmodel(", m.name, m.ncommands, m.nchains,
+      m.adapt, m.update, m.thin, 
+      m.monitor,
+      m.deviance, m.dic, m.popt,
+      m.model_file, m.data_file, m.init_stem, m.coda_stem)
   else
-    fstr = "["
-    for i in 1:m.nchains
-      fstr = fstr*"\""*m.init_file_array[i]*"\""
-      if i < m.nchains
-        fstr = fstr*", "
-      end
-    end
-    fstr = fstr*"]"
     println("  name =                    \"$(m.name)\"")
+    println("  ncommands =               $(m.ncommands)")
     println("  nchains =                 $(m.nchains)")
     println("  adapt =                   $(m.adapt)")
     println("  update =                  $(m.update)")
@@ -187,13 +85,11 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     println("  deviance =                $(m.deviance)")
     println("  dic =                     $(m.dic)")
     println("  popt =                    $(m.popt)")
-    println("  jags_file =               \"$(m.jags_file)\"")
     #println("  model =                   $(model)")
-    println("  model_file =              \"$(m.model_file)\"")
-    #println("  init =                    $(init)")
-    println("  init_file_array =         $(fstr)")
+    println("  model_file =              $(m.model_file)")
     #println("  data =                    $(data)")
-    println("  data_file =               \"$(m.data_file)\"")
+    println("  data_file =               $(m.data_file)")
+    #println("  init =                    $(init)")
   end
 end
 
