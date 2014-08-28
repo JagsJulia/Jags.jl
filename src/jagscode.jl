@@ -9,19 +9,18 @@ function jags(model::Jagsmodel, ProjDir=pwd();
   try
     cd(ProjDir)
     
-    #=
-    for i in 0:2
-      for j in 0:2
-        isfile("$model.name)-cmd$(i)-init$(j).jags") &&
-         rm("$model.name)-cmd$(i)-init$(j).jags")
-         isfile("$model.name)-cmd$(i)-init$(j).R") &&
-          rm("$model.name)-cmd$(i)-init$(j).R")
+    for i in 1:model.ncommands
+      isfile("$(model.name)-cmd$(i).jags") &&  rm("$(model.name)-cmd$(i).jags");
+      isfile("$(model.name)-cmd$(i)-index0.txt") &&
+        rm("$(model.name)-cmd$(i)-index0.txt");
+      isfile("$(model.name)-cmd$(i)-table0.txt") &&
+        rm("$(model.name)-cmd$(i)-table0.txt");
+      for j in 1:model.nchains
+         isfile("$(model.name)-cmd$(i)-chain$(j).R") &&
+          rm("$(model.name)-cmd$(i)-chain$(j).R");
       end
     end
-    isfile("CODAindex0.txt") && rm("CODAindex0.txt")
-    isfile("CODAtable0.txt") && rm("CODAtable0.txt")
-    =#
-    
+    #return
     if data!=Nothing && updatedatafile && length(keys(data)) > 0
       update_R_file("$(model.name)-data.R", data)
     end
@@ -60,6 +59,25 @@ function jags(model::Jagsmodel, ProjDir=pwd();
     run(par(model.command) >> "$(model.name)-run.log")
     #run(par(model.command[1], 1) >> "$(model.name)-run.log")
     (index, chns) = read_jagsfiles(model)
+    
+    for i in 1:model.ncommands
+      isfile("$(model.name)-cmd$(i).jags") &&  rm("$(model.name)-cmd$(i).jags");
+      isfile("$(model.name)-cmd$(i)-chain0.txt") &&
+        rm("$(model.name)-cmd$(i)-chain0.txt");
+      isfile("$(model.name)-cmd$(i)-index0.txt") &&
+        rm("$(model.name)-cmd$(i)-index0.txt");
+      isfile("$(model.name)-cmd$(i)-index.txt") &&
+        rm("$(model.name)-cmd$(i)-index.txt");
+      isfile("$(model.name)-cmd$(i)-table0.txt") &&
+        rm("$(model.name)-cmd$(i)-table0.txt");
+      isfile("$(model.name)-cmd$(i).R") &&
+       rm("$(model.name)-cmd$(i).R");
+      for j in 1:model.nchains
+        isfile("$(model.name)-cmd$(i)-chain$(j).txt") &&
+         rm("$(model.name)-cmd$(i)-chain$(j).txt");
+      end
+    end
+    
     cd(old)
     return((index, chns))    
   catch e

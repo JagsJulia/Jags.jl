@@ -53,8 +53,8 @@ monitors = (ASCIIString => Bool)[
   "s2.between" => true
 ]
 
-jagsmodel = Jagsmodel(name="dyes", model=dyes, data=data,
-  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="dyes", model=dyes,
+  deviance=true, dic=true, popt=true);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -64,7 +64,8 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir, data=data,
+  init=inits, monitor=monitors, updatejagsfile=true)
 
 println()
 chains[1]["samples"] |> display

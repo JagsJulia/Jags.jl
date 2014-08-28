@@ -86,8 +86,8 @@ monitors = (ASCIIString => Bool)[
   "sigma" =>true
 ]
 
-jagsmodel = Jagsmodel(name="rats", model=ratsmodel, data=rats, init=inits, nchains=4,
-  monitor=monitors, adapt=2500, update=10000, thin=7, deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="rats", model=ratsmodel, nchains=4,
+  adapt=2500, update=10000, thin=7, deviance=true, dic=true, popt=true);
   
 println("Jagsmodel that will be used:")
 jagsmodel |> display
@@ -97,7 +97,8 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir, data=rats, init=inits,
+  monitor=monitors, updatejagsfile=true)
 
 println()
 chains[1]["samples"] |> display
