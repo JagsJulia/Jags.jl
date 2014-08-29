@@ -61,15 +61,11 @@ function jags(model::Jagsmodel, ProjDir=pwd();
     (index, chns) = read_jagsfiles(model)
     
     for i in 1:model.ncommands
-      isfile("$(model.name)-cmd$(i).jags") &&  rm("$(model.name)-cmd$(i).jags");
-      isfile("$(model.name)-cmd$(i)-chain0.txt") &&
-        rm("$(model.name)-cmd$(i)-chain0.txt");
-      isfile("$(model.name)-cmd$(i)-index0.txt") &&
-        rm("$(model.name)-cmd$(i)-index0.txt");
+      isfile("$(model.name)-cmd$(i).jags") && 
+        rm("$(model.name)-cmd$(i).jags");
       isfile("$(model.name)-cmd$(i)-index.txt") &&
         rm("$(model.name)-cmd$(i)-index.txt");
-      isfile("$(model.name)-cmd$(i)-table0.txt") &&
-        rm("$(model.name)-cmd$(i)-table0.txt");
+      
       isfile("$(model.name)-cmd$(i).R") &&
        rm("$(model.name)-cmd$(i).R");
       for j in 1:model.nchains
@@ -211,34 +207,36 @@ function read_jagsfiles(model::Jagsmodel)
   println()
   for i in 1:model.ncommands
     tdict = Dict{ASCIIString, Any}()
-    if isfile("$(model.name)-cmd$(i)-chain1.txt")
-      println("Reading $(model.name)-cmd$(i)-chain1.txt")
-      res = readdlm("$(model.name)-cmd$(i)-chain1.txt", header=false)
-      for key in index[:, 1]
-        indx1 = idxdct[key][1]
-        indx2 = idxdct[key][2]
-        if length(keys(tdict)) == 0
-          tdict = [key => res[indx1:indx2, 2]]
-        else
-          tdict = merge(tdict, [key => res[indx1:indx2, 2]])
+    for j in 1:model.nchains
+      if isfile("$(model.name)-cmd$(i)-chain$(j).txt")
+        println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
+        res = readdlm("$(model.name)-cmd$(i)-chain$(j).txt", header=false)
+        for key in index[:, 1]
+          indx1 = idxdct[key][1]
+          indx2 = idxdct[key][2]
+          if length(keys(tdict)) == 0
+            tdict = [key => res[indx1:indx2, 2]]
+          else
+            tdict = merge(tdict, [key => res[indx1:indx2, 2]])
+          end
+        end
+        ## End of processing result type file ##
+        ## If any keys were found, merge it in the rtdict ##
+      
+        if length(keys(tdict)) > 0
+          #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
+          rtdict = merge(rtdict, [res_type => tdict])
+          tdict = Dict{ASCIIString, Any}()
         end
       end
-      ## End of processing result type file ##
-      ## If any keys were found, merge it in the rtdict ##
-      
-      if length(keys(tdict)) > 0
-        #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-        rtdict = merge(rtdict, [res_type => tdict])
-        tdict = Dict{ASCIIString, Any}()
+    
+      ## If rtdict has keys, push it to the chain array ##
+    
+      if length(keys(rtdict)) > 0
+        #println("Pushing the rtdict with keys $(keys(rtdict))")
+        push!(chainarray, rtdict)
+        rtdict = Dict{ASCIIString, Any}()
       end
-    end
-    
-    ## If rtdict has keys, push it to the chain array ##
-    
-    if length(keys(rtdict)) > 0
-      #println("Pushing the rtdict with keys $(keys(rtdict))")
-      push!(chainarray, rtdict)
-      rtdict = Dict{ASCIIString, Any}()
     end
   end
   (idxdct, chainarray)
@@ -273,7 +271,7 @@ end
 
 #### Read DIC related results
 
-function read_pDfile()
+function read_pDfile(model::Jagsmodel)
   index = readdlm("$(model.name)-cmd1-index0.txt", header=false)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
