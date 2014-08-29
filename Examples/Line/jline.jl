@@ -63,7 +63,7 @@ chains[20]["samples"] |> display
 println()
 if jagsmodel.dic
   (idx0, chain0) = Jags.read_pDfile(jagsmodel)
-  idx0 |> display
+  #idx0 |> display
   println()
   chain0[1]["samples"] |> display
 end
@@ -73,10 +73,6 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
   pDmeanAndpopt |> display
   
-  if jagsmodel.dic || jagsmodel.popt
-    (idx0, chain0) = Jags.read_pDfile(jagsmodel)
-    pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
-  end
   #
   for i in 1:jagsmodel.ncommands
     isfile("$(jagsmodel.name)-cmd$(i)-chain0.txt") &&
