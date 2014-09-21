@@ -12,6 +12,7 @@ code_tests = [
 execution_tests = [
   "test_line.jl",
   "test_rats.jl",
+  "test_bones.jl",
   "test_dyes.jl"
 ]
 
