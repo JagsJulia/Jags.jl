@@ -5,7 +5,7 @@
 *.o
 *.svg
 CODA*.txt
-line.jags
-line.bugs
-line-inits.R
-line-data.R
+*.jags
+*.bugs
+*-inits*.R
+*-data.R

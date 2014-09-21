@@ -40,7 +40,7 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, ncommands=5, nchains=4, thin=2,
+jagsmodel = Jagsmodel(name="line", model=line, ncommands=1, nchains=4, thin=2,
   deviance=true, dic=true, popt=true);
 
 println("\nJagsmodel that will be used:")
@@ -56,9 +56,7 @@ inits |> display
 println()
 chains[1]["samples"] |> display
 println()
-chains[3]["samples"] |> display
-println()
-chains[20]["samples"] |> display
+chains[4]["samples"] |> display
 
 println()
 if jagsmodel.dic

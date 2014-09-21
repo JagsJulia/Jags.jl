@@ -22,6 +22,7 @@ end
 function Jagsmodel(;name::String="Noname", 
   ncommands::Number=4, nchains::Number=1,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
+<<<<<<< HEAD
   deviance::Bool=false, dic::Bool=false, popt::Bool=false,
   model::String="")
   
@@ -29,13 +30,64 @@ function Jagsmodel(;name::String="Noname",
   data=Dict{ASCIIString, Any}() 
   init=Array{Dict{ASCIIString,Any},1}[] 
   cmdarray = fill(``, ncommands)
+=======
+  monitor::Dict=Dict(), deviance::Bool=false,
+  dic::Bool=false, popt::Bool=false,
+  jags_file::String="",
+  model::String="", model_file::String="",
+  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
+  data_file::String="",
+  init::Array{Dict{ASCIIString,Any},1}=[], 
+  init_file_array::Vector{String}=String[],
+  updatedatafile::Bool=true,
+  updateinitfiles::Bool=true)
+>>>>>>> Jags-j0.3-v0.0.3
   
   if length(model) > 0
     update_model_file("$(name).bugs", strip(model))
   end
   
+<<<<<<< HEAD
   if (dic || popt) && nchains < 3
     nchains = 3
+=======
+  if (updatedatafile || !isfile("$(name)-data.R")) && length(keys(data)) > 0
+    print("\nCreating data file $(name)-data.R: ")
+    @time update_R_file("$(name)-data.R", data)
+  else
+    println("\nData file ($(name)-data.R) not updated.")
+  end
+  
+  for i in 1:nchains
+    if length(init) == nchains
+      if (updateinitfiles || !isfile("$(name)-inits$(i).R")) && length(keys(init[i])) > 0
+        print("Creating init files $(name)-inits$(i).R: ")
+        @time update_R_file("$(name)-inits$(i).R", init[i])
+      else
+        println("Init files ($(name)-init$(i).R) not updated.")
+      end
+    else
+      if (updateinitfiles || !isfile("$(name)-inits$(i).R")) && length(keys(init[1])) > 0
+        if i == 1
+          println("\nLength of init array is not equal to nchains,")
+          println("the first element will used for all chains.\n")
+          print("Creating init files $(name)-inits$(i).R: ")
+          @time update_R_file("$(name)-inits$(i).R", init[1])
+        else
+          print("Creating init files $(name)-inits$(i).R: ")
+          @time run(`cp "$(name)-inits$(1).R" "$(name)-inits$(i).R"`)
+        end
+      else
+        println("Init files ($(name)-init$(i).R) not updated.")
+      end
+    end
+  end
+  
+  if length(monitor) == 0 && length(init) > 0
+    for entry in init
+      monitor = merge(monitor, [entry[1] => true])
+    end
+>>>>>>> Jags-j0.3-v0.0.3
   end
   
   model_file = "$(name).bugs";
@@ -64,6 +116,8 @@ function update_model_file(file::String, str::String)
     strmout = open(file, "w")
     write(strmout, str)
     close(strmout)
+  else
+    println("\nFile $(file) not updated.")
   end
 end
 
