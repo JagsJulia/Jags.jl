@@ -52,14 +52,11 @@ function jags(model::Jagsmodel, ProjDir=pwd();
       end
     end
   
-    for i in 1:model.ncommands
-      jfile = "$(model.name)-cmd$(i).jags"
-      model.command[i] = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
-    end
     run(par(model.command) >> "$(model.name)-run.log")
     #run(par(model.command[1], 1) >> "$(model.name)-run.log")
     (index, chns) = read_jagsfiles(model)
     
+    #=
     for i in 1:model.ncommands
       isfile("$(model.name)-cmd$(i).jags") && 
         rm("$(model.name)-cmd$(i).jags");
@@ -73,6 +70,7 @@ function jags(model::Jagsmodel, ProjDir=pwd();
          rm("$(model.name)-cmd$(i)-chain$(j).txt");
       end
     end
+    =#
     
     cd(old)
     return((index, chns))    

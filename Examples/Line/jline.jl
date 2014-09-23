@@ -40,8 +40,9 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, ncommands=1, nchains=4, thin=2,
-  deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="line", model=line, ncommands=4, nchains=1, 
+  adapt=500, update=200000, thin=1,
+  deviance=true, dic=true, popt=true, data=data, init=inits, monitor=monitors);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -52,6 +53,7 @@ inits |> display
 
 (index, chains) = jags(jagsmodel, ProjDir, data=data, init=inits,
   monitor=monitors, updatejagsfile=true)
+
 
 println()
 chains[1]["samples"] |> display

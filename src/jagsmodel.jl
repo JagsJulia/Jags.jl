@@ -13,7 +13,7 @@ type Jagsmodel
   popt::Bool
   model::String
   model_file::String
-  data::Dict
+  data::Dict{ASCIIString,Any}
   data_file::String
   init::Array{Dict{ASCIIString,Any},1}
   command::Array{Base.AbstractCmd, 1}
@@ -22,35 +22,32 @@ end
 function Jagsmodel(;name::String="Noname", 
   ncommands::Number=4, nchains::Number=1,
   adapt::Number=1000, update::Number=10000, thin::Number=10,
-<<<<<<< HEAD
+  monitor::Dict=Dict(), 
   deviance::Bool=false, dic::Bool=false, popt::Bool=false,
-  model::String="")
-  
-  monitor=Dict()
-  data=Dict{ASCIIString, Any}() 
-  init=Array{Dict{ASCIIString,Any},1}[] 
-  cmdarray = fill(``, ncommands)
-=======
-  monitor::Dict=Dict(), deviance::Bool=false,
-  dic::Bool=false, popt::Bool=false,
   jags_file::String="",
-  model::String="", model_file::String="",
+  model::String="", 
+  model_file::String="",
   data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
   data_file::String="",
-  init::Array{Dict{ASCIIString,Any},1}=[], 
-  init_file_array::Vector{String}=String[],
+  init::Array{Dict{ASCIIString,Any},1}=Dict{ASCIIString,Any}[], 
+  init_file_array::Array{String, 1}=String[],
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true)
->>>>>>> Jags-j0.3-v0.0.3
   
   if length(model) > 0
     update_model_file("$(name).bugs", strip(model))
   end
   
-<<<<<<< HEAD
-  if (dic || popt) && nchains < 3
-    nchains = 3
-=======
+  cmdarray = fill(``, ncommands)
+  for i in 1:ncommands
+    jfile = "$(name)-cmd$(i).jags"
+    cmdarray[i] = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
+  end
+
+  if (dic || popt) && nchains < 2
+    nchains = 2
+  end
+
   if (updatedatafile || !isfile("$(name)-data.R")) && length(keys(data)) > 0
     print("\nCreating data file $(name)-data.R: ")
     @time update_R_file("$(name)-data.R", data)
@@ -87,7 +84,6 @@ function Jagsmodel(;name::String="Noname",
     for entry in init
       monitor = merge(monitor, [entry[1] => true])
     end
->>>>>>> Jags-j0.3-v0.0.3
   end
   
   model_file = "$(name).bugs";
