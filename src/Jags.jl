@@ -2,12 +2,13 @@ importall Base
 
 module Jags
   
-  using DataArrays
+  using DataArrays, Mamba
 
   #### Includes ####
   
   include("jagsmodel.jl")
   include("jagscode.jl")
+  
   if !isdefined(:Stan)
     include("utilities.jl")
   end

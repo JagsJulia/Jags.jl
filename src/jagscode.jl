@@ -1,86 +1,29 @@
-function jags(model::Jagsmodel, ProjDir=pwd(); 
-  data=Nothing, init=Nothing, monitor=Nothing,
-  updatejagsfile::Bool=true, 
-  updatedatafile::Bool=true,
-  updateinitfiles::Bool=true)
+function jags(model::Jagsmodel, ProjDir=pwd();
+  updatejagsfile::Bool=true)
   
   old = pwd()
   
   try
     cd(ProjDir)
-    
+
     for i in 1:model.ncommands
-      isfile("$(model.name)-cmd$(i).jags") &&  rm("$(model.name)-cmd$(i).jags");
-      isfile("$(model.name)-cmd$(i)-index0.txt") &&
-        rm("$(model.name)-cmd$(i)-index0.txt");
-      isfile("$(model.name)-cmd$(i)-table0.txt") &&
-        rm("$(model.name)-cmd$(i)-table0.txt");
-      for j in 1:model.nchains
-         isfile("$(model.name)-cmd$(i)-chain$(j).R") &&
-          rm("$(model.name)-cmd$(i)-chain$(j).R");
-      end
+      updatejagsfile && update_jags_file(model, i)
     end
-    #return
-    if data!=Nothing && updatedatafile && length(keys(data)) > 0
-      update_R_file("$(model.name)-data.R", data)
-    end
-  
-    if length(monitor) == 0 && length(init) > 0
-      for entry in init
-        monitor = merge(monitor, [entry[1] => true])
-      end
-    end
-    model.monitor = monitor
     
-    if init!=Nothing && updateinitfiles
-      for i in 1:model.ncommands
-        if length(init) == model.ncommands
-          if length(keys(init[i])) > 0
-            updatejagsfile && update_jags_file(model, i)
-            update_R_file("$(model.name)-cmd$(i).R", init[i])
-          end
-        else
-          if length(keys(init[1])) > 0
-            if i == 1
-              println("\nLength of init array is not equal to ncommands,")
-              println("the first element will used for all chains in all commands.")
-            end
-            updatejagsfile && update_jags_file(model, i)
-            update_R_file("$(model.name)-cmd$(i).R", init[1])
-          end
-        end
-      end
-    end
-  
-    run(par(model.command) >> "$(model.name)-run.log")
+    println()
+    @time run(par(model.command) >> "$(model.name)-run.log")
     #run(par(model.command[1], 1) >> "$(model.name)-run.log")
     (index, chns) = read_jagsfiles(model)
-    
-    #=
-    for i in 1:model.ncommands
-      isfile("$(model.name)-cmd$(i).jags") && 
-        rm("$(model.name)-cmd$(i).jags");
-      isfile("$(model.name)-cmd$(i)-index.txt") &&
-        rm("$(model.name)-cmd$(i)-index.txt");
-      
-      isfile("$(model.name)-cmd$(i).R") &&
-       rm("$(model.name)-cmd$(i).R");
-      for j in 1:model.nchains
-        isfile("$(model.name)-cmd$(i)-chain$(j).txt") &&
-         rm("$(model.name)-cmd$(i)-chain$(j).txt");
-      end
-    end
-    =#
-    
+    sim = mchain(model)
     cd(old)
-    return((index, chns))    
+    return((index, chns, sim))    
   catch e
     println(e)
     cd(old)
   end
 end
 
-#### Function to update the jags, init and data files
+#### Function to update the jags file
 
 function update_jags_file(model::Jagsmodel, cmd::Int)
   jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
@@ -91,7 +34,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   jagsstr = jagsstr*"data in $(model.data_file)\n"
   jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
   for i in 1:model.nchains
-    fname = "$(model.name)-cmd$(cmd).R"
+    fname = "$(model.name)-inits$(cmd).R"
     jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
   end
   jagsstr = jagsstr*"initialize\n"
@@ -124,56 +67,13 @@ function check_jags_file(file::String, str::String)
     str != str2 && rm(file)
   end
   if str != str2
+    println("File $(file) will be updated.")
     strmout = open(file, "w")
     write(strmout, str)
     close(strmout)
+  else
+    println("File $(file) not updated.")
   end
-end
-
-function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=true)
-  isfile(file) && rm(file)
-  strmout = open(file, "w")
-  
-  str = ""
-  for entry in dct
-    str = "\""*entry[1]*"\""*" <- "
-    val = entry[2]
-    if replaceNaNs && true in isnan(entry[2])
-      val = convert(DataArray, entry[2])
-      for i in 1:length(val)
-        if isnan(val[i])
-          val[i] = NA
-        end
-      end
-    end
-    if length(val)==1 && length(size(val))==0
-      # Scalar
-      str = str*"$(val)\n"
-    elseif length(val)>1 && length(size(val))==1
-      # Vector
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      str = str*"), .Dim=c($(length(val))))\n"
-    elseif length(val)>1 && length(size(val))>1
-      # Array
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      dimstr = "c"*string(size(val))
-      str = str*"), .Dim=$(dimstr))\n"
-    end
-    write(strmout, str)
-  end
-  close(strmout)
 end
 
 #### use readdlm to read in all chains and create a Dict
@@ -243,7 +143,7 @@ end
 #### Create a Mamba::Chains result
 
 function mchain(m::Jagsmodel)
-  index = readdlm("CODAindex.txt", header=false)
+  index = readdlm("$(m.name)-cmd1-index.txt", header=false)
 
   cnames = String[]
   for i in 1:size(index)[1]
@@ -252,9 +152,9 @@ function mchain(m::Jagsmodel)
   
   a3d = fill(0.0, int(index[1, 3]), size(index)[1], m.nchains)
   for i in 1:m.ncommands
-    if isfile("$(model.name)-cmd$(i)-chain1.txt")
-      println("Reading $(model.name)-cmd$(i)-chain1.txt")
-      res = readdlm("$(model.name)-cmd$(i)-chain1.txt", header=false)
+    if isfile("$(m.name)-cmd$(i)-chain1.txt")
+      println("Reading $(m.name)-cmd$(i)-chain1.txt")
+      res = readdlm("$(m.name)-cmd$(i)-chain1.txt", header=false)
       j = 0
       for key in cnames
         j += 1
