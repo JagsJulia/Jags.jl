@@ -40,9 +40,12 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, ncommands=4, nchains=1, 
-  adapt=500, update=200000, thin=1,
-  deviance=true, dic=true, popt=true, data=data, init=inits, monitor=monitors);
+jagsmodel = Jagsmodel(name="line", model=line,
+  data=data, init=inits, monitor=monitors,
+  ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
+  deviance=true, dic=true, popt=true,
+  updatedatafile=true, updateinitfiles=true,
+  pdir=ProjDir);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -51,9 +54,7 @@ data |> display
 println("\nInput initial values dictionary:")
 inits |> display
 
-(index, chains) = jags(jagsmodel, ProjDir, data=data, init=inits,
-  monitor=monitors, updatejagsfile=true)
-
+(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 println()
 chains[1]["samples"] |> display
@@ -73,16 +74,6 @@ if jagsmodel.dic || jagsmodel.popt
   pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
   pDmeanAndpopt |> display
   
-  #
-  for i in 1:jagsmodel.ncommands
-    isfile("$(jagsmodel.name)-cmd$(i)-chain0.txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-chain0.txt");
-    isfile("$(jagsmodel.name)-cmd$(i)-index0.txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-index0.txt");
-    isfile("$(jagsmodel.name)-cmd$(i)-table0.txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-table0.txt");
-  end
-  #
 end
 
 

@@ -1,9 +1,9 @@
 importall Base
 
 module Jags
-  
-  using DataArrays, Mamba
 
+  using DataArrays
+  
   #### Includes ####
   
   include("jagsmodel.jl")

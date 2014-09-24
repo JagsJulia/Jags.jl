@@ -59,7 +59,11 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="line", model=line,
-  deviance=true, dic=true, popt=true);
+  data=data, init=inits, monitor=monitors,
+  ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
+  deviance=true, dic=true, popt=true,
+  updatedatafile=true, updateinitfiles=true,
+  pdir=ProjDir);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -67,17 +71,30 @@ println("Input observed data dictionary:")
 data |> display
 println("\nInput initial values dictionary:")
 inits |> display
-println()
 
-for i in 0:8
-  isfile("CODAchain$(i).txt") && rm("CODAchain$(i).txt")
-  isfile("line-inits$(i).R") && rm("line-inits$(i).R")
+isfile("$(jagsmodel.name)-data.R") &&
+  rm("$(jagsmodel.name)-data.R");
+isfile("$(jagsmodel.name)-run.log") &&
+  rm("$(jagsmodel.name)-run.log");
+isfile("$(jagsmodel.name).bugs") &&
+  rm("$(jagsmodel.name).bugs");
+for i in 1:8
+  isfile("$(jagsmodel.name)-data.R") &&
+    rm("$(jagsmodel.name)-cmd$(i)-chain0.txt");
+  isfile("$(jagsmodel.name)-cmd$(i)-index0.txt") &&
+    rm("$(jagsmodel.name)-cmd$(i)-index0.txt");
+  isfile("$(jagsmodel.name)-cmd$(i)-table0.txt") &&
+    rm("$(jagsmodel.name)-cmd$(i)-table0.txt");
+  isfile("$(jagsmodel.name)-cmd$(i)-index.txt") &&
+    rm("$(jagsmodel.name)-cmd$(i)-index.txt");
+  isfile("$(jagsmodel.name)-cmd$(i).jags") &&
+    rm("$(jagsmodel.name)-cmd$(i).jags");
+  isfile("$(jagsmodel.name)-inits$(i).R") &&
+    rm("$(jagsmodel.name)-inits$(i).R");
+  for j in 0:8
+    isfile("$(jagsmodel.name)-cmd$(i)-chain$(j).txt") &&
+      rm("$(jagsmodel.name)-cmd$(i)-chain$(j).txt");
+  end
 end
-isfile("CODAindex.txt") && rm("CODAindex.txt")
-isfile("CODAindex0.txt") && rm("CODAindex0.txt")
-isfile("CODAtable0.txt") && rm("CODAtable0.txt")
-isfile("line-data.R") && rm("line-data.R")
-isfile("line.bugs") && rm("line.bugs")
-isfile("line.jags") && rm("line.jags")
 
 cd(old)

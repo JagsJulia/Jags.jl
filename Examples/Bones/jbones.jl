@@ -118,9 +118,13 @@ monitors = (ASCIIString => Bool)[
   "theta" => true
 ]
 
-jagsmodel = Jagsmodel(name="bones", model=bones, data=data, thin=1, nchains=2,
-  init=[inits], monitor=monitors, deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true);
+jagsmodel = Jagsmodel(name="bones", model=bones,
+  data=data, init=[inits], monitor=monitors,
+  ncommands=4, nchains=3, adapt=1000, update=10000, thin=1,
+  deviance=true, dic=true, popt=true,
+  updatedatafile=true, updateinitfiles=true,
+  pdir=ProjDir);
+
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display

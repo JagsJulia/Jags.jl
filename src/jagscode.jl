@@ -14,9 +14,8 @@ function jags(model::Jagsmodel, ProjDir=pwd();
     @time run(par(model.command) >> "$(model.name)-run.log")
     #run(par(model.command[1], 1) >> "$(model.name)-run.log")
     (index, chns) = read_jagsfiles(model)
-    sim = mchain(model)
     cd(old)
-    return((index, chns, sim))    
+    return((index, chns))    
   catch e
     println(e)
     cd(old)
@@ -34,7 +33,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   jagsstr = jagsstr*"data in $(model.data_file)\n"
   jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
   for i in 1:model.nchains
-    fname = "$(model.name)-inits$(cmd).R"
+    fname = "$(model.name)-inits$(i).R"
     jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
   end
   jagsstr = jagsstr*"initialize\n"
