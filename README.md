@@ -7,15 +7,25 @@
 
 This is a very preliminary package to use Jags from Julia. Right now the package has been tested on Mac OSX 10.9.3 and 10.10beta and Julia versions 0.3 and 0.4-dev+843. Some testing has taken place on Windows.
 
-Version 0.0.4 contains several of the common Jags examples in the Examples subdirectory.
-
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 Development work will happen in the master branch. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x 
 
-## Usage
+## Requirements
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
+
+Version 0.0.4 contains several of the common Jags examples in the Examples subdirectory.
+
+To test and run the examples:
+
+```
+Pkg.test("Jags")
+```
+
+## What's new and caveats
+
+The main feature added in release 0.0.4 is the ability to start multiple Jags scripts in parallel.
 
 Parameters to Jagsmodel() and jags() have been updated and are not fully compatible with Jags v0.0.3.
 
@@ -23,7 +33,7 @@ In version 0.0.4 Jagsmodel does require data, init and monitor keyword parameter
 
 ## Dependencies
 
-This version of the package relies on DataArrays (0.2.1) to handle NaNs (in the data and inital dictionaries)
+This version of the package relies on DataArrays (0.2.1) to handle NaNs (in the data and initial dictionaries)
 
 ## A walk through example
 
