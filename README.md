@@ -5,11 +5,13 @@
 
 ## Purpose
 
-This is a very preliminary package to use Jags from Julia. Right now the package has been tested on Mac OSX 10.9.3 and 10.10beta and Julia versions 0.3 and 0.4-dev+843. Some testing has taken place on Windows.
+A package to use Jags (as an external program) from Julia.
+
+Right now the package has been tested on Mac OSX 10.9.3 and 10.10beta and Julia versions 0.3 and 0.4-dev+843. Some testing has taken place on Windows.
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
-Development work will happen in the master branch. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x 
+Development work will happen in the master branch. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x. This version will be tagged as Jags-j0.3-v0.0.4. 
 
 ## Requirements
 
@@ -23,9 +25,17 @@ To test and run the examples:
 Pkg.test("Jags")
 ```
 
-## What's new and caveats
+## What's new
+
+####Jags-j0.3-v0.0.4
 
 The main feature added in release 0.0.4 is the ability to start multiple Jags scripts in parallel.
+
+####Jags-j0.3-v0.0.3
+
+Initial published release.
+
+## Caveats
 
 Parameters to Jagsmodel() and jags() have been updated and are not fully compatible with Jags v0.0.3.
 
