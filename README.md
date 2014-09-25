@@ -128,7 +128,7 @@ By default 4 commands are executed, each producing a single chain. All chains wi
 
 ## Some details
 
-Using the Bones example as a testcase, on my machine running 4 (parallel) commands each simulating 1 chain takes about 9 seconds. A single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores.
+Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds and a single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
 
 ## To do
 

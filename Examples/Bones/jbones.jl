@@ -121,10 +121,11 @@ monitors = (ASCIIString => Bool)[
 jagsmodel = Jagsmodel(name="bones", model=bones,
   data=data, init=[inits], monitor=monitors,
   #ncommands=4, nchains=1,
-  adapt=1000, update=10000, thin=1,
+  #adapt=1000, update=10000, thin=1,
   #deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true,
-  pdir=ProjDir);
+  #updatedatafile=true, updateinitfiles=true,
+  #pdir=ProjDir
+  );
 
 
 println("\nJagsmodel that will be used:")

@@ -64,7 +64,9 @@ inits |> display
 println()
 chains[1]["samples"] |> display
 println()
-chains[4]["samples"] |> display
+if size(chains, 1) >= 4
+  chains[4]["samples"] |> display
+end
 
 println()
 if jagsmodel.dic
