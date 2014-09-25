@@ -5,9 +5,9 @@
 
 ## Purpose
 
-This is a very preliminary package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and Julia 0.3-rc4. Some testing has taken place on Windows.
+This is a very preliminary package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and 10.10beta and Julia 0.3. Some testing has taken place on Windows.
 
-Version 0.0.0- contains several examples for Jags (and equivalent Mamba versions).
+Version 0.0.4 contains several examples for Jags.
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
@@ -17,24 +17,18 @@ Branches on Github will contain Jags-jx.x-vx.x.x
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
 
-
 ## Dependencies
 
-This version of the package relies on DataArrays, Cairo, Gadfly and on Mamba (0.0.0-).
-Mamba is right now not in METADATA. The package can be installed using:
-
-```
-Pkg.clone("https://github.com/brian-j-smith/Mamba.jl")
-```
+This version of the package relies on DataArrays (0.2.1) to handle Nans (in data and inital values)
 
 ## A walk through example
 
-As the Jags program produces results file in the current directory,
+As the Jags program produces results files in the current directory,
 it is useful to control the current working directory and restore
 the original directory at the end of the script.
 
 ```
-using Cairo, Mamba, Jags
+using Jags
 
 old = pwd()
 path = @windows ? "\\Examples\\Line" : "/Examples/Line"
@@ -73,8 +67,8 @@ println()
 data |> display
 ```
 
-Initial values for parameters. If the array of dictionaries has
-not enough elements, only the first elemnt is used for all chains.
+An array of dictionaries with initial values for parameters. If the array of dictionaries has
+not enough elements, only the first element will be used for all chains.
 
 ```
 inits = [
@@ -87,6 +81,7 @@ inits = [
 println()
 inits |> display
 ```
+If inits is a Dictionary, it needs to be passed as init=[inits] to Jagsmodel below (e.g. see the Bones example).
 
 Variables to be monitored (if => true). If monitor is not passed
 to jagsmodel, all keys (symbols) in inits will be monitored.
@@ -100,31 +95,39 @@ monitors = (ASCIIString => Bool)[
 ]
 ```
 
-A Jagsmodel is created and initialized:
+A Jagsmodel is created and initialized. Notice that by default 4 commands are created each producing a single chain.
 
 ```
-jagsmodel = Jagsmodel(name="line", model=line, data=data,
-  init=inits, monitor=monitors, deviance=true, dic=true, popt=true);
+jagsmodel = Jagsmodel(name="line", model=line,
+  data=data, init=inits, monitor=monitors,
+  #ncommands=4, nchains=1,
+  adapt=1000, update=10000, thin=1,
+  #deviance=true, dic=true, popt=true,
+  updatedatafile=true, updateinitfiles=true,
+  pdir=ProjDir);
 
-println("\nJagsmodel:\n")
+println("\nJagsmodel that will be used:")
 jagsmodel |> display
 ```
 
-Run the mcmc simulation:
+Run the mcmc simulation. Four commands are started, each with 2 chains. If nchains is set to 1, this is updated in Jagsmodel if DIC and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
 ```
-(indx, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
 
 chains[1]["samples"] |> display
 
 cd(old)
 ```
 
-If all goes well, by default 4 chains will be returned. The results of the 1st chains
-is shown above.
+By default 4 commands are executed, each producing a single chain. All chains will be returned as the second entry in a tuple. The results of the 1st chains is shown above.
 
+## Some details
+
+Using the Bones example as a testcase, on my machine running 4 (parallel) commands each simulating 1 chain takes about 9 seconds. A single command simulating 4 chains takes about 25 seconds.
 
 ## To do
 
 More features will be added as requested by users and as time permits. Please file an issue/comment/request.
 
+The next version (v0.0.5) will take a better look at the handling of all inputs to Jagsmodel and jags.
