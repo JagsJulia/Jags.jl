@@ -5,7 +5,7 @@
 
 ## Purpose
 
-This is a very preliminary package to use Jags from Julia. Right now the template has been tested on Mac OSX 10.9.3 and 10.10beta and Julia 0.3. Some testing has taken place on Windows.
+This is a very preliminary package to use Jags from Julia. Right now the package has been tested on Mac OSX 10.9.3 and 10.10beta and Julia versions 0.3 and 0.4-dev+843. Some testing has taken place on Windows.
 
 Version 0.0.4 contains several examples for Jags.
 
@@ -17,9 +17,11 @@ Branches on Github will contain Jags-jx.x-vx.x.x
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
 
+Parameters to Jagsmodel() and jags() have been updated and are not fully compatible with Jags v0.0.3.
+
 ## Dependencies
 
-This version of the package relies on DataArrays (0.2.1) to handle Nans (in data and inital values)
+This version of the package relies on DataArrays (0.2.1) to handle NaNs (in the data and inital dictionaries)
 
 ## A walk through example
 
