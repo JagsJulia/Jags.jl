@@ -11,13 +11,15 @@ Version 0.0.4 contains several of the common Jags examples in the Examples subdi
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
-Development work will happen in Master. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x 
+Development work will happen in the master branch. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x 
 
 ## Usage
 
 This version of the package assumes that Jags is installed and the jags binary is on $PATH.
 
 Parameters to Jagsmodel() and jags() have been updated and are not fully compatible with Jags v0.0.3.
+
+In version 0.0.4 Jagsmodel does require data, init and monitor keyword parameters to be present (see 'To do' below).
 
 ## Dependencies
 
@@ -80,9 +82,9 @@ inits = [
 println()
 inits |> display
 ```
-If inits is a Dictionary, i.e. not an array of dictionaries, it needs to be passed as init=[inits] to Jagsmodel below (e.g. see the Bones example).
+If inits is a dictionary, i.e. not an array of dictionaries, it needs to be passed as init=[inits] to Jagsmodel below (e.g. see the Bones example).
 
-Variables to be monitored (if => true). If monitor is not passed to jagsmodel, all keys (symbols) in inits will be monitored.
+Next, define which variables should be monitored (if => true).
 
 ```
 monitors = (ASCIIString => Bool)[
@@ -93,16 +95,18 @@ monitors = (ASCIIString => Bool)[
 ]
 ```
 
-A Jagsmodel is created and initialized. Notice that by default 4 commands (to be executed in parallel) are created each producing a single chain.
+A Jagsmodel is created and initialized. Notice that by default 4 commands (to be executed in parallel) are created, each producing a single chain.
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line,
   data=data, init=inits, monitor=monitors,
   #ncommands=4, nchains=1,
-  adapt=1000, update=10000, thin=1,
+  #adapt=1000, update=10000,
+  #thin=10,
   #deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true,
-  pdir=ProjDir);
+  #updatedatafile=true, updateinitfiles=true,
+  #pdir=ProjDir
+  );
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -111,7 +115,9 @@ jagsmodel |> display
 Run the mcmc simulation. Four commands are started, each with 2 chains. If nchains is set to 1, this is updated in Jagsmodel if DIC and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
 ```
-(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir,
+  #updatejagsfile=true
+  )
 
 chains[1]["samples"] |> display
 
@@ -128,4 +134,7 @@ Using the Bones example as a testcase, on my machine running 4 (parallel) comman
 
 More features will be added as requested by users and as time permits. Please file an issue/comment/request.
 
-The next version (v0.0.5) will take a better look at the handling of all inputs to Jagsmodel and jags.
+The next version (v0.0.5) will take a better look at the handling of all inputs to Jagsmodel and jags, particularly if one or more of the data, init or monitor keyword arguments are not needed.
+
+The ability to resume a simulation will also be looked at for version 0.0.6.
+

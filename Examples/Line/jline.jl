@@ -42,10 +42,13 @@ monitors = (ASCIIString => Bool)[
 
 jagsmodel = Jagsmodel(name="line", model=line,
   data=data, init=inits, monitor=monitors,
-  ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
-  deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true,
-  pdir=ProjDir);
+  #ncommands=4, nchains=1,
+  #adapt=1000, update=10000,
+  #thin=10,
+  #deviance=true, dic=true, popt=true,
+  #updatedatafile=true, updateinitfiles=true,
+  #pdir=ProjDir
+  );
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -54,7 +57,9 @@ data |> display
 println("\nInput initial values dictionary:")
 inits |> display
 
-(index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+(index, chains) = jags(jagsmodel, ProjDir,
+  #updatejagsfile=true
+  )
 
 println()
 chains[1]["samples"] |> display
