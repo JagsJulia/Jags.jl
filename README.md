@@ -7,11 +7,11 @@
 
 This is a very preliminary package to use Jags from Julia. Right now the package has been tested on Mac OSX 10.9.3 and 10.10beta and Julia versions 0.3 and 0.4-dev+843. Some testing has taken place on Windows.
 
-Version 0.0.4 contains several examples for Jags.
+Version 0.0.4 contains several of the common Jags examples in the Examples subdirectory.
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
-Branches on Github will contain Jags-jx.x-vx.x.x
+Development work will happen in Master. Tagged branches on Github will be labeled as Jags-jx.x-vx.x.x 
 
 ## Usage
 
@@ -25,9 +25,7 @@ This version of the package relies on DataArrays (0.2.1) to handle NaNs (in the 
 
 ## A walk through example
 
-As the Jags program produces results files in the current directory,
-it is useful to control the current working directory and restore
-the original directory at the end of the script.
+As the Jags program produces results files in the current directory, it is useful to control the current working directory and restore the original directory at the end of the script (as is demonstrated in the test_xxx.jl scripts in the test subdirectory).
 
 ```
 using Jags
@@ -38,8 +36,7 @@ ProjDir = Pkg.dir("Jags")*path
 cd(ProjDir)
 ```
 
-Variable `line` holds the model which will be writtten to a file
-named `model_name.bugs`. model_name is set later on.
+Variable `line` holds the model which will be writtten to a file named `$(model_name).bugs`. The value of model_name is set later on, see Jagsmodel().
 
 ```
 line = "
@@ -57,7 +54,7 @@ model {
 "
 ```
 
-Input data for the simulation:
+Input data dictionary for the simulation:
 
 ```
 data = Dict{ASCIIString, Any}()
@@ -69,7 +66,7 @@ println()
 data |> display
 ```
 
-An array of dictionaries with initial values for parameters. If the array of dictionaries has
+Next define an array of dictionaries with initial values for parameters. If the array of dictionaries has
 not enough elements, only the first element will be used for all chains.
 
 ```
@@ -83,10 +80,9 @@ inits = [
 println()
 inits |> display
 ```
-If inits is a Dictionary, it needs to be passed as init=[inits] to Jagsmodel below (e.g. see the Bones example).
+If inits is a Dictionary, i.e. not an array of dictionaries, it needs to be passed as init=[inits] to Jagsmodel below (e.g. see the Bones example).
 
-Variables to be monitored (if => true). If monitor is not passed
-to jagsmodel, all keys (symbols) in inits will be monitored.
+Variables to be monitored (if => true). If monitor is not passed to jagsmodel, all keys (symbols) in inits will be monitored.
 
 ```
 monitors = (ASCIIString => Bool)[
@@ -97,7 +93,7 @@ monitors = (ASCIIString => Bool)[
 ]
 ```
 
-A Jagsmodel is created and initialized. Notice that by default 4 commands are created each producing a single chain.
+A Jagsmodel is created and initialized. Notice that by default 4 commands (to be executed in parallel) are created each producing a single chain.
 
 ```
 jagsmodel = Jagsmodel(name="line", model=line,
@@ -126,7 +122,7 @@ By default 4 commands are executed, each producing a single chain. All chains wi
 
 ## Some details
 
-Using the Bones example as a testcase, on my machine running 4 (parallel) commands each simulating 1 chain takes about 9 seconds. A single command simulating 4 chains takes about 25 seconds.
+Using the Bones example as a testcase, on my machine running 4 (parallel) commands each simulating 1 chain takes about 9 seconds. A single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores.
 
 ## To do
 
