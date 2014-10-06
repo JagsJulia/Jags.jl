@@ -1,5 +1,3 @@
-importall Base
-
 module Jags
 
   using DataArrays
@@ -9,7 +7,7 @@ module Jags
   include("jagsmodel.jl")
   include("jagscode.jl")
   
-  if !isdefined(:Stan)
+  if !isdefined(Main, :Stanmodel)
     include("utilities.jl")
   end
   
@@ -26,7 +24,7 @@ module Jags
   try
     JAGSDIR = getenv("JAGS_HOME");
   catch e
-    println("JAGS_HOME not found, assuming Jags is on PATH.")
+    println("Environment variable JAGS_HOME not found, assuming Jags is on PATH.")
   end
 
   #### Exports ####
