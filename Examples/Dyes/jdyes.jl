@@ -3,8 +3,7 @@
 using Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Dyes" : "/Examples/Dyes"
-ProjDir = Pkg.dir("Jags")*path
+ProjDir = Pkg.dir("Jags", "Examples", "Dyes")
 cd(ProjDir)
 
 dyes = "

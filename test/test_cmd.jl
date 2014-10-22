@@ -2,16 +2,14 @@ using Jags
 using Base.Test
 
 old = pwd()
-path = @windows ? "\\Examples\\Line" : "/Examples/Line"
-ProjDir = Pkg.dir("Jags")*path
+ProjDir = Pkg.dir("Jags", "Examples", "Line")
 cd(ProjDir)
 
 inits1 = [
-  ["alpha" => 0,"beta" => 0,"tau" => 1],
-  ["alpha" => 1,"beta" => 2,"tau" => 1],
-  ["alpha" => 3,"beta" => 3,"tau" => 2],
-  #["alpha" => 3,"beta" => 3.0,"tau" => 2],
-  ["alpha" => 5,"beta" => 2,"tau" => 5]
+  (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
+  (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
+  (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
 ]
 
 function test(init::Array{Dict{ASCIIString, Int64},1})

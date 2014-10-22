@@ -3,8 +3,7 @@
 using Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Bones" : "/Examples/Bones"
-ProjDir = Pkg.dir("Jags")*path
+ProjDir = Pkg.dir("Jags", "Examples", "Bones")
 cd(ProjDir)
 
 bones = "

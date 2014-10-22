@@ -2,8 +2,7 @@ using Jags
 using Base.Test
 
 old = pwd()
-path = @windows ? "\\Examples\\Line" : "/Examples/Line"
-ProjDir = Pkg.dir("Jags")*path
+ProjDir = Pkg.dir("Jags", "Examples", "Line")
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
@@ -32,7 +31,7 @@ for i in 1:8
   end
 end
 
-include(ProjDir*@windows ? "\\" : "/"*"jline.jl")
+include(Pkg.dir(ProjDir, "jline.jl"))
 
 isfile("$(jagsmodel.name)-data.R") &&
   rm("$(jagsmodel.name)-data.R");

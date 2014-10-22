@@ -53,8 +53,7 @@ As the Jags program produces results files in the current directory, it is usefu
 using Jags
 
 old = pwd()
-path = @windows ? "\\Examples\\Line" : "/Examples/Line"
-ProjDir = Pkg.dir("Jags")*path
+ProjDir = dyes("Jags", "Examples", "Line")
 cd(ProjDir)
 ```
 
