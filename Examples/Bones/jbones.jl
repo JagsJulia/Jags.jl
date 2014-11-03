@@ -1,6 +1,6 @@
 ######### Jags program example  ###########
 
-using Jags
+using Compat, Mamba, Jags
 
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Bones")
@@ -130,12 +130,22 @@ jagsmodel = Jagsmodel(name="bones", model=bones,
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
 
-@time (index, chains) = jags(jagsmodel, ProjDir, updatejagsfile=true)
+@time sim = jags(jagsmodel, ProjDir)
+describe(sim)
+println()
 
-println()
-chains[1]["samples"] |> display
-println("\nMean of theta[12] in chain 1: ", mean(chains[1]["samples"]["theta[12]"]))
-println("sd of theta[12] in chain 1: ", sqrt(mean(chains[1]["samples"]["theta[12]"])))
-println()
+## Plotting
+p = plot(sim, [:trace, :mean, :density, :autocor], legend=true);
+draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:svg)
+draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
+
+# Below will only work on OSX, please adjust for your environment.
+# JULIASVGBROWSER is set from environment variable JULIA_SVG_BROWSER
+@osx ? if length(JULIASVGBROWSER) > 0
+        for i in 1:3
+          isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
+            run(`open -a $(JULIASVGBROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
+        end
+      end : println()
 
 cd(old)

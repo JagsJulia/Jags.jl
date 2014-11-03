@@ -19,21 +19,27 @@ type Jagsmodel
   command::Array{Base.AbstractCmd, 1}
 end
 
-function Jagsmodel(;name::String="Noname", 
-  ncommands::Number=4, nchains::Number=1,
-  adapt::Number=1000, update::Number=10000, thin::Number=10,
+function Jagsmodel(;
+  name="Noname", 
+  ncommands=4,
+  nchains=1,
+  adapt=1000,
+  update=10000,
+  thin=10,
   monitor::Dict=Dict(), 
-  deviance::Bool=false, dic::Bool=false, popt::Bool=false,
-  jags_file::String="",
-  model::String="", 
-  model_file::String="",
-  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(), 
-  data_file::String="",
-  init::Array{Dict{ASCIIString,Any},1}=Dict{ASCIIString,Any}[], 
-  init_file_array::Array{String, 1}=String[],
-  updatedatafile::Bool=true,
-  updateinitfiles::Bool=true,
-  pdir::String=pwd())
+  deviance=false,
+  dic=false,
+  popt=false,
+  jags_file="",
+  model="", 
+  model_file="",
+  data=Dict{ASCIIString, Any}(), 
+  data_file="",
+  init=Dict{ASCIIString,Any}[], 
+  init_file_array=String[],
+  updatedatafile=true,
+  updateinitfiles=true,
+  pdir=pwd())
   
   cd(pdir)
 
@@ -145,7 +151,7 @@ function update_bugs_file(file::String, str::String)
 end
 
 
-function update_R_file(file::String, dct::Dict{ASCIIString, Any}; replaceNaNs::Bool=true)
+function update_R_file(file::String, dct; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   

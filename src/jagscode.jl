@@ -13,9 +13,11 @@ function jags(model::Jagsmodel, ProjDir=pwd();
     println()
     @time run(par(model.command) >> "$(model.name)-run.log")
     #run(par(model.command[1], 1) >> "$(model.name)-run.log")
-    (index, chns) = read_jagsfiles(model)
+    #(index, chns) = read_jagsfiles(model)
+    sim = mchain(model)
     cd(old)
-    return((index, chns))    
+    #return((index, chns))
+    return(sim)  
   catch e
     println(e)
     cd(old)
@@ -142,6 +144,7 @@ end
 #### Create a Mamba::Chains result
 
 function mchain(m::Jagsmodel)
+  local totalnchains, curchain
   index = readdlm("$(m.name)-cmd1-index.txt", header=false)
 
   cnames = String[]
@@ -149,20 +152,25 @@ function mchain(m::Jagsmodel)
     append!(cnames, [index[i]])
   end
   
-  a3d = fill(0.0, int(index[1, 3]), size(index)[1], m.nchains)
+  totalnchains = m.nchains * m.ncommands
+  a3d = fill(0.0, int(index[1, 3]), size(index, 1), totalnchains)
   for i in 1:m.ncommands
-    if isfile("$(m.name)-cmd$(i)-chain1.txt")
-      println("Reading $(m.name)-cmd$(i)-chain1.txt")
-      res = readdlm("$(m.name)-cmd$(i)-chain1.txt", header=false)
-      j = 0
-      for key in cnames
-        j += 1
-        a3d[:, j, i] = res[index[j, 2]:index[j, 3], 2]
+    for j in 1:m.nchains
+      if isfile("$(m.name)-cmd$(i)-chain$(j).txt")
+        println("Reading $(m.name)-cmd$(i)-chain$(j).txt")
+        res = readdlm("$(m.name)-cmd$(i)-chain$(j).txt", header=false)
+        curchain = (i-1)*m.nchains + j
+        #println(curchain)
+        k = 0
+        for key in cnames
+          k += 1
+          a3d[:, k, curchain] = res[index[k, 2]:index[k, 3], 2]
+        end
       end
     end
   end
   sr = getindex(a3d, [m.adapt:m.thin:size(a3d)[1]], [1:size(a3d)[2]], [1:size(a3d)[3]])
-  Chains(sr, start=m.adapt, thin=m.thin, names=cnames, chains=[i for i in 1:m.nchains])
+  Chains(sr, start=m.adapt, thin=m.thin, names=cnames, chains=[i for i in 1:totalnchains])
 end
 
 

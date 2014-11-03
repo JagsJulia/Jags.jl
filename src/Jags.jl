@@ -1,6 +1,6 @@
 module Jags
 
-  using DataArrays
+  using DataArrays, Mamba
   
   #### Includes ####
   
@@ -26,15 +26,26 @@ module Jags
   catch e
     println("Environment variable JAGS_HOME not found, assuming Jags is on PATH.")
   end
+  JULIASVGBROWSER = ""
+  try
+    JULIASVGBROWSER = getenv("JULIA_SVG_BROWSER");
+  catch e
+    println("Environment variable JULIA_SVG_BROWSER not found.")
+    println("Produced .svg files in examples will not be automatically displaye.")
+  end
 
   #### Exports ####
   
   export
   
+  # From Jags.jl
+    JULIASVGBROWSER,
+    JAGSDIR,
+    
   # From jagsmodel.jl
     Jagsmodel,
     
-    # From jagscode.jl
+  # From jagscode.jl
     jags
   
   #### Deprecated ####
