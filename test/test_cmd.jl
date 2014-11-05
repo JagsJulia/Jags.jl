@@ -1,15 +1,15 @@
-using Jags
+using Compat, Jags
 using Base.Test
 
 old = pwd()
-ProjDir = Pkg.dir("Jags", "Examples", "Line")
+ProjDir = Pkg.dir("Jags", "Examples", "Line1")
 cd(ProjDir)
 
 inits1 = [
-  (ASCIIString => Any)["alpha" => 0,"beta" => 0,"tau" => 1],
-  (ASCIIString => Any)["alpha" => 1,"beta" => 2,"tau" => 1],
-  (ASCIIString => Any)["alpha" => 3,"beta" => 3,"tau" => 2],
-  (ASCIIString => Any)["alpha" => 5,"beta" => 2,"tau" => 5],
+  @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1),
+  @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+  @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+  @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
 
 function test(init::Array{Dict{ASCIIString, Int64},1})
@@ -56,12 +56,9 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line,
-  data=data, init=inits, monitor=monitors,
+jagsmodel = Jagsmodel(name="line", model=line, monitor=monitors,
   ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
-  deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true,
-  pdir=ProjDir);
+  deviance=true, dic=true, popt=true, pdir=ProjDir);
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -70,29 +67,7 @@ data |> display
 println("\nInput initial values dictionary:")
 inits |> display
 
-isfile("$(jagsmodel.name)-data.R") &&
-  rm("$(jagsmodel.name)-data.R");
-isfile("$(jagsmodel.name)-run.log") &&
-  rm("$(jagsmodel.name)-run.log");
-isfile("$(jagsmodel.name).bugs") &&
-  rm("$(jagsmodel.name).bugs");
-for i in 1:8
-  isfile("$(jagsmodel.name)-data.R") &&
-    rm("$(jagsmodel.name)-cmd$(i)-chain0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-table0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-table0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index.txt");
-  isfile("$(jagsmodel.name)-cmd$(i).jags") &&
-    rm("$(jagsmodel.name)-cmd$(i).jags");
-  isfile("$(jagsmodel.name)-inits$(i).R") &&
-    rm("$(jagsmodel.name)-inits$(i).R");
-  for j in 0:8
-    isfile("$(jagsmodel.name)-cmd$(i)-chain$(j).txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-chain$(j).txt");
-  end
-end
+isfile("tmp") &&
+  rm("tmp");
 
 cd(old)

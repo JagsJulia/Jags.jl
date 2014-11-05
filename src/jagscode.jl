@@ -61,18 +61,34 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
   
   str = ""
   for entry in dct
+    
     str = "\""*entry[1]*"\""*" <- "
     val = entry[2]
-    if replaceNaNs && typeof(entry[2]) == Array{Float64, 1}
-      if true in isnan(entry[2])
-        val = convert(DataArray, entry[2])
-        for i in 1:length(val)
-          if isnan(val[i])
-            val[i] = NA
+    if replaceNaNs
+      if typeof(entry[2]) == Array{Float64, 1}
+        if true in isnan(entry[2])
+          val = convert(DataArray, entry[2])
+          for i in 1:length(val)
+            if isnan(val[i])
+              val[i] = NA
+            end
           end
         end
       end
-    end
+      if typeof(entry[2]) == Array{Float64, 2}
+        if true in isnan(entry[2])
+          val = convert(DataArray, entry[2])
+          k,l = size(val)
+          for i in 1:k
+            for j in 1:l
+              if isnan(val[i, j])
+                val[i, j] = NA
+              end
+            end
+          end
+        end
+      end
+     end
     if typeof(val) <: String
       str = str*"\"$(val)\"\n"
     elseif length(val)==1 && length(size(val))==0
