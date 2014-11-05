@@ -53,11 +53,8 @@ monitors = (ASCIIString => Bool)[
 ]
 
 jagsmodel = Jagsmodel(name="dyes", model=dyes,
-  data=data, init=inits, monitor=monitors,
-  ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
-  deviance=true, dic=true, popt=true,
-  updatedatafile=true, updateinitfiles=true,
-  pdir=ProjDir);
+  #ncommands=3, nchains=3,
+  monitor=monitors)
 
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
@@ -67,7 +64,7 @@ println("\nInput initial values dictionary:")
 inits |> display
 println()
 
-@time sim = jags(jagsmodel, ProjDir)
+@time sim = jags(jagsmodel, data, inits, ProjDir)
 describe(sim)
 println()
 

@@ -9,3 +9,4 @@ CODA*.txt
 *.bugs
 *-inits*.R
 *-data.R
+Examples/*/tmp

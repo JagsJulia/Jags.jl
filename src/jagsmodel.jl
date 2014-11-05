@@ -17,47 +17,45 @@ type Jagsmodel
   data_file::String
   init::Array{Dict{ASCIIString,Any},1}
   command::Array{Base.AbstractCmd, 1}
+  tmpdir::String
 end
 
 function Jagsmodel(;
   name="Noname", 
-  ncommands=4,
-  nchains=1,
+  model="", 
+  ncommands=1,
+  nchains=4,
   adapt=1000,
   update=10000,
   thin=10,
-  monitor::Dict=Dict(), 
+  monitor=Dict(), 
   deviance=false,
   dic=false,
   popt=false,
-  jags_file="",
-  model="", 
-  model_file="",
-  data=Dict{ASCIIString, Any}(), 
-  data_file="",
-  init=Dict{ASCIIString,Any}[], 
-  init_file_array=String[],
-  updatedatafile=true,
-  updateinitfiles=true,
+  updatejagsfile=true,
   pdir=pwd())
   
   cd(pdir)
-
+  
+  tmpdir = Pkg.dir(pdir, "tmp")
+  if !isdir(tmpdir)
+    mkdir(tmpdir)
+  end
+  
   # Check if .bugs file needs to be updated.
   if length(model) > 0
-    update_bugs_file("$(name).bugs", strip(model))
+    update_bugs_file(Pkg.dir(tmpdir, "$(name).bugs"), strip(model))
   end
   
   # Remove old files created by previous runs
   for i in 1:ncommands
-    isfile("$(name)-cmd$(i).jags") &&  rm("$(name)-cmd$(i).jags");
-    isfile("$(name)-cmd$(i)-index0.txt") &&
-      rm("$(name)-cmd$(i)-index0.txt");
-    isfile("$(name)-cmd$(i)-table0.txt") &&
-      rm("$(name)-cmd$(i)-table0.txt");
+    isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-index0.txt")) &&
+      rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-index0.txt"));
+    isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-table0.txt")) &&
+      rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-table0.txt"));
     for j in 0:nchains
-       isfile("$(name)-cmd$(i)-chain$(j).R") &&
-        rm("$(name)-cmd$(i)-chain$(j).R");
+       isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-chain$(j).R")) &&
+        rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-chain$(j).R"));
     end
   end
   
@@ -79,48 +77,12 @@ function Jagsmodel(;
     end
   end
   
-  if (updatedatafile || !isfile("$(name)-data.R")) && length(keys(data)) > 0
-    print("\nCreating data file $(name)-data.R: ")
-    @time update_R_file("$(name)-data.R", data)
-  else
-    println("\nData file ($(name)-data.R) not updated.")
-  end
-  
-  for i in 1:nchains
-    if length(init) == nchains
-      if (updateinitfiles || !isfile("$(name)-inits$(i).R")) && length(keys(init[i])) > 0
-        print("Creating init files $(name)-inits$(i).R: ")
-        @time update_R_file("$(name)-inits$(i).R", init[i])
-      else
-        println("Init files ($(name)-init$(i).R) not updated.")
-      end
-    else
-      if (updateinitfiles || !isfile("$(name)-inits$(i).R")) && length(keys(init[1])) > 0
-        if i == 1
-          println("\nLength of init array is not equal to nchains,")
-          println("the first element will used for all chains.\n")
-          print("Creating init files $(name)-inits$(i).R: ")
-          @time update_R_file("$(name)-inits$(i).R", init[1])
-        else
-          print("Creating init files $(name)-inits$(i).R: ")
-          @time run(`cp "$(name)-inits$(1).R" "$(name)-inits$(i).R"`)
-        end
-      else
-        println("Init files ($(name)-init$(i).R) not updated.")
-      end
-    end
-  end
-  
-  if length(monitor) == 0 && length(init) > 0
-    for entry in init
-      monitor = merge(monitor, [entry[1] => true])
-    end
-  end
-  
-  model_file = "$(name).bugs";
+  data = Dict{ASCIIString, Any}()
+  init = Dict{ASCIIString, Any}[]
+  model_file = "$(name).bugs"
   data_file = "$(name)-data.R"
   
-  Jagsmodel(name,
+  jm = Jagsmodel(name,
     ncommands, nchains,
     adapt, update, thin, 
     monitor,
@@ -129,7 +91,18 @@ function Jagsmodel(;
     data,
     data_file, 
     init, 
-    cmdarray);
+    cmdarray,
+    tmpdir);
+
+  if ncommands == 1
+    updatejagsfile && update_jags_file(jm)
+  else
+    for i in 1:ncommands
+      updatejagsfile && update_jags_file(jm, i)
+    end
+  end
+  
+  jm
 end
 
 #### Function to update the bugs, init and data files
@@ -151,50 +124,97 @@ function update_bugs_file(file::String, str::String)
 end
 
 
-function update_R_file(file::String, dct; replaceNaNs::Bool=true)
-  isfile(file) && rm(file)
-  strmout = open(file, "w")
-  
-  str = ""
-  for entry in dct
-    str = "\""*entry[1]*"\""*" <- "
-    val = entry[2]
-    if replaceNaNs && true in isnan(entry[2])
-      val = convert(DataArray, entry[2])
-      for i in 1:length(val)
-        if isnan(val[i])
-          val[i] = NA
-        end
-      end
-    end
-    if length(val)==1 && length(size(val))==0
-      # Scalar
-      str = str*"$(val)\n"
-    elseif length(val)>1 && length(size(val))==1
-      # Vector
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      str = str*"), .Dim=c($(length(val))))\n"
-    elseif length(val)>1 && length(size(val))>1
-      # Array
-      str = str*"structure(c("
-      for i in 1:length(val)
-        str = str*"$(val[i])"
-        if i < length(val)
-          str = str*", "
-        end
-      end
-      dimstr = "c"*string(size(val))
-      str = str*"), .Dim=$(dimstr))\n"
-    end
-    write(strmout, str)
+#### Function to update the jags file for ncommand == 1
+
+function update_jags_file(model::Jagsmodel)
+  jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
+  if model.deviance || model.dic || model.popt
+    jagsstr = jagsstr*"load dic\n"
   end
-  close(strmout)
+  jagsstr = jagsstr*"model in $(model.model_file)\n"
+  jagsstr = jagsstr*"data in $(model.data_file)\n"
+  jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
+  for i in 1:model.nchains
+    fname = "$(model.name)-inits$(i).R"
+    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
+  end
+  jagsstr = jagsstr*"initialize\n"
+  jagsstr = jagsstr*"update $(model.adapt)\n"
+  if model.deviance
+    jagsstr = jagsstr*"monitor deviance\n"
+  end
+  if model.dic
+    jagsstr = jagsstr*"monitor pD\n"
+    jagsstr = jagsstr*"monitor pD, type(mean)\n"
+  end
+  if model.popt
+    jagsstr = jagsstr*"monitor popt, type(mean)\n"
+  end
+  for entry in model.monitor
+    if entry[2]
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
+    end
+  end
+  jagsstr = jagsstr*"update $(model.update)\n"
+  jagsstr = jagsstr*"coda *, stem($(model.name)-cmd1-)\n"
+  jagsstr = jagsstr*"exit\n"
+  check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd1.jags"), jagsstr)
+end
+
+#### Function to update the jags file for ncommand > 1
+
+function update_jags_file(model::Jagsmodel, cmd::Int)
+  m = max(model.nchains, model.ncommands)
+  indx = filter(x -> x!=0, [%(i, (m+1)) for i in 1:3m])
+  indx = indx[cmd:length(indx)]
+  jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
+  if model.deviance || model.dic || model.popt
+    jagsstr = jagsstr*"load dic\n"
+  end
+  jagsstr = jagsstr*"model in $(model.model_file)\n"
+  jagsstr = jagsstr*"data in $(model.data_file)\n"
+  jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
+  for i in 1:model.nchains
+    fname = "$(model.name)-inits$(indx[i]).R"
+    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
+  end
+  jagsstr = jagsstr*"initialize\n"
+  jagsstr = jagsstr*"update $(model.adapt)\n"
+  if model.deviance
+    jagsstr = jagsstr*"monitor deviance\n"
+  end
+  if model.dic
+    jagsstr = jagsstr*"monitor pD\n"
+    jagsstr = jagsstr*"monitor pD, type(mean)\n"
+  end
+  if model.popt
+    jagsstr = jagsstr*"monitor popt, type(mean)\n"
+  end
+  for entry in model.monitor
+    if entry[2]
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
+    end
+  end
+  jagsstr = jagsstr*"update $(model.update)\n"
+  jagsstr = jagsstr*"coda *, stem($(model.name)-cmd$(cmd)-)\n"
+  jagsstr = jagsstr*"exit\n"
+  check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
+end
+
+function check_jags_file(file::String, str::String)
+  str2 = ""
+  if isfile(file)
+    str2 = open(readall, file, "r")
+    str != str2 && rm(file)
+  end
+  if str != str2
+    println("File $(file) will be updated.")
+    strmout = open(file, "w")
+    write(strmout, str)
+    close(strmout)
+  else
+    println("File $(file) not updated.")
+  end
 end
 
 function model_show(io::IO, m::Jagsmodel, compact::Bool=false)

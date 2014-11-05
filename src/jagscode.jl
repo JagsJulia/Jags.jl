@@ -1,22 +1,40 @@
-function jags(model::Jagsmodel, ProjDir=pwd();
-  updatejagsfile::Bool=true)
+function jags(
+  model::Jagsmodel,
+  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(),
+  init::Array{Dict{ASCIIString, Any}, 1} = Dict{ASCIIString, Any}[],
+  ProjDir=pwd();
+  updatedatafile::Bool=true,
+  updateinitfiles::Bool=true
+  )
   
   old = pwd()
   
   try
     cd(ProjDir)
-
-    for i in 1:model.ncommands
-      updatejagsfile && update_jags_file(model, i)
+    
+    if updatedatafile
+      if length(keys(data)) > 0
+        print("\nCreating data file $(model.name)-data.R: ")
+        @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-data.R"), data)
+      end
+    else
+      println("\nData file not updated.")
+    end
+    
+    if updateinitfiles
+      if size(init, 1) > 0
+        update_init_files(model, init)
+      end
+    else
+      println("\nInit files not updated.")
     end
     
     println()
+    curdir = pwd()
+    cd(model.tmpdir)
     @time run(par(model.command) >> "$(model.name)-run.log")
-    #run(par(model.command[1], 1) >> "$(model.name)-run.log")
-    #(index, chns) = read_jagsfiles(model)
     sim = mchain(model)
     cd(old)
-    #return((index, chns))
     return(sim)  
   catch e
     println(e)
@@ -24,63 +42,74 @@ function jags(model::Jagsmodel, ProjDir=pwd();
   end
 end
 
-#### Function to update the jags file
+#### Update data and init files
 
-function update_jags_file(model::Jagsmodel, cmd::Int)
-  jagsstr = "/*\n\tGenerated $(model.name).jags command file\n*/\n"
-  if model.deviance || model.dic || model.popt
-    jagsstr = jagsstr*"load dic\n"
+function update_init_files(model::Jagsmodel, init::Array{Dict{ASCIIString, Any}, 1})
+  println()
+  k = length(init)
+  m = max(model.nchains, model.ncommands)
+  indx = filter(x -> x!=0, [%(i, (k+1)) for i in 1:2m])
+  for i in 1:m
+    print("Creating init file $(model.name)-inits$(i).R: ")
+    @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-inits$(i).R"), init[indx[i]])
   end
-  jagsstr = jagsstr*"model in $(model.model_file)\n"
-  jagsstr = jagsstr*"data in $(model.data_file)\n"
-  jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
-  for i in 1:model.nchains
-    fname = "$(model.name)-inits$(i).R"
-    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
-  end
-  jagsstr = jagsstr*"initialize\n"
-  jagsstr = jagsstr*"update $(model.adapt)\n"
-  if model.deviance
-    jagsstr = jagsstr*"monitor deviance\n"
-  end
-  if model.dic
-    jagsstr = jagsstr*"monitor pD\n"
-    jagsstr = jagsstr*"monitor pD, type(mean)\n"
-  end
-  if model.popt
-    jagsstr = jagsstr*"monitor popt, type(mean)\n"
-  end
-  for entry in model.monitor
-    if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
+end
+
+function update_R_file(file::String, dct; replaceNaNs::Bool=true)
+  isfile(file) && rm(file)
+  strmout = open(file, "w")
+  
+  str = ""
+  for entry in dct
+    str = "\""*entry[1]*"\""*" <- "
+    val = entry[2]
+    if replaceNaNs && typeof(entry[2]) == Array{Float64, 1}
+      if true in isnan(entry[2])
+        val = convert(DataArray, entry[2])
+        for i in 1:length(val)
+          if isnan(val[i])
+            val[i] = NA
+          end
+        end
+      end
     end
+    if typeof(val) <: String
+      str = str*"\"$(val)\"\n"
+    elseif length(val)==1 && length(size(val))==0
+      # Scalar
+      str = str*"$(val)\n"
+    elseif length(val)>1 && length(size(val))==1
+      # Vector
+      str = str*"structure(c("
+      for i in 1:length(val)
+        str = str*"$(val[i])"
+        if i < length(val)
+          str = str*", "
+        end
+      end
+      str = str*"), .Dim=c($(length(val))))\n"
+    elseif length(val)>1 && length(size(val))>1
+      # Array
+      str = str*"structure(c("
+      for i in 1:length(val)
+        str = str*"$(val[i])"
+        if i < length(val)
+          str = str*", "
+        end
+      end
+      dimstr = "c"*string(size(val))
+      str = str*"), .Dim=$(dimstr))\n"
+    end
+    write(strmout, str)
   end
-  jagsstr = jagsstr*"update $(model.update)\n"
-  jagsstr = jagsstr*"coda *, stem($(model.name)-cmd$(cmd)-)\n"
-  jagsstr = jagsstr*"exit\n"
-  check_jags_file("$(model.name)-cmd$(cmd).jags", jagsstr)
+  close(strmout)
 end
 
-function check_jags_file(file::String, str::String)
-  str2 = ""
-  if isfile(file)
-    str2 = open(readall, file, "r")
-    str != str2 && rm(file)
-  end
-  if str != str2
-    println("File $(file) will be updated.")
-    strmout = open(file, "w")
-    write(strmout, str)
-    close(strmout)
-  else
-    println("File $(file) not updated.")
-  end
-end
 
 #### use readdlm to read in all chains and create a Dict
 
 function read_jagsfiles(model::Jagsmodel)
-  index = readdlm("$(model.name)-cmd1-index.txt", header=false)
+  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
@@ -107,9 +136,9 @@ function read_jagsfiles(model::Jagsmodel)
   for i in 1:model.ncommands
     tdict = Dict{ASCIIString, Any}()
     for j in 1:model.nchains
-      if isfile("$(model.name)-cmd$(i)-chain$(j).txt")
+      if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm("$(model.name)-cmd$(i)-chain$(j).txt", header=false)
+        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false)
         for key in index[:, 1]
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
@@ -143,23 +172,24 @@ end
 
 #### Create a Mamba::Chains result
 
-function mchain(m::Jagsmodel)
+function mchain(model::Jagsmodel)
+  println()
   local totalnchains, curchain
-  index = readdlm("$(m.name)-cmd1-index.txt", header=false)
+  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
 
   cnames = String[]
   for i in 1:size(index)[1]
     append!(cnames, [index[i]])
   end
   
-  totalnchains = m.nchains * m.ncommands
+  totalnchains = model.nchains * model.ncommands
   a3d = fill(0.0, int(index[1, 3]), size(index, 1), totalnchains)
-  for i in 1:m.ncommands
-    for j in 1:m.nchains
-      if isfile("$(m.name)-cmd$(i)-chain$(j).txt")
-        println("Reading $(m.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm("$(m.name)-cmd$(i)-chain$(j).txt", header=false)
-        curchain = (i-1)*m.nchains + j
+  for i in 1:model.ncommands
+    for j in 1:model.nchains
+      if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
+        println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
+        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false)
+        curchain = (i-1)*model.nchains + j
         #println(curchain)
         k = 0
         for key in cnames
@@ -169,15 +199,16 @@ function mchain(m::Jagsmodel)
       end
     end
   end
-  sr = getindex(a3d, [m.adapt:m.thin:size(a3d)[1]], [1:size(a3d)[2]], [1:size(a3d)[3]])
-  Chains(sr, start=m.adapt, thin=m.thin, names=cnames, chains=[i for i in 1:totalnchains])
+  println()
+  sr = getindex(a3d, [model.adapt:model.thin:size(a3d)[1]], [1:size(a3d)[2]], [1:size(a3d)[3]])
+  Chains(sr, start=model.adapt, thin=model.thin, names=cnames, chains=[i for i in 1:totalnchains])
 end
 
 
 #### Read DIC related results
 
 function read_pDfile(model::Jagsmodel)
-  index = readdlm("$(model.name)-cmd1-index0.txt", header=false)
+  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
@@ -202,9 +233,9 @@ function read_pDfile(model::Jagsmodel)
   
   for i in 0:0
     tdict = Dict{ASCIIString, Any}()
-    if isfile("$(model.name)-cmd1-chain$(i).txt")
+    if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
-      res = readdlm("$(model.name)-cmd1-chain$(i).txt", header=false)
+      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false)
       for key in index[:, 1]
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]
@@ -237,7 +268,7 @@ end
 
 function read_table_file(model::Jagsmodel, len::Int)
   pdpopt = Dict{ASCIIString, Any}[]
-  res = readdlm("$(model.name)-cmd1-table0.txt", header=false)
+  res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false)
   if model.dic && model.popt
     pdpopt = ["pD.mean" => res[1:len, 2]]
     pdpopt = merge(pdpopt, ["popt" => res[len+1:2len, 2]])

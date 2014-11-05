@@ -1,61 +1,17 @@
 using Jags
 using Base.Test
 
+include(Pkg.dir("Jags", "test", "test_utils.jl"))
+
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Rats")
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
-isfile("$(jagsmodel.name)-data.R") &&
-  rm("$(jagsmodel.name)-data.R");
-isfile("$(jagsmodel.name)-run.log") &&
-  rm("$(jagsmodel.name)-run.log");
-isfile("$(jagsmodel.name).bugs") &&
-  rm("$(jagsmodel.name).bugs");
-for i in 1:8
-  isfile("$(jagsmodel.name)-data.R") &&
-    rm("$(jagsmodel.name)-cmd$(i)-chain0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-table0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-table0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index.txt");
-  isfile("$(jagsmodel.name)-cmd$(i).jags") &&
-    rm("$(jagsmodel.name)-cmd$(i).jags");
-  isfile("$(jagsmodel.name)-inits$(i).R") &&
-    rm("$(jagsmodel.name)-inits$(i).R");
-  for j in 0:8
-    isfile("$(jagsmodel.name)-cmd$(i)-chain$(j).txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-chain$(j).txt");
-  end
-end
+isfile("tmp") &&
+  rm("tmp");
 
 include(Pkg.dir(ProjDir, "jrats.jl"))
-
-isfile("$(jagsmodel.name)-data.R") &&
-  rm("$(jagsmodel.name)-data.R");
-isfile("$(jagsmodel.name)-run.log") &&
-  rm("$(jagsmodel.name)-run.log");
-isfile("$(jagsmodel.name).bugs") &&
-  rm("$(jagsmodel.name).bugs");
-for i in 1:8
-  isfile("$(jagsmodel.name)-data.R") &&
-    rm("$(jagsmodel.name)-cmd$(i)-chain0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-table0.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-table0.txt");
-  isfile("$(jagsmodel.name)-cmd$(i)-index.txt") &&
-    rm("$(jagsmodel.name)-cmd$(i)-index.txt");
-  isfile("$(jagsmodel.name)-cmd$(i).jags") &&
-    rm("$(jagsmodel.name)-cmd$(i).jags");
-  isfile("$(jagsmodel.name)-inits$(i).R") &&
-    rm("$(jagsmodel.name)-inits$(i).R");
-  for j in 0:8
-    isfile("$(jagsmodel.name)-cmd$(i)-chain$(j).txt") &&
-      rm("$(jagsmodel.name)-cmd$(i)-chain$(j).txt");
-  end
-end
+clean_dir(jagsmodel)
 
 cd(old)
