@@ -11,7 +11,7 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.3-v0.1.0
+This version will be kept as the Github branch Jags-j0.3-v0.1.0.
 
 
 ## What's new
@@ -44,7 +44,7 @@ This version of the Jags.jl package assumes that:
 
 3. On OSX, all Jags-j03-v0.1.0 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
 
-This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.2, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 2 in the 'To Do' section below).
+This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.2, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
 
 To test and run the examples:
 
@@ -54,7 +54,6 @@ To test and run the examples:
 ## A walk through example
 
 As the Jags program produces results files in a subdirectory of the current directory, it is useful to control the current working directory and restore the original directory at the end of the script (as is demonstrated in the test_xxx.jl scripts in the test subdirectory).
-
 ```
 using Compat, Mamba, Jags
 
@@ -63,7 +62,6 @@ ProjDir = Pkg.dir("Jags", "Examples", "Line1")
 cd(ProjDir)
 ```
 Variable `line` holds the model which will be writtten to a file named `$(model_name).bugs`. The value of model_name is set later on, see Jagsmodel().
-
 ```
 line = "
 model {
@@ -103,7 +101,7 @@ jagsmodel |> display
 ```
 Notice that by default a single commands with 4 chains is created. It is possible to run each of the 4 chains in a separate process which has advantages. Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds and a single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
 
-Running chains in separate commands does need additional date to be passed in through the initialization data and is demonstrated in Examples/Line2.
+Running chains in separate commands does need additional data to be passed in through the initialization data and is demonstrated in Examples/Line2.
 
 If nchains is set to 1, this is updated in Jagsmodel if DIC and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
@@ -133,7 +131,6 @@ inits |> display
 println()
 ```
 Run the mcmc simulation, passing in the model, the data, the initial values and the working directory. If 'inits' is a single dictionary, it needs to be passed in as '[inits]', see the Bones example. 
-
 ```
 sim = jags(jagsmodel, data, inits, ProjDir)
 describe(sim)
@@ -144,7 +141,7 @@ println()
 
 Jags.jl really only consists of 2 functions, Jagsmodel() and jags().
 
-Jagsmodel() is used to define and set up basic structure to run a simulation.
+Jagsmodel() is used to define and set up the basic structure to run a simulation.
 The full signature of Jagsmodel() is:
 ```
 function Jagsmodel(;
@@ -166,6 +163,8 @@ All arguments are keyword arguments and have default values, although usually at
 
 After a Jagsmodel has been created, the workhorse function jags() is called to run the simulation, passing in the Jagsmodel, the data and the initialization for the chains.
 
+As Jags needs quite a few input files and produces several output files, these are all stored in a subdirectory of the working directory, typically called 'tmp'.
+
 The full signature of jags() is:
 ```
 function jags(
@@ -177,7 +176,17 @@ function jags(
   updateinitfiles::Bool=true
   )
 ```
-All parameters to compile and run the Jags script are implicitly passed in through the model argument. 
+All parameters to compile and run the Jags script are implicitly passed in through the model argument.
+
+The Line2 example shows how to run multiple Jags simulations in parallel. In the most simple case, e.g. 4 commands, each with a single chain, can be initialized with an 'inits' like shown below:
+```
+inits = [
+  @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Wichmann-Hill"),
+  @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1,".RNG.name" => "base::Marsaglia-Multicarry"),
+  @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2,".RNG.name" => "base::Super-Duper"),
+  @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
+]
+```
 
 
 ## To do

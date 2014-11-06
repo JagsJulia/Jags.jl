@@ -31,7 +31,7 @@ module Jags
     JULIA_SVG_BROWSER = getenv("JULIA_SVG_BROWSER");
   catch e
     println("Environment variable JULIA_SVG_BROWSER not found.")
-    println("Produced .svg files in examples will not be automatically displaye.")
+    println("Produced .svg files in examples will not be automatically displayed.")
   end
 
   #### Exports ####
