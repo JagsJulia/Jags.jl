@@ -45,6 +45,8 @@ function Jagsmodel(;
   # Check if .bugs file needs to be updated.
   if length(model) > 0
     update_bugs_file(Pkg.dir(tmpdir, "$(name).bugs"), strip(model))
+  else
+    println("No proper model defined.")
   end
   
   # Remove old files created by previous runs
