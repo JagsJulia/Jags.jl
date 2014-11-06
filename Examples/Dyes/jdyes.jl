@@ -74,11 +74,11 @@ draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:svg)
 draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
-# JULIASVGBROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if length(JULIASVGBROWSER) > 0
+# JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
+@osx ? if length(JULIA_SVG_BROWSER) > 0
         for i in 1:4
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
-            run(`open -a $(JULIASVGBROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
+            run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
         end
       end : println()
 

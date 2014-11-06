@@ -20,15 +20,15 @@ module Jags
     bytestring(val)
   end
 
-  JAGSDIR = ""
+  JAGS_HOME = ""
   try
-    JAGSDIR = getenv("JAGS_HOME");
+    JAGS_HOME = getenv("JAGS_HOME");
   catch e
     println("Environment variable JAGS_HOME not found, assuming Jags is on PATH.")
   end
-  JULIASVGBROWSER = ""
+  JULIA_SVG_BROWSER = ""
   try
-    JULIASVGBROWSER = getenv("JULIA_SVG_BROWSER");
+    JULIA_SVG_BROWSER = getenv("JULIA_SVG_BROWSER");
   catch e
     println("Environment variable JULIA_SVG_BROWSER not found.")
     println("Produced .svg files in examples will not be automatically displaye.")
@@ -39,8 +39,8 @@ module Jags
   export
   
   # From Jags.jl
-    JULIASVGBROWSER,
-    JAGSDIR,
+    JULIA_SVG_BROWSER,
+    JAGS_HOME,
     
   # From jagsmodel.jl
     Jagsmodel,
