@@ -24,4 +24,7 @@ isfile("tmp") &&
 include(Pkg.dir(ProjDir, "jline2.jl"))
 clean_dir(jagsmodel)
 
+isfile("tmp") &&
+  rm("tmp");
+
 cd(old)

@@ -1,6 +1,8 @@
 using Compat, Jags
 using Base.Test
 
+include(Pkg.dir("Jags", "test", "test_utils.jl"))
+
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Line1")
 cd(ProjDir)
@@ -56,8 +58,8 @@ monitors = (ASCIIString => Bool)[
   "sigma" => true,
 ]
 
-jagsmodel = Jagsmodel(name="line", model=line, monitor=monitors,
-  ncommands=3, nchains=3, adapt=1000, update=10000, thin=1,
+jagsmodel = Jagsmodel(name="line1", model=line, monitor=monitors,
+  ncommands=1, nchains=4, adapt=1000, update=10000, thin=1,
   deviance=true, dic=true, popt=true, pdir=ProjDir);
 
 println("\nJagsmodel that will be used:")
@@ -66,6 +68,8 @@ println("Input observed data dictionary:")
 data |> display
 println("\nInput initial values dictionary:")
 inits |> display
+
+clean_dir(jagsmodel)
 
 isfile("tmp") &&
   rm("tmp");

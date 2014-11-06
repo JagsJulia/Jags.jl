@@ -14,4 +14,7 @@ isfile("tmp") &&
 include(Pkg.dir(ProjDir, "jbones.jl"))
 clean_dir(jagsmodel)
 
+isfile("tmp") &&
+  rm("tmp");
+
 cd(old)
