@@ -178,7 +178,7 @@ function jags(
 ```
 All parameters to compile and run the Jags script are implicitly passed in through the model argument.
 
-The Line2 example shows how to run multiple Jags simulations in parallel. In the most simple case, e.g. 4 commands, each with a single chain, can be initialized with an 'inits' like shown below:
+The Line2 example shows how to run multiple Jags simulations in parallel. The most simple case, e.g. 4 commands, each with a single chain, can be initialized with an 'inits' like shown below:
 ```
 inits = [
   @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Wichmann-Hill"),
@@ -187,6 +187,7 @@ inits = [
   @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
 ]
 ```
+The first entry in the 'inits' array will be passed into the first chain in the first command process, the second entry to the second process, etc.
 
 
 ## To do
