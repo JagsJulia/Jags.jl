@@ -3,7 +3,7 @@
 using Compat, Mamba, Jags
 
 old = pwd()
-ProjDir = Pkg.dir("Jags", "Examples", "Bones")
+ProjDir = Pkg.dir("Jags", "Examples", "Bones1")
 cd(ProjDir)
 
 bones = "
@@ -117,7 +117,8 @@ monitors = (ASCIIString => Bool)[
   "theta" => true
 ]
 
-jagsmodel = Jagsmodel(name="bones", model=bones,
+jagsmodel = Jagsmodel(name="bones1", 
+model=bones,
   monitor=monitors,
   #ncommands=4, nchains=1,
   #adapt=1000, update=10000, thin=1,
@@ -133,6 +134,15 @@ jagsmodel |> display
 @time sim = jags(jagsmodel, data, [inits], ProjDir)
 describe(sim)
 println()
+
+## Highest Posterior Density Intervals
+hpd(sim) |> display
+println()
+
+## Lag-Autocorrelations
+autocor(sim) |> display
+println()
+
 
 ## Plotting
 p = plot(sim, [:trace, :mean, :density, :autocor], legend=true);
