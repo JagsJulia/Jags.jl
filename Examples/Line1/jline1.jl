@@ -50,7 +50,6 @@ inits = [
   @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
   @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
-#inits = map((x)->convert(Dict{ASCIIString, Any}, x), inits)
 
 println("Input observed data dictionary:")
 data |> display
