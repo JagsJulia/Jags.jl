@@ -3,6 +3,7 @@
 
 [![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=release)
 
+
 ## Purpose
 
 A package to use Jags (as an external program) from Julia.
@@ -101,9 +102,9 @@ jagsmodel = Jagsmodel(
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
 ```
-Notice that by default a single command with 4 chains is created. It is possible to run each of the 4 chains in a separate process which has advantages. Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds and a single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
+Notice that by default a single command with 4 chains is created. It is possible to run each of the 4 chains in a separate process which has advantages. Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds (see Bones2) and a single command simulating 4 chains (see Bones1) takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
 
-Running chains in separate commands does need additional data to be passed in through the initialization data and is demonstrated in Examples/Line2. Some more details are given below.
+Running chains in separate commands does need additional data to be passed in through the initialization data and is demonstrated in Examples/Line2 and Examples/Bones2. Some more details are given below.
 
 If nchains is set to 1, this is updated in Jagsmodel() if dic and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
@@ -174,6 +175,8 @@ draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
         end
       end : println()
 ```
+
+
 ## Running a Jags script, some details
 
 Jags.jl really only consists of 2 functions, Jagsmodel() and jags().
