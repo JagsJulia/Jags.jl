@@ -21,19 +21,19 @@ type Jagsmodel
 end
 
 function Jagsmodel(;
-  name="Noname", 
-  model="", 
-  ncommands=1,
-  nchains=4,
-  adapt=1000,
-  update=10000,
-  thin=10,
-  monitor=Dict(), 
-  deviance=false,
-  dic=false,
-  popt=false,
-  updatejagsfile=true,
-  pdir=pwd())
+  name::String="Noname", 
+  model::String="", 
+  ncommands::Int=1,
+  nchains::Int=4,
+  adapt::Int=1000,
+  update::Int=10000,
+  thin::Int=10,
+  monitor=Dict{ASCIIString,Any}(), 
+  deviance::Bool=false,
+  dic::Bool=false,
+  popt::Bool=false,
+  updatejagsfile::Bool=true,
+  pdir::String=pwd())
   
   cd(pdir)
   
@@ -73,14 +73,13 @@ function Jagsmodel(;
     nchains = 2
   end
 
-  if length(monitor) == 0 && length(init) > 0
-    for entry in init
-      monitor = merge(monitor, [entry[1] => true])
-    end
-  end
-  
   data = Dict{ASCIIString, Any}()
   init = Dict{ASCIIString, Any}[]
+
+  if length(monitor) == 0
+    println("No monitors defined!")
+  end
+  
   model_file = "$(name).bugs"
   data_file = "$(name)-data.R"
   
@@ -221,11 +220,12 @@ end
 
 function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
   if compact==true
-    println("Jagsmodel(", m.name, m.ncommands, m.nchains,
-      m.adapt, m.update, m.thin, 
-      m.monitor,
-      m.deviance, m.dic, m.popt,
-      m.model_file, m.data_file, m.init_stem, m.coda_stem)
+    println("Jagsmodel(", m.name, ", ",
+      m.ncommands, ", ", m.nchains, ", ",
+      m.adapt, ", ", m.update, ", ", m.thin, ", ", 
+      m.monitor, ", ",
+      m.deviance, ", ", m.dic, ", ", m.popt, ", ",
+      m.model_file, ", ", m.data_file, ", ", m.tmpdir, ")")
   else
     println("  name =                    \"$(m.name)\"")
     println("  ncommands =               $(m.ncommands)")
@@ -242,6 +242,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     #println("  data =                    $(data)")
     println("  data_file =               $(m.data_file)")
     #println("  init =                    $(init)")
+    println("  tmpdir =                  $(m.tmpdir)")
   end
 end
 

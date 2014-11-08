@@ -1,7 +1,7 @@
 function jags(
   model::Jagsmodel,
-  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(),
-  init::Array{Dict{ASCIIString, Any}, 1} = Dict{ASCIIString, Any}[],
+  data = Dict{ASCIIString, Any}(),
+  init = Dict{ASCIIString, Any}[],
   ProjDir=pwd();
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true
@@ -45,7 +45,7 @@ end
 
 #### Update data and init files
 
-function update_init_files(model::Jagsmodel, init::Array{Dict{ASCIIString, Any}, 1})
+function update_init_files(model::Jagsmodel, init)
   println()
   k = length(init)
   m = max(model.nchains, model.ncommands)
