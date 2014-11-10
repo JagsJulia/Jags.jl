@@ -7,9 +7,11 @@ module Jags
   include("jagsmodel.jl")
   include("jagscode.jl")
   
-  if !isdefined(Main, :Stanmodel)
+  
+  #if !isdefined(Main, :Stan)
     include("utilities.jl")
-  end
+    #end
+  
   
   function getenv(var::String)
     val = ccall( (:getenv, "libc"),
