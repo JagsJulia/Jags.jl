@@ -24,7 +24,7 @@ Bug fix:
 
 ### Version 0.1.1
 
-1. Stores Stan's input & output files in a subdirectory of the working directory.
+1. Stores Jags's input & output files in a subdirectory of the working directory.
 2. Added Bones2 example.
 
 ### Version 0.1.0
@@ -36,7 +36,7 @@ The two most important features introduced in version 0.1.0 are:
 
 ### Version 0.0.4
 
-1. Added the ability to start multiple Jags scripts in parallel. Work in progress.
+1. Added the ability to start multiple Jags scripts in parallel.
 
 ### Version 0.0.3 and earlier
 
