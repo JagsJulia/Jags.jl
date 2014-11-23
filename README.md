@@ -3,7 +3,6 @@
 
 [![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=release)
 
-
 ## Purpose
 
 A package to use Jags (as an external program) from Julia.
@@ -16,6 +15,17 @@ This version will be kept as the Github branch Jags-j0.3-v0.1.0.
 
 
 ## What's new
+
+### Version 0.1.2
+
+Bug fix:
+
+1. Fix for access to environment variables on Windows.
+
+### Version 0.1.1
+
+1. Stores Stan's input & output files in a subdirectory of the working directory.
+2. Added Bones2 example.
 
 ### Version 0.1.0
 
@@ -46,6 +56,8 @@ This version of the Jags.jl package assumes that:
 3. DataArrays (see <https://github.com/JuliaStats/DataArrays.jl>) is installed.
 
 4. On OSX, all Jags-j03-v0.1.0 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
+
+JAGS_HOME and JULIA_SVG_BROWSER can also be defined in ~/.juliarc.jl.
 
 This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.2, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
 
@@ -102,9 +114,9 @@ jagsmodel = Jagsmodel(
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
 ```
-Notice that by default a single command with 4 chains is created. It is possible to run each of the 4 chains in a separate process which has advantages. Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds (see Bones2) and a single command simulating 4 chains (see Bones1) takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
+Notice that by default a single command with 4 chains is created. It is possible to run each of the 4 chains in a separate process which has advantages. Using the Bones example as a testcase, on my machine running 1 command simulating a single chain takes 6 seconds, 4 (parallel) commands each simulating 1 chain takes about 9 seconds and a single command simulating 4 chains takes about 25 seconds. Of course this is dependent on the number of available cores and assumes the drawing of samples takes a reasonable chunk of time vs. running a command in a new shell.
 
-Running chains in separate commands does need additional data to be passed in through the initialization data and is demonstrated in Examples/Line2 and Examples/Bones2. Some more details are given below.
+Running chains in separate commands does need additional data to be passed in through the initialization data and is demonstrated in Examples/Line2. Some more details are given below.
 
 If nchains is set to 1, this is updated in Jagsmodel() if dic and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
@@ -175,8 +187,6 @@ draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
         end
       end : println()
 ```
-
-
 ## Running a Jags script, some details
 
 Jags.jl really only consists of 2 functions, Jagsmodel() and jags().
