@@ -8,14 +8,16 @@ ProjDir = Pkg.dir("Jags", "Examples", "Bones1")
 cd(ProjDir)
 println("Moving to directory: $(ProjDir)")
 
-isfile("tmp") &&
-  rm("tmp");
+cd(ProjDir)
+isdir("tmp") &&
+  rm("tmp", recursive=true);
 
 include(Pkg.dir(ProjDir, "jbones1.jl"))
 clean_dir(jagsmodel)
 
-isfile("tmp") &&
-  rm("tmp");
+cd(ProjDir)
+isdir("tmp") &&
+  rm("tmp", recursive=true);
 
 ProjDir = Pkg.dir("Jags", "Examples", "Bones2")
 cd(ProjDir)
@@ -27,8 +29,9 @@ isfile("tmp") &&
 include(Pkg.dir(ProjDir, "jbones2.jl"))
 clean_dir(jagsmodel)
 
-isfile("tmp") &&
-  rm("tmp");
+cd(ProjDir)
+isdir("tmp") &&
+  rm("tmp", recursive=true);
 
 cd(old)
 

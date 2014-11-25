@@ -1,4 +1,4 @@
-using Jags
+using Jags, Mamba, Gadfly
 
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Rats")
