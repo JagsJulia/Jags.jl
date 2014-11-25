@@ -1,8 +1,6 @@
 using Compat, Jags
 using Base.Test
 
-include(Pkg.dir("Jags", "test", "test_utils.jl"))
-
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Line1")
 cd(ProjDir)
@@ -68,8 +66,6 @@ println("Input observed data dictionary:")
 data |> display
 println("\nInput initial values dictionary:")
 inits |> display
-
-clean_dir(jagsmodel)
 
 cd(ProjDir)
 isdir("tmp") &&
