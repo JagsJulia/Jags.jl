@@ -23,6 +23,7 @@ end
 function Jagsmodel(;
   name::String="Noname", 
   model::String="", 
+  model_file::String="",
   ncommands::Int=1,
   nchains::Int=4,
   adapt::Int=1000,
@@ -45,9 +46,12 @@ function Jagsmodel(;
   # Check if .bugs file needs to be updated.
   if length(model) > 0
     update_bugs_file(Pkg.dir(tmpdir, "$(name).bugs"), strip(model))
+  elseif length(model) == 0 && length(model_file) >0 && isfile(model_file)
+    cp(model_file, Pkg.dir(tmpdir, "$(name).bugs"))
   else
     println("No proper model defined.")
   end
+  model_file = "$(name).bugs"
   
   # Remove old files created by previous runs
   for i in 1:ncommands
@@ -80,7 +84,6 @@ function Jagsmodel(;
     println("No monitors defined!")
   end
   
-  model_file = "$(name).bugs"
   data_file = "$(name)-data.R"
   
   jm = Jagsmodel(name,

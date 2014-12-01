@@ -61,7 +61,6 @@ sim = jags(jagsmodel, data, inits, ProjDir)
 describe(sim)
 println()
 
-
 ## Brooks, Gelman and Rubin Convergence Diagnostic
 try
   gelmandiag(sim1, mpsrf=true, transform=true) |> display
