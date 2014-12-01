@@ -14,7 +14,7 @@ function jags(
     
     if updatedatafile
       if length(keys(data)) > 0
-        print("\nCreating data file $(model.name)-data.R: ")
+        print("\nCreating data file $(model.name)-data.R. ")
         @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-data.R"), data)
       end
     else
@@ -51,7 +51,7 @@ function update_init_files(model::Jagsmodel, init)
   m = max(model.nchains, model.ncommands)
   indx = filter(x -> x!=0, [%(i, (k+1)) for i in 1:2m])
   for i in 1:m
-    print("Creating init file $(model.name)-inits$(i).R: ")
+    print("Creating init file $(model.name)-inits$(i).R. ")
     @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-inits$(i).R"), init[indx[i]])
   end
 end
@@ -95,7 +95,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
     elseif length(val)==1 && length(size(val))==0
       # Scalar
       str = str*"$(val)\n"
-    elseif length(val)>1 && length(size(val))==1
+    elseif length(val)>=1 && length(size(val))==1
       # Vector
       str = str*"structure(c("
       for i in 1:length(val)
