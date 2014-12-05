@@ -65,7 +65,7 @@ This version of the Jags.jl package assumes that:
 
 JAGS_HOME and JULIA_SVG_BROWSER can also be defined in ~/.juliarc.jl.
 
-This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.3, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
+This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.3, Jags 3.4.0 and Mamba 0.4.1. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
 
 To test and run the examples:
 
