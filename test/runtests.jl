@@ -23,16 +23,21 @@ for my_test in code_tests
     include(my_test)
 end
 
-try
-  for my_test in execution_tests
-      println("\n  * $(my_test) *")
-      include(my_test)
+if isdefined(Main, :JAGS_HOME) && length(JAGS_HOME) > 0
+  try
+    for my_test in execution_tests
+        println("\n  * $(my_test) *")
+        include(my_test)
+    end
+    println()
+  catch e
+     println("Is Jags properly installed?")
+     println(e)
+     println("No simulation runs have been performed.")
   end
-  println()
-catch e
-   println("Is Jags properly installed?")
-   println(e)
-   println("No simulation runs have been performed.")
-end 
+else
+  println("\n\nJAGS_HOME not found. Skipping all tests that depend on the Jags executable!\n")  
+end
+  
 
 cd(old)

@@ -11,14 +11,20 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.3-v0.1.2.
+This version will be kept as the Github branch Jags-j0.3-v0.1.4.
 
 
 ## What's new
 
-### Version 0.1.2
+### Version 0.1.4
 
-Bug fix:
+1. Allowed JAGS_HOME and JULIA_SVG_BROWSER to be set from either ~/.juliarc.jl or as an evironment variable. Updated README accordingly.
+
+### Version 0.1.3
+
+1. Removed upper bound on Julia in REQUIRE. 
+
+### Version 0.1.2
 
 1. Fix for access to environment variables on Windows.
 
@@ -49,17 +55,17 @@ The two most important features introduced in version 0.1.0 are:
 
 This version of the Jags.jl package assumes that: 
 
-1. Jags is installed and the jags binary is on $PATH. The environment variable JAGS_HOME is checked but currently not used.
+1. Jags is installed and the jags binary is on $PATH. The variable JAGS_HOME is currently initialized either from ~/.juliarc.jl or from an environment variable JAGS_HOME. JAGS_HOME currently only used in runtests.jl to disable attempting to run tests that need the Jags executable on $PATH.
 
 2. Mamba (see <https://github.com/brian-j-smith/Mamba.jl>) is installed.
 
 3. DataArrays (see <https://github.com/JuliaStats/DataArrays.jl>) is installed.
 
-4. On OSX, all Jags-j03-v0.1.2 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
+4. On OSX, all Jags-j03-v0.1.4 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
 
 JAGS_HOME and JULIA_SVG_BROWSER can also be defined in ~/.juliarc.jl.
 
-This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.2, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
+This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.3, Jags 3.4.0 and Mamba 0.3.9. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
 
 To test and run the examples:
 
@@ -244,6 +250,6 @@ The first entry in the 'inits' array will be passed into the first chain in the 
 
 More features will be added as requested by users and as time permits. Please file an issue/comment/request.
 
-The ability to resume a simulation will e looked at for version 0.1.x.
+The ability to resume a simulation will e looked at for version 0.2.x.
 
 **Note 1:** In order to support platforms other than OS X, help is needed to test on such platforms.

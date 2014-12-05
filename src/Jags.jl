@@ -17,6 +17,7 @@ module Jags
       global JAGS_HOME = ENV["JAGS_HOME"]
     catch e
       println("Environment variable JAGS_HOME not found.")
+      global JAGS_HOME = ""
     end
   end
   if !isdefined(Main, :JULIA_SVG_BROWSER)
@@ -25,7 +26,7 @@ module Jags
       global JULIA_SVG_BROWSER = ENV["JULIA_SVG_BROWSER"]
     catch e
       println("Environment variable JULIA_SVG_BROWSER not found.")
-      println("Produced .svg files in examples will not be automatically displayed.")
+      global JULIA_SVG_BROWSER = ""
     end
   end
 
