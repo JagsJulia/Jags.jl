@@ -3,6 +3,9 @@
 
 [![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=release)
 
+[![Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
+
+
 ## Purpose
 
 A package to use Jags (as an external program) from Julia.
