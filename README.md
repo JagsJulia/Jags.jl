@@ -16,6 +16,10 @@ This version will be kept as the Github branch Jags-j0.3-v0.1.4.
 
 ## What's new
 
+### Version 0.1.7
+
+1. Updated .travis.yml
+
 ### Version 0.1.4
 
 1. Allowed JAGS_HOME and JULIA_SVG_BROWSER to be set from either ~/.juliarc.jl or as an evironment variable. Updated README accordingly.
