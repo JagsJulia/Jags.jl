@@ -11,12 +11,12 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.3-v0.1.7.
+This version will be kept as the Github branch Jags-j0.3-v0.1.5.
 
 
 ## What's new
 
-### Version 0.1.7
+### Version 0.1.5
 
 1. Updated .travis.yml
 2. The runtests.jl script now prints package version
@@ -66,7 +66,7 @@ This version of the Jags.jl package assumes that:
 
 3. DataArrays (see <https://github.com/JuliaStats/DataArrays.jl>) is installed.
 
-4. On OSX, all Jags-j03-v0.1.7 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
+4. On OSX, all Jags-j03-v0.1.5 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
 
 JAGS_HOME and JULIA_SVG_BROWSER can also be defined in ~/.juliarc.jl.
 
