@@ -16,7 +16,7 @@ execution_tests = [
   "test_dyes.jl"
 ]
 
-println("Running tests:")
+println("Running tests for Jags-j03-v0.1.7:")
 
 for my_test in code_tests
     println("\n  * $(my_test) *")
