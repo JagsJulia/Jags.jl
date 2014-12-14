@@ -12,21 +12,21 @@ module Jags
   end
   
   if !isdefined(Main, :JAGS_HOME)
-    global JAGS_HOME = ""
+    JAGS_HOME = ""
     try
-      global JAGS_HOME = ENV["JAGS_HOME"]
+      JAGS_HOME = ENV["JAGS_HOME"]
     catch e
       println("Environment variable JAGS_HOME not found.")
-      global JAGS_HOME = ""
+      JAGS_HOME = ""
     end
   end
   if !isdefined(Main, :JULIA_SVG_BROWSER)
-    global JULIA_SVG_BROWSER = ""
+    JULIA_SVG_BROWSER = ""
     try
-      global JULIA_SVG_BROWSER = ENV["JULIA_SVG_BROWSER"]
+      JULIA_SVG_BROWSER = ENV["JULIA_SVG_BROWSER"]
     catch e
       println("Environment variable JULIA_SVG_BROWSER not found.")
-      global JULIA_SVG_BROWSER = ""
+      JULIA_SVG_BROWSER = ""
     end
   end
 
@@ -34,8 +34,8 @@ module Jags
   
   export
   # From Jags.jl
-    #JAGS_HOME,
-    #JULIA_SVG_BROWSER,
+    JAGS_HOME,
+    JULIA_SVG_BROWSER,
     
   # From jagsmodel.jl
     Jagsmodel,
