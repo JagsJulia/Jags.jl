@@ -21,6 +21,7 @@ This version will be kept as the Github branch Jags-j0.3-v0.2.0.
 ### Version 0.2.0
 
 1. Added badges for Travis and ReadTheDocs
+2. Exported JAGS_HOME in Jags.jl
 
 ### Version 0.1.5
 
