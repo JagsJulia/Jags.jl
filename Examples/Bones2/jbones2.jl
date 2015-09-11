@@ -126,9 +126,9 @@ inits = [
     ".RNG.name" => "base::Mersenne-Twister")
 ]
 
-monitors = (ASCIIString => Bool)[
+monitors = Dict{ASCIIString, Bool}(
   "theta" => true
-]
+)
 
 jagsmodel = Jagsmodel(name="bones2",
   model=bones,

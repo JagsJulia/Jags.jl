@@ -39,18 +39,18 @@ data["BATCHES"] = 6
 data["SAMPLES"] = 5
 
 inits = [
-  (ASCIIString => Any)[
+  Dict{ASCIIString, Any}(
     "theta" => 1500,
     "tau.within" => 1,
     "tau.between" => 1
-  ]
+	)
 ]
 
-monitors = (ASCIIString => Bool)[
+monitors = Dict{ASCIIString, Any}(
   "theta" => true,
   "s2.within" => true,
   "s2.between" => true
-]
+	)
 
 jagsmodel = Jagsmodel(name="dyes", model=dyes,
   #ncommands=3, nchains=3,

@@ -7,9 +7,7 @@ old = pwd()
 
 using Base.Test
 
-code_tests = [
-  "test_cmd.jl"
-]
+code_tests = ["test_cmd.jl";]
 
 println("Run execution_tests only if Jags is available")
 execution_tests = ["test_line.jl", "test_rats.jl", "test_bones.jl", "test_dyes.jl";]
