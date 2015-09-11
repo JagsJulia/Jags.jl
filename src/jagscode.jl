@@ -130,9 +130,9 @@ function read_jagsfiles(model::Jagsmodel)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]]
+      idxdct = Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])])
     else
-      merge!(idxdct, [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]])
+      merge!(idxdct, Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])]))
     end
   end
 
@@ -160,9 +160,9 @@ function read_jagsfiles(model::Jagsmodel)
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
           if length(keys(tdict)) == 0
-            tdict = [key => res[indx1:indx2, 2]]
+            tdict = Dict(key => res[indx1:indx2, 2])
           else
-            tdict = merge(tdict, [key => res[indx1:indx2, 2]])
+            tdict = merge(tdict, Dict(key => res[indx1:indx2, 2]))
           end
         end
         ## End of processing result type file ##
@@ -170,7 +170,7 @@ function read_jagsfiles(model::Jagsmodel)
       
         if length(keys(tdict)) > 0
           #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-          rtdict = merge(rtdict, [res_type => tdict])
+          rtdict = merge(rtdict, Dict(res_type => tdict))
           tdict = Dict{ASCIIString, Any}()
         end
       end
@@ -200,7 +200,7 @@ function mchain(model::Jagsmodel)
   end
   
   totalnchains = model.nchains * model.ncommands
-  a3d = fill(0.0, int(index[1, 3]), size(index, 1), totalnchains)
+  a3d = fill(0.0, Int(index[1, 3]), size(index, 1), totalnchains)
   for i in 1:model.ncommands
     for j in 1:model.nchains
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
@@ -217,7 +217,7 @@ function mchain(model::Jagsmodel)
     end
   end
   println()
-  sr = getindex(a3d, [model.adapt:model.thin:size(a3d)[1]], [1:size(a3d)[2]], [1:size(a3d)[3]])
+  sr = getindex(a3d, [model.adapt:model.thin:size(a3d)[1];], [1:size(a3d)[2];], [1:size(a3d)[3];])
   Chains(sr, start=model.adapt, thin=model.thin, names=cnames, chains=[i for i in 1:totalnchains])
 end
 
@@ -229,9 +229,9 @@ function read_pDfile(model::Jagsmodel)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]]
+      idxdct = Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])])
     else
-      merge!(idxdct, [index[row, 1] => [int(index[row, 2]), int(index[row, 3])]])
+      merge!(idxdct, Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])]))
     end
   end
 
@@ -257,9 +257,9 @@ function read_pDfile(model::Jagsmodel)
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]
         if length(keys(tdict)) == 0
-          tdict = [key => res[indx1:indx2, 2]]
+          tdict = Dict(key => res[indx1:indx2, 2])
         else
-          tdict = merge(tdict, [key => res[indx1:indx2, 2]])
+          tdict = merge(tdict, Dict(key => res[indx1:indx2, 2]))
         end
       end
       ## End of processing result type file ##
@@ -267,7 +267,7 @@ function read_pDfile(model::Jagsmodel)
       
       if length(keys(tdict)) > 0
         #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-        rtdict = merge(rtdict, [res_type => tdict])
+        rtdict = merge(rtdict, Dict(res_type => tdict))
         tdict = Dict{ASCIIString, Any}()
       end
     end

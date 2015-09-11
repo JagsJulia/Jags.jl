@@ -12,12 +12,7 @@ code_tests = [
 ]
 
 println("Run execution_tests only if Jags is available")
-execution_tests = [
-  "test_line.jl",
-  "test_rats.jl",
-  "test_bones.jl",
-  "test_dyes.jl"
-]
+execution_tests = collect("test_line.jl", "test_rats.jl", "test_bones.jl", "test_dyes.jl")
 
 for my_test in code_tests
     println("\n  * $(my_test) *")

@@ -5,7 +5,7 @@ ProjDir = Pkg.dir("Jags", "Examples", "Rats")
 cd(ProjDir)
 
 ## Data
-rats = (ASCIIString => Any)[
+rats = Ditc{ASCIIString, Any}[
   "Y" => 
     [151 199 246 283 320;
      145 199 249 293 354; 
@@ -65,21 +65,17 @@ model {
 
 ## Initial Values
 inits = [
-  ["alpha" => fill(250, 30), "beta" => fill(6, 30),
-  "alpha.c" => 100, "beta.c" => 2, 
-  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
-  ["alpha" => fill(150, 30), "beta" => fill(3, 30),
-  "alpha.c" => 150, "beta.c" => 2, 
-  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
-  ["alpha" => fill(200, 30), "beta" => fill(6, 30),
-  "alpha.c" => 200, "beta.c" => 1, 
-  "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1],
-  ["alpha" => fill(150, 30), "beta" => fill(3, 30),
-  "alpha.c" => 250, "beta.c" => 1, 
-  "tau.c" => 1, "tau.alpha" => 1,"tau.beta" => 1]
+  Dict{ASCIIString,Any}("alpha" => fill(250, 30), "beta" => fill(6, 30),
+  "alpha.c" => 100, "beta.c" => 2, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
+  Dict{ASCIIString,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
+  "alpha.c" => 150, "beta.c" => 2, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
+  Dict{ASCIIString,Any}("alpha" => fill(200, 30), "beta" => fill(6, 30),
+  "alpha.c" => 200, "beta.c" => 1, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
+  Dict{ASCIIString,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
+  "alpha.c" => 250, "beta.c" => 1, "tau.c" => 1, "tau.alpha" => 1,"tau.beta" => 1)
 ]
 
-monitors = (ASCIIString => Bool)[
+monitors = Ditc{ASCIIString, Bool}[
   "alpha0" => true,
   "beta.c" => true,
   "sigma" =>true

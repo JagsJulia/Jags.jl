@@ -113,9 +113,7 @@ inits["grade"] = reshape([
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN], 13, 34)
 
-monitors = (ASCIIString => Bool)[
-  "theta" => true
-]
+monitors = Dict{ASCIIString, Bool}["theta" => true]
 
 jagsmodel = Jagsmodel(name="bones1", 
 model=bones,
