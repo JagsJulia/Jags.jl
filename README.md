@@ -1,8 +1,8 @@
 # Jags
 
 
-[![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.3)
-[![Jags](http://pkg.julialang.org/badges/Jags_release.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
+[![Jags](http://pkg.julialang.org/badges/Jags_0.3.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.3)
+[![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
 [![Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 [![Documentation Status](https://readthedocs.org/projects/jagsjl/badge/?version=latest)](https://readthedocs.org/projects/jagsjl/?badge=latest)
 
