@@ -49,12 +49,12 @@ data["n"] = 5
 
 inits = test(inits1)
 
-monitors = (ASCIIString => Bool)[
+monitors = Dict{ASCIIString, Bool}(
   "alpha" => true,
   "beta" => true,
   "tau" => true,
   "sigma" => true,
-]
+)
 
 jagsmodel = Jagsmodel(name="line1", model=line, monitor=monitors,
   ncommands=1, nchains=4, adapt=1000, update=10000, thin=1,

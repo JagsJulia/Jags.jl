@@ -1,3 +1,5 @@
+import Base: *
+
 if !isdefined(Main, :Stan)
   function *(c1::Cmd, c2::Cmd)
     res = deepcopy(c1)

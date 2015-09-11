@@ -130,9 +130,9 @@ function read_jagsfiles(model::Jagsmodel)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])])
+      idxdct = Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])])
     else
-      merge!(idxdct, Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])]))
+      merge!(idxdct, Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])]))
     end
   end
 
@@ -287,13 +287,13 @@ function read_table_file(model::Jagsmodel, len::Int)
   pdpopt = Dict{ASCIIString, Any}[]
   res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false)
   if model.dic && model.popt
-    pdpopt = ["pD.mean" => res[1:len, 2]]
-    pdpopt = merge(pdpopt, ["popt" => res[len+1:2len, 2]])
+    pdpopt = Dict("pD.mean" => res[1:len, 2])
+    pdpopt = merge(pdpopt, Dict("popt" => res[len+1:2len, 2]))
   else
     if model.dic
-      pdpopt = ["pD.mean" => res[1:len, 2]]
+      pdpopt = Dict("pD.mean" => res[1:len, 2])
     else
-      pdpopt = ["popt" => res[1:len, 2]]
+      pdpopt = Dict("popt" => res[1:len, 2])
     end
   end
   pdpopt

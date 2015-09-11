@@ -5,7 +5,7 @@ ProjDir = Pkg.dir("Jags", "Examples", "Rats")
 cd(ProjDir)
 
 ## Data
-rats = Ditc{ASCIIString, Any}[
+rats = Dict{ASCIIString, Any}(
   "Y" => 
     [151 199 246 283 320;
      145 199 249 293 354; 
@@ -38,7 +38,7 @@ rats = Ditc{ASCIIString, Any}[
      137 180 219 258 291; 
      153 200 244 286 324],
   "x" => [8.0, 15.0, 22.0, 29.0, 36.0]
-]
+)
 rats["N"] = size(rats["Y"], 1)
 rats["T"] = size(rats["Y"], 2)
 rats["x.bar"] = mean(rats["x"])
@@ -75,11 +75,11 @@ inits = [
   "alpha.c" => 250, "beta.c" => 1, "tau.c" => 1, "tau.alpha" => 1,"tau.beta" => 1)
 ]
 
-monitors = Ditc{ASCIIString, Bool}[
+monitors = Dict{ASCIIString, Bool}(
   "alpha0" => true,
   "beta.c" => true,
   "sigma" =>true
-]
+)
 
 jagsmodel = Jagsmodel(
   name="rats",
