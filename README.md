@@ -3,8 +3,6 @@
 
 [![Jags](http://pkg.julialang.org/badges/Jags_0.3.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.3)
 [![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
-[![Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
-[![Documentation Status](https://readthedocs.org/projects/jagsjl/badge/?version=latest)](https://readthedocs.org/projects/jagsjl/?badge=latest)
 
 ## Purpose
 
@@ -21,8 +19,9 @@ This version will be kept as the Github branch Jags-j0.3-v0.2.0.
 
 ### Version 0.2.0
 
-1. Added badges for Travis and ReadTheDocs
+1. Added badges for Julia package listing
 2. Exported JAGS_HOME in Jags.jl
+3. Updated for Julia 0.4
 
 ### Version 0.1.5
 
