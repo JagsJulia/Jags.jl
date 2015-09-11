@@ -1,7 +1,7 @@
 function jags(
   model::Jagsmodel,
   data = Dict{ASCIIString, Any}(),
-  init = Dict{ASCIIString, Any}[],
+  init = Dict{ASCIIString, Any}(),
   ProjDir=pwd();
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true

@@ -47,16 +47,16 @@ data["gamma"] = reshape([
   NaN, NaN, NaN, 17.4944, 2.3016, 2.497, 2.3689, 3.9525, 8.2832, 7.1053, 
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 3.2535, 3.2306, 
-  2.9495, 5.3198, 10.4988, 10.3038], 34, 4)
+  2.9495, 5.3198, 10.4988, 10.3038;], 34, 4)
 data["delta"] = [
   2.9541, 0.6603, 0.7965, 1.0495, 5.7874, 3.8376, 0.6324, 0.8272, 
   0.6968, 0.8747, 0.8136, 0.8246, 0.6711, 0.978, 1.1528, 1.6923, 
   1.0331, 0.5381, 1.0688, 8.1123, 0.9974, 1.2656, 1.1802, 1.368, 
   1.5435, 1.5006, 1.6766, 1.4297, 3.385, 3.3085, 3.4007, 2.0906, 
-  1.0954, 1.5329]
+  1.0954, 1.5329;]
 data["ncat"] = [
   2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 
-  3, 3, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5, 5, 5]
+  3, 3, 3, 3, 3, 3, 3, 4, 5, 5, 5, 5, 5, 5;]
 data["grade"] = reshape([
   1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 
   1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, NaN, 
@@ -79,7 +79,7 @@ data["grade"] = reshape([
   2, 4, 2, 3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 3, 5, 5, 5, 
   5, 5, 5, 5, 5, 5, 5, 1, 1, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 
   2, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 2, 3, 3, 3, 4, 
-  5, 5, 5, 5, 1, 1, 1, 1, 3, 3, 3, 4, 4, 5, 5, 5, 5], 13, 34)
+  5, 5, 5, 5, 1, 1, 1, 1, 3, 3, 3, 4, 4, 5, 5, 5, 5;], 13, 34)
 
 grade = reshape([
       NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
@@ -109,21 +109,17 @@ grade = reshape([
       NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
       NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
       NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
-      NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN], 13, 34)
+      NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN;], 13, 34)
       
 inits = [
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
-    "grade"     => grade,
-    ".RNG.name" => "base::Wichmann-Hill");
+    "grade"     => grade, ".RNG.name" => "base::Wichmann-Hill");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
-    "grade"     => grade,
-    ".RNG.name" => "base::Marsaglia-Multicarry");
+    "grade"     => grade, ".RNG.name" => "base::Marsaglia-Multicarry");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
-    "grade"     => grade,
-    ".RNG.name" => "base::Super-Duper");
+    "grade"     => grade, ".RNG.name" => "base::Super-Duper");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
-    "grade"     => grade,
-    ".RNG.name" => "base::Mersenne-Twister");
+    "grade"     => grade, ".RNG.name" => "base::Mersenne-Twister");
 ]
 
 monitors = Dict{ASCIIString, Bool}(
@@ -144,7 +140,7 @@ jagsmodel = Jagsmodel(name="bones2",
 println("\nJagsmodel that will be used:")
 jagsmodel |> display
 
-@time sim = jags(jagsmodel, data, [inits], ProjDir)
+@time sim = jags(jagsmodel, data, [inits;], ProjDir)
 describe(sim)
 println()
 
