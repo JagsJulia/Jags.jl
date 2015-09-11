@@ -114,16 +114,16 @@ grade = reshape([
 inits = [
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
     "grade"     => grade,
-    ".RNG.name" => "base::Wichmann-Hill"),
+    ".RNG.name" => "base::Wichmann-Hill");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
     "grade"     => grade,
-    ".RNG.name" => "base::Marsaglia-Multicarry"),
+    ".RNG.name" => "base::Marsaglia-Multicarry");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
     "grade"     => grade,
-    ".RNG.name" => "base::Super-Duper"),
+    ".RNG.name" => "base::Super-Duper");
   @Compat.Dict("theta"     => [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18],
     "grade"     => grade,
-    ".RNG.name" => "base::Mersenne-Twister")
+    ".RNG.name" => "base::Mersenne-Twister");
 ]
 
 monitors = Dict{ASCIIString, Bool}(
