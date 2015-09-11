@@ -33,7 +33,7 @@ function jags(
     curdir = pwd()
     cd(model.tmpdir)
     println("Executing $(model.ncommands) command(s), each with $(model.nchains) chain(s) took:")
-    @time run(par(model.command) >> "$(model.name)-run.log")
+    @time run(pipeline(par(model.command), stdout="$(model.name)-run.log"))
     sim = mchain(model)
     cd(old)
     return(sim)  
