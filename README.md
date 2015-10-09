@@ -12,20 +12,21 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.3-v0.2.0.
+This version will be kept as the Github branch Jags-j0.4-v0.3.0. Branch Jags-j0.3-v0.2.0 runs on Julia 0.3.x.
 
 
 ## What's new
 
 ### Version 0.3.0
 
-1. Updated for Julia 0.4
+1. Updated for Julia 0.4. Julia 0.4 and upwards only.
+2. Removed Compat with 0.3.
 
 ### Version 0.2.0
 
 1. Added badges for Julia package listing
 2. Exported JAGS_HOME in Jags.jl
-3. Updated for Julia 0.4
+3. Updated for to also run Julia 0.4 pre-releases
 
 ### Version 0.1.5
 
