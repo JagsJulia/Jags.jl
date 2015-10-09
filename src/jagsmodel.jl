@@ -1,7 +1,7 @@
 import Base: show, showcompact
 
 type Jagsmodel
-  name::String
+  name::ASCIIString
   ncommands::Int
   nchains::Int
   adapt::Int
@@ -11,19 +11,19 @@ type Jagsmodel
   deviance::Bool
   dic::Bool
   popt::Bool
-  model::String
-  model_file::String
+  model::ASCIIString
+  model_file::ASCIIString
   data::Dict{ASCIIString,Any}
-  data_file::String
+  data_file::ASCIIString
   init::Array{Dict{ASCIIString,Any},1}
   command::Array{Base.AbstractCmd, 1}
-  tmpdir::String
+  tmpdir::ASCIIString
 end
 
 function Jagsmodel(;
-  name::String="Noname", 
-  model::String="", 
-  model_file::String="",
+  name::ASCIIString="Noname", 
+  model::ASCIIString="", 
+  model_file::ASCIIString="",
   ncommands::Int=1,
   nchains::Int=4,
   adapt::Int=1000,
@@ -34,7 +34,7 @@ function Jagsmodel(;
   dic::Bool=false,
   popt::Bool=false,
   updatejagsfile::Bool=true,
-  pdir::String=pwd())
+  pdir::ASCIIString=pwd())
   
   cd(pdir)
   
@@ -111,7 +111,7 @@ end
 
 #### Function to update the bugs, init and data files
 
-function update_bugs_file(file::String, str::String)
+function update_bugs_file(file::ASCIIString, str::ASCIIString)
   str2 = ""
   if isfile(file)
     str2 = open(readall, file, "r")
@@ -205,7 +205,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
 end
 
-function check_jags_file(file::String, str::String)
+function check_jags_file(file::ASCIIString, str::ASCIIString)
   str2 = ""
   if isfile(file)
     str2 = open(readall, file, "r")

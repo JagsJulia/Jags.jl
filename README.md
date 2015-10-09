@@ -17,6 +17,10 @@ This version will be kept as the Github branch Jags-j0.3-v0.2.0.
 
 ## What's new
 
+### Version 0.3.0
+
+1. Updated for Julia 0.4
+
 ### Version 0.2.0
 
 1. Added badges for Julia package listing

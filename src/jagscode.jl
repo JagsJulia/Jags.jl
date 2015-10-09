@@ -56,7 +56,7 @@ function update_init_files(model::Jagsmodel, init)
   end
 end
 
-function update_R_file(file::String, dct; replaceNaNs::Bool=true)
+function update_R_file(file::ASCIIString, dct; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   
@@ -90,7 +90,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
         end
       end
      end
-    if typeof(val) <: String
+    if typeof(val) <: ASCIIString
       str = str*"\"$(val)\"\n"
     elseif length(val)==1 && length(size(val))==0
       # Scalar
@@ -194,7 +194,7 @@ function mchain(model::Jagsmodel)
   local totalnchains, curchain
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
 
-  cnames = String[]
+  cnames = ASCIIString[]
   for i in 1:size(index)[1]
     append!(cnames, [index[i]])
   end
