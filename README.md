@@ -2,7 +2,10 @@
 
 
 [![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
-[![Jags](http://pkg.julialang.org/badges/Jags_1.0.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.0)
+
+[![Jags](http://pkg.julialang.org/badges/Jags_0.5.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.5)
+
+http://pkg.julialang.org/badges/Jags_0.5.svg
 
 ## Purpose
 

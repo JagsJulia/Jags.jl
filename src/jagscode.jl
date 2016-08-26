@@ -151,7 +151,7 @@ function read_jagsfiles(model::Jagsmodel)
     for j in 1:model.nchains
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false)
+        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false);
         for key in index[:, 1]
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
@@ -221,14 +221,10 @@ end
 #### Read DIC related results
 
 function read_pDfile(model::Jagsmodel)
-  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false)
+  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false);
   idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
-    if length(keys(idxdct)) == 0
-      idxdct = Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])])
-    else
-      merge!(idxdct, Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])]))
-    end
+    idxdct[index[row, 1]]=[Int(index[row, 2]), Int(index[row, 3])]
   end
 
   ## Collect the results of a chain in an array ##
@@ -248,7 +244,7 @@ function read_pDfile(model::Jagsmodel)
     tdict = Dict{String, Any}()
     if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
-      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false)
+      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false);
       for key in index[:, 1]
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]

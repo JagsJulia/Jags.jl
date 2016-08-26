@@ -102,24 +102,20 @@ cd(ProjDir) do
   (index, chains) = Jags.read_jagsfiles(jagsmodel)
 
   println()
-  chains[1]["samples"] |> display
-  println()
-  if size(chains, 1) >= 4
-    chains[4]["samples"] |> display
-  end
+  #chains[1]["samples"] |> display
+  #println()
 
-  println()
   if jagsmodel.dic
     (idx0, chain0) = Jags.read_pDfile(jagsmodel)
     #idx0 |> display
     println()
-    chain0[1]["samples"] |> display
+    #chain0[1]["samples"] |> display
   end
 
   if jagsmodel.dic || jagsmodel.popt
-    println()
-    pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
-    pDmeanAndpopt |> display
+    pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"]);
+    pDmeanAndpopt["pD.mean"] |> display
+    pDmeanAndpopt["popt"] |> display
   end
 
 end #cd      

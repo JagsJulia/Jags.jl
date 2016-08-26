@@ -16,7 +16,8 @@ execution_tests = [
   "test_rats.jl", 
   "test_bones1.jl", 
   "test_bones2.jl", 
-  "test_dyes.jl";]
+  "test_dyes.jl";
+]
 
 for my_test in code_tests
     println("\n  * $(my_test) *")
