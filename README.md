@@ -1,6 +1,6 @@
 # Jags
 
-[![Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)
+[![Travis Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)
 
 [![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
 
