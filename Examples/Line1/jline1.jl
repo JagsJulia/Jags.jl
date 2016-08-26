@@ -1,11 +1,9 @@
 ######### Jags line program example  ###########
 
-using Compat, Mamba, Jags
+using Mamba, Jags
 
-old = pwd()
-ProjDir = Pkg.dir("Jags", "Examples", "Line1")
+ProjDir = joinpath(dirname(@__FILE__))
 cd(ProjDir) do
-#cd(ProjDir) # For testing
 
   line = "
   model {
@@ -21,7 +19,7 @@ cd(ProjDir) do
   }
   "
 
-  monitors = @Compat.Dict(
+  monitors = Dict(
     "alpha" => true,
     "beta" => true,
     "tau" => true,
@@ -32,24 +30,24 @@ cd(ProjDir) do
     name="line1", 
     model=line,
     monitor=monitors,
-    #deviance=true, dic=true, popt=true,
+    deviance=true, dic=true, popt=true,
     pdir=ProjDir
     );
 
   println("\nJagsmodel that will be used:")
   jagsmodel |> display
 
-  data = @Compat.Dict(
+  data = Dict(
     "x" => [1, 2, 3, 4, 5],
     "y" => [1, 3, 3, 3, 5],
     "n" => 5
   )
 
   inits = [
-    @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1),
-    @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1),
-    @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
-    @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
+    Dict("alpha" => 0,"beta" => 0,"tau" => 1),
+    Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+    Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+    Dict("alpha" => 5,"beta" => 2,"tau" => 5)
   ]
 
   println("Input observed data dictionary:")
@@ -125,4 +123,3 @@ cd(ProjDir) do
   end
 
 end #cd      
-#cd(old)

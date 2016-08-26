@@ -10,7 +10,13 @@ using Base.Test
 code_tests = ["test_cmd.jl";]
 
 println("Run execution_tests only if Jags is available")
-execution_tests = ["test_line.jl", "test_rats.jl", "test_bones.jl", "test_dyes.jl";]
+execution_tests = [
+  "test_line1.jl", 
+  "test_line2.jl", 
+  "test_rats.jl", 
+  "test_bones1.jl", 
+  "test_bones2.jl", 
+  "test_dyes.jl";]
 
 for my_test in code_tests
     println("\n  * $(my_test) *")

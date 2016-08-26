@@ -1,4 +1,4 @@
-using Compat, Jags
+using Jags
 using Base.Test
 
 old = pwd()
@@ -6,10 +6,10 @@ ProjDir = Pkg.dir("Jags", "Examples", "Line1")
 cd(ProjDir)
 
 inits1 = [
-  @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1),
-  @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1),
-  @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
-  @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
+  Dict("alpha" => 0,"beta" => 0,"tau" => 1),
+  Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+  Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+  Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
 
 function test(init::Array{Dict{String, Int64},1})

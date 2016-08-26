@@ -114,7 +114,7 @@ end
 function update_bugs_file(file::String, str::String)
   str2 = ""
   if isfile(file)
-    str2 = open(readall, file, "r")
+    str2 = open(readstring, file, "r")
     str != str2 && rm(file)
   end
   if str != str2
@@ -208,7 +208,7 @@ end
 function check_jags_file(file::String, str::String)
   str2 = ""
   if isfile(file)
-    str2 = open(readall, file, "r")
+    str2 = open(readstring, file, "r")
     str != str2 && rm(file)
   end
   if str != str2

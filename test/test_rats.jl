@@ -1,19 +1,17 @@
 using Jags
 using Base.Test
 
-old = pwd()
-ProjDir = Pkg.dir("Jags", "Examples", "Rats")
-cd(ProjDir)
-println("Moving to directory: $(ProjDir)")
+ProjDir = joinpath(dirname(@__FILE__), "..", "Examples", "Rats")
+cd(ProjDir) do
+  
+  println("Moving to directory: $(ProjDir)")
 
-cd(ProjDir)
-isdir("tmp") &&
-  rm("tmp", recursive=true);
+  isdir("tmp") &&
+    rm("tmp", recursive=true);
 
-include(Pkg.dir(ProjDir, "jrats.jl"))
+  include(Pkg.dir(ProjDir, "jrats.jl"))
 
-cd(ProjDir)
-isdir("tmp") &&
-  rm("tmp", recursive=true);
+  isdir("tmp") &&
+    rm("tmp", recursive=true);
 
-cd(old)
+end

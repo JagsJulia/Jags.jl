@@ -225,9 +225,9 @@ function read_pDfile(model::Jagsmodel)
   idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
-      idxdct = Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])])
+      idxdct = Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])])
     else
-      merge!(idxdct, Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])]))
+      merge!(idxdct, Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])]))
     end
   end
 

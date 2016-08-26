@@ -20,11 +20,6 @@ This version will be kept as the Github branch Jags-j0.5-v1.0.0.
 
 1. Updated for Julia 0.5
 
-### Version 0.3.0
-
-1. Updated for Julia 0.4. Julia 0.4 and upwards only.
-2. Removed Compat with 0.3.
-
 ### Version 0.2.0
 
 1. Added badges for Julia package listing
@@ -96,7 +91,7 @@ To test and run the examples:
 
 As in the Jags.jl setting, the Jags program consumes and produces files in a 'tmp' subdirectory of the current directory, it is useful to control the current working directory and restore the original directory at the end of the script.
 ```
-using Compat, Mamba, Jags
+using Mamba, Jags
 
 old = pwd()
 ProjDir = Pkg.dir("Jags", "Examples", "Line1")
@@ -146,9 +141,9 @@ Running chains in separate commands does need additional data to be passed in th
 
 If nchains is set to 1, this is updated in Jagsmodel() if dic and/or popt is requested. Jags needs minimally 2 chains to compute those.
 
-The input data for the line example is in below data dictionary using the @Compat macro for compatibility between Julia v0.3 and v0.4:
+The input data for the line example is in below data dictionary:
 ```
-data = @Compat.Dict(
+data = Dict(
   "x" => [1, 2, 3, 4, 5],
   "y" => [1, 3, 3, 3, 5],
   "n" => 5
@@ -160,10 +155,10 @@ data |> display
 Next define an array of dictionaries with initial values for parameters. If the array of dictionaries has not enough elements, the elements will be recycled for chains/commands:
 ```
 inits = [
-  @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1),
-  @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1),
-  @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
-  @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
+  Dict("alpha" => 0,"beta" => 0,"tau" => 1),
+  Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+  Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+  Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
 inits = map((x)->convert(Dict{String, Any}, x), inits)
 
@@ -257,10 +252,10 @@ All parameters to compile and run the Jags script are implicitly passed in throu
 The Line2 example shows how to run multiple Jags simulations in parallel. The most simple case, e.g. 4 commands, each with a single chain, can be initialized with an 'inits' like shown below:
 ```
 inits = [
-  @Compat.Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Wichmann-Hill"),
-  @Compat.Dict("alpha" => 1,"beta" => 2,"tau" => 1,".RNG.name" => "base::Marsaglia-Multicarry"),
-  @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2,".RNG.name" => "base::Super-Duper"),
-  @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
+  Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Wichmann-Hill"),
+  Dict("alpha" => 1,"beta" => 2,"tau" => 1,".RNG.name" => "base::Marsaglia-Multicarry"),
+  Dict("alpha" => 3,"beta" => 3,"tau" => 2,".RNG.name" => "base::Super-Duper"),
+  Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
 ]
 ```
 The first entry in the 'inits' array will be passed into the first chain in the first command process, the second entry to the second process, etc. A second chain in the first command would be initialized with the second entry, etc. 
