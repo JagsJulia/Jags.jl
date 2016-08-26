@@ -129,11 +129,7 @@ function read_jagsfiles(model::Jagsmodel)
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
   idxdct = Dict{ASCIIString, Any}()
   for row in 1:size(index)[1]
-    if length(keys(idxdct)) == 0
-      idxdct = Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])])
-    else
-      merge!(idxdct, Dict(index[row, 1] => [Int(index[row, 2]), Int(index[row, 3])]))
-    end
+    idxdct[index[row, 1]]=[Int(index[row, 2]), Int(index[row, 3])]
   end
 
   ## Collect the results of a chain in an array ##
@@ -170,8 +166,8 @@ function read_jagsfiles(model::Jagsmodel)
       
         if length(keys(tdict)) > 0
           #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-          rtdict = merge(rtdict, Dict(res_type => tdict))
-          tdict = Dict{ASCIIString, Any}()
+          rtdict = merge(rtdict, [res_type => tdict])
+          tdict = Dict{String, Any}()
         end
       end
     
