@@ -166,7 +166,7 @@ function read_jagsfiles(model::Jagsmodel)
       
         if length(keys(tdict)) > 0
           #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
-          rtdict = merge(rtdict, [res_type => tdict])
+          rtdict[res_type]=tdict
           tdict = Dict{String, Any}()
         end
       end
