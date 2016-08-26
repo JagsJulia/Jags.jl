@@ -1,7 +1,7 @@
 import Base: show, showcompact
 
 type Jagsmodel
-  name::ASCIIString
+  name::String
   ncommands::Int
   nchains::Int
   adapt::Int
@@ -11,30 +11,30 @@ type Jagsmodel
   deviance::Bool
   dic::Bool
   popt::Bool
-  model::ASCIIString
-  model_file::ASCIIString
-  data::Dict{ASCIIString,Any}
-  data_file::ASCIIString
-  init::Array{Dict{ASCIIString,Any},1}
+  model::String
+  model_file::String
+  data::Dict{String,Any}
+  data_file::String
+  init::Array{Dict{String,Any},1}
   command::Array{Base.AbstractCmd, 1}
-  tmpdir::ASCIIString
+  tmpdir::String
 end
 
 function Jagsmodel(;
-  name::ASCIIString="Noname", 
-  model::ASCIIString="", 
-  model_file::ASCIIString="",
+  name::String="Noname", 
+  model::String="", 
+  model_file::String="",
   ncommands::Int=1,
   nchains::Int=4,
   adapt::Int=1000,
   update::Int=10000,
   thin::Int=10,
-  monitor=Dict{ASCIIString,Any}(), 
+  monitor=Dict{String,Any}(), 
   deviance::Bool=false,
   dic::Bool=false,
   popt::Bool=false,
   updatejagsfile::Bool=true,
-  pdir::ASCIIString=pwd())
+  pdir::String=pwd())
   
   cd(pdir)
   
@@ -69,7 +69,7 @@ function Jagsmodel(;
   cmdarray = fill(``, ncommands)
   for i in 1:ncommands
     jfile = "$(name)-cmd$(i).jags"
-    cmdarray[i] = @windows ? `cmd /c jags $(jfile)` : `jags $(jfile)`
+    cmdarray[i] = @static is_windows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
   end
 
   # DIC needs at least 2 chains
@@ -77,8 +77,8 @@ function Jagsmodel(;
     nchains = 2
   end
 
-  data = Dict{ASCIIString, Any}()
-  init = Dict{ASCIIString, Any}[]
+  data = Dict{String, Any}()
+  init = Dict{String, Any}[]
 
   if length(monitor) == 0
     println("No monitors defined!")
@@ -111,7 +111,7 @@ end
 
 #### Function to update the bugs, init and data files
 
-function update_bugs_file(file::ASCIIString, str::ASCIIString)
+function update_bugs_file(file::String, str::String)
   str2 = ""
   if isfile(file)
     str2 = open(readall, file, "r")
@@ -205,7 +205,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
 end
 
-function check_jags_file(file::ASCIIString, str::ASCIIString)
+function check_jags_file(file::String, str::String)
   str2 = ""
   if isfile(file)
     str2 = open(readall, file, "r")

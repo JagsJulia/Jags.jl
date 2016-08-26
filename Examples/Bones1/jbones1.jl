@@ -31,7 +31,7 @@ model {
 }   
 "
 
-data = Dict{ASCIIString, Any}()
+data = Dict{String, Any}()
 data["nChild"] = 13		
 data["nInd"] = 34
 data["gamma"] = reshape([
@@ -81,7 +81,7 @@ data["grade"] = reshape([
   2, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 1, 1, 1, 1, 2, 3, 3, 3, 4, 
   5, 5, 5, 5, 1, 1, 1, 1, 3, 3, 3, 4, 4, 5, 5, 5, 5], 13, 34)
 
-inits = Dict{ASCIIString, Any}()
+inits = Dict{String, Any}()
 inits["theta"] = [0.5, 1, 2, 3, 5, 6, 7, 8, 9, 12, 13, 16, 18]
 inits["grade"] = reshape([
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
@@ -113,7 +113,7 @@ inits["grade"] = reshape([
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 
   NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN], 13, 34)
 
-monitors = Dict{ASCIIString, Bool}("theta" => true)
+monitors = Dict{String, Bool}("theta" => true)
 
 jagsmodel = Jagsmodel(name="bones1", 
 model=bones,
@@ -149,7 +149,7 @@ draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
 # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
         for i in 1:3
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)

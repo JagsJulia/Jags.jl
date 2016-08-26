@@ -31,7 +31,7 @@ model {
 }   
 "
 
-data = Dict{ASCIIString, Any}()
+data = Dict{String, Any}()
 data["nChild"] = 13		
 data["nInd"] = 34
 data["gamma"] = reshape([
@@ -122,7 +122,7 @@ inits = [
     "grade"     => grade, ".RNG.name" => "base::Mersenne-Twister");
 ]
 
-monitors = Dict{ASCIIString, Bool}(
+monitors = Dict{String, Bool}(
   "theta" => true
 )
 
@@ -160,7 +160,7 @@ draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
 # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
         for i in 1:3
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)

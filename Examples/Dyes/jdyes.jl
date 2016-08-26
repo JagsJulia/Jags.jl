@@ -26,7 +26,7 @@ model {
 }
 "
 
-data = Dict{ASCIIString, Any}()
+data = Dict{String, Any}()
 data["y"] = reshape([
   1545, 1540, 1595, 1445, 1595,
   1520, 1440, 1555, 1550, 1440,
@@ -39,14 +39,14 @@ data["BATCHES"] = 6
 data["SAMPLES"] = 5
 
 inits = [
-  Dict{ASCIIString, Any}(
+  Dict{String, Any}(
     "theta" => 1500,
     "tau.within" => 1,
     "tau.between" => 1
 	)
 ]
 
-monitors = Dict{ASCIIString, Any}(
+monitors = Dict{String, Any}(
   "theta" => true,
   "s2.within" => true,
   "s2.between" => true
@@ -75,7 +75,7 @@ draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
 # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
         for i in 1:4
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)

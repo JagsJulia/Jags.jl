@@ -1,8 +1,8 @@
 # Jags
 
 
-[![Jags](http://pkg.julialang.org/badges/Jags_0.3.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.3)
 [![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
+[![Jags](http://pkg.julialang.org/badges/Jags_1.0.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.0)
 
 ## Purpose
 
@@ -12,10 +12,13 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.4-v0.3.0. Branch Jags-j0.3-v0.2.0 runs on Julia 0.3.x.
-
+This version will be kept as the Github branch Jags-j0.5-v1.0.0.
 
 ## What's new
+
+### Version 1.0.0
+
+1. Updated for Julia 0.5
 
 ### Version 0.3.0
 
@@ -117,7 +120,7 @@ model {
 ```
 Next, define which variables should be monitored (if => true).
 ```
-monitors = (ASCIIString => Bool)[
+monitors = (String => Bool)[
   "alpha" => true,
   "beta" => true,
   "tau" => true,
@@ -162,7 +165,7 @@ inits = [
   @Compat.Dict("alpha" => 3,"beta" => 3,"tau" => 2),
   @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
-inits = map((x)->convert(Dict{ASCIIString, Any}, x), inits)
+inits = map((x)->convert(Dict{String, Any}, x), inits)
 
 println("\nInput initial values dictionary:")
 inits |> display
@@ -203,7 +206,7 @@ draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 ###### Below will only work on OSX, please adjust for your environment.
 ###### JULIA_SVG_BROWSER is set from the environment variable JULIA_SVG_BROWSER
-@osx ? if length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if length(JULIA_SVG_BROWSER) > 0
         for i in 1:3
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
@@ -242,8 +245,8 @@ The full signature of jags() is:
 ```
 function jags(
   model::Jagsmodel,
-  data::Dict{ASCIIString, Any}=Dict{ASCIIString, Any}(),
-  init::Array{Dict{ASCIIString, Any}, 1} = Dict{ASCIIString, Any}[],
+  data::Dict{String, Any}=Dict{String, Any}(),
+  init::Array{Dict{String, Any}, 1} = Dict{String, Any}[],
   ProjDir=pwd();
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true

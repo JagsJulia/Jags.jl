@@ -5,7 +5,7 @@ ProjDir = Pkg.dir("Jags", "Examples", "Rats")
 cd(ProjDir)
 
 ## Data
-rats = Dict{ASCIIString, Any}(
+rats = Dict{String, Any}(
   "Y" => 
     [151 199 246 283 320;
      145 199 249 293 354; 
@@ -65,17 +65,17 @@ model {
 
 ## Initial Values
 inits = [
-  Dict{ASCIIString,Any}("alpha" => fill(250, 30), "beta" => fill(6, 30),
+  Dict{String,Any}("alpha" => fill(250, 30), "beta" => fill(6, 30),
   "alpha.c" => 100, "beta.c" => 2, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
-  Dict{ASCIIString,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
+  Dict{String,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
   "alpha.c" => 150, "beta.c" => 2, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
-  Dict{ASCIIString,Any}("alpha" => fill(200, 30), "beta" => fill(6, 30),
+  Dict{String,Any}("alpha" => fill(200, 30), "beta" => fill(6, 30),
   "alpha.c" => 200, "beta.c" => 1, "tau.c" => 1, "tau.alpha" => 1, "tau.beta" => 1),
-  Dict{ASCIIString,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
+  Dict{String,Any}("alpha" => fill(150, 30), "beta" => fill(3, 30),
   "alpha.c" => 250, "beta.c" => 1, "tau.c" => 1, "tau.alpha" => 1,"tau.beta" => 1)
 ]
 
-monitors = Dict{ASCIIString, Bool}(
+monitors = Dict{String, Bool}(
   "alpha0" => true,
   "beta.c" => true,
   "sigma" =>true
@@ -109,7 +109,7 @@ draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
 # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
         for i in 1:4
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)

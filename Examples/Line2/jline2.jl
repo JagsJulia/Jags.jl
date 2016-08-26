@@ -93,36 +93,11 @@ draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 # Below will only work on OSX, please adjust for your environment.
 # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-@osx ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
+@static is_apple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
         for i in 1:4
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
         end
       end : println()
-
-# Below examples of using other ways to display the simulation results
-(index, chains) = Jags.read_jagsfiles(jagsmodel)
-
-println()
-chains[1]["samples"] |> display
-println()
-if size(chains, 1) >= 4
-  chains[4]["samples"] |> display
-end
-
-
-println()
-if jagsmodel.dic
-  (idx0, chain0) = Jags.read_pDfile(jagsmodel)
-  #idx0 |> display
-  println()
-  chain0[1]["samples"] |> display
-end
-
-if jagsmodel.dic || jagsmodel.popt
-  println()
-  pDmeanAndpopt = Jags.read_table_file(jagsmodel, data["n"])
-  pDmeanAndpopt |> display
-end
 
 cd(old)

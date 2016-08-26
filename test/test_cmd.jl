@@ -12,20 +12,20 @@ inits1 = [
   @Compat.Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
 
-function test(init::Array{Dict{ASCIIString, Int64},1})
-  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+function test(init::Array{Dict{String, Int64},1})
+  res = map((x)->convert(Dict{String, Any}, x), init)
 end
 
-function test(init::Array{Dict{ASCIIString, Float64},1})
-  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+function test(init::Array{Dict{String, Float64},1})
+  res = map((x)->convert(Dict{String, Any}, x), init)
 end
 
-function test(init::Array{Dict{ASCIIString, Number},1})
-  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+function test(init::Array{Dict{String, Number},1})
+  res = map((x)->convert(Dict{String, Any}, x), init)
 end
 
-function test(init::Array{Dict{ASCIIString, Any},1})
-  res = map((x)->convert(Dict{ASCIIString, Any}, x), init)
+function test(init::Array{Dict{String, Any},1})
+  res = map((x)->convert(Dict{String, Any}, x), init)
 end
 
 line = "
@@ -42,14 +42,14 @@ model {
 }
 "
 
-data = Dict{ASCIIString, Any}()
+data = Dict{String, Any}()
 data["x"] = [1, 2, 3, 4, 5]
 data["y"] = [1, 3, 3, 3, 5]
 data["n"] = 5
 
 inits = test(inits1)
 
-monitors = Dict{ASCIIString, Bool}(
+monitors = Dict{String, Bool}(
   "alpha" => true,
   "beta" => true,
   "tau" => true,

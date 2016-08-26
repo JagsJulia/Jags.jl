@@ -1,7 +1,7 @@
 function jags(
   model::Jagsmodel,
-  data = Dict{ASCIIString, Any}(),
-  init = Dict{ASCIIString, Any}(),
+  data = Dict{String, Any}(),
+  init = Dict{String, Any}(),
   ProjDir=pwd();
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true
@@ -56,7 +56,7 @@ function update_init_files(model::Jagsmodel, init)
   end
 end
 
-function update_R_file(file::ASCIIString, dct; replaceNaNs::Bool=true)
+function update_R_file(file::String, dct; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
   
@@ -90,7 +90,7 @@ function update_R_file(file::ASCIIString, dct; replaceNaNs::Bool=true)
         end
       end
      end
-    if typeof(val) <: ASCIIString
+    if typeof(val) <: String
       str = str*"\"$(val)\"\n"
     elseif length(val)==1 && length(size(val))==0
       # Scalar
@@ -127,27 +127,27 @@ end
 
 function read_jagsfiles(model::Jagsmodel)
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
-  idxdct = Dict{ASCIIString, Any}()
+  idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
     idxdct[index[row, 1]]=[Int(index[row, 2]), Int(index[row, 3])]
   end
 
   ## Collect the results of a chain in an array ##
   
-  chainarray = Dict{ASCIIString, Any}[]
+  chainarray = Dict{String, Any}[]
   
   ## Each chain dictionary can contain up to 4 types of results ##
   
   result_type_files = ["samples"]
-  rtdict = Dict{ASCIIString, Any}()
+  rtdict = Dict{String, Any}()
   res_type = result_type_files[1]
   
   ## tdict contains the arrays of values ##
-  tdict = Dict{ASCIIString, Any}()
+  tdict = Dict{String, Any}()
   
   println()
   for i in 1:model.ncommands
-    tdict = Dict{ASCIIString, Any}()
+    tdict = Dict{String, Any}()
     for j in 1:model.nchains
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
@@ -176,7 +176,7 @@ function read_jagsfiles(model::Jagsmodel)
       if length(keys(rtdict)) > 0
         #println("Pushing the rtdict with keys $(keys(rtdict))")
         push!(chainarray, rtdict)
-        rtdict = Dict{ASCIIString, Any}()
+        rtdict = Dict{String, Any}()
       end
     end
   end
@@ -190,7 +190,7 @@ function mchain(model::Jagsmodel)
   local totalnchains, curchain
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
 
-  cnames = ASCIIString[]
+  cnames = String[]
   for i in 1:size(index)[1]
     append!(cnames, [index[i]])
   end
@@ -222,7 +222,7 @@ end
 
 function read_pDfile(model::Jagsmodel)
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false)
-  idxdct = Dict{ASCIIString, Any}()
+  idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
     if length(keys(idxdct)) == 0
       idxdct = Dict(index[row, 1] => [int(index[row, 2]), int(index[row, 3])])
@@ -233,19 +233,19 @@ function read_pDfile(model::Jagsmodel)
 
   ## Collect the results of a chain in an array ##
   
-  chainarray = Dict{ASCIIString, Any}[]
+  chainarray = Dict{String, Any}[]
   
   ## Each chain dictionary can contain up to 4 types of results ##
   
   result_type_files = ["samples"]
-  rtdict = Dict{ASCIIString, Any}()
+  rtdict = Dict{String, Any}()
   res_type = result_type_files[1]
   
   ## tdict contains the arrays of values ##
-  tdict = Dict{ASCIIString, Any}()
+  tdict = Dict{String, Any}()
   
   for i in 0:0
-    tdict = Dict{ASCIIString, Any}()
+    tdict = Dict{String, Any}()
     if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
       res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false)
@@ -264,7 +264,7 @@ function read_pDfile(model::Jagsmodel)
       if length(keys(tdict)) > 0
         #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
         rtdict = merge(rtdict, Dict(res_type => tdict))
-        tdict = Dict{ASCIIString, Any}()
+        tdict = Dict{String, Any}()
       end
     end
     
@@ -273,14 +273,14 @@ function read_pDfile(model::Jagsmodel)
     if length(keys(rtdict)) > 0
       #println("Pushing the rtdict with keys $(keys(rtdict))")
       push!(chainarray, rtdict)
-      rtdict = Dict{ASCIIString, Any}()
+      rtdict = Dict{String, Any}()
     end
   end
   (idxdct, chainarray)
 end
 
 function read_table_file(model::Jagsmodel, len::Int)
-  pdpopt = Dict{ASCIIString, Any}[]
+  pdpopt = Dict{String, Any}[]
   res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false)
   if model.dic && model.popt
     pdpopt = Dict("pD.mean" => res[1:len, 2])
