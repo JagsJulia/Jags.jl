@@ -1,8 +1,10 @@
 # Jags
 
+[![Travis Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 
 [![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
-[![Jags](http://pkg.julialang.org/badges/Jags_1.0.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.0)
+
+[![Jags](http://pkg.julialang.org/badges/Jags_0.5.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.5)
 
 ## Purpose
 
@@ -160,7 +162,6 @@ inits = [
   Dict("alpha" => 3,"beta" => 3,"tau" => 2),
   Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
-inits = map((x)->convert(Dict{String, Any}, x), inits)
 
 println("\nInput initial values dictionary:")
 inits |> display
@@ -264,7 +265,5 @@ The first entry in the 'inits' array will be passed into the first chain in the 
 ## To do
 
 More features will be added as requested by users and as time permits. Please file an issue/comment/request.
-
-The ability to resume a simulation will e looked at for version 0.2.x.
 
 **Note 1:** In order to support platforms other than OS X, help is needed to test on such platforms.
