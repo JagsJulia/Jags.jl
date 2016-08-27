@@ -162,7 +162,6 @@ inits = [
   Dict("alpha" => 3,"beta" => 3,"tau" => 2),
   Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
-inits = map((x)->convert(Dict{String, Any}, x), inits)
 
 println("\nInput initial values dictionary:")
 inits |> display
@@ -266,7 +265,5 @@ The first entry in the 'inits' array will be passed into the first chain in the 
 ## To do
 
 More features will be added as requested by users and as time permits. Please file an issue/comment/request.
-
-The ability to resume a simulation will e looked at for version 0.2.x.
 
 **Note 1:** In order to support platforms other than OS X, help is needed to test on such platforms.
