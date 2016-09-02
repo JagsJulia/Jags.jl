@@ -14,9 +14,13 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.5-v1.0.0.
+This version will be kept as the Github branch Jags-j0.5-v1.0.1.
 
 ## What's new
+
+### Version 1.0.1
+
+1. Requires Julia v"0.5.0-rc3".
 
 ### Version 1.0.0
 
