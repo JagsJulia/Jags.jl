@@ -1,4 +1,4 @@
-println("Running tests for Jags-j0.5-v1.0.0:")
+println("Running tests for Jags-j0.5-v1.0.02:")
 
 using Jags
 using Base.Test

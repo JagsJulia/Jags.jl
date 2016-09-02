@@ -14,13 +14,14 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.5-v1.0.1.
+This version will be kept as the Github branch Jags-j0.5-v1.0.2.
 
 ## What's new
 
-### Version 1.0.1
+### Version 1.0.2
 
 1. Requires Julia v"0.5.0-rc3".
+2. Updated .travis.yml to jsut test on Julia 0.5
 
 ### Version 1.0.0
 
