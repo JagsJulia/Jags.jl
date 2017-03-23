@@ -21,28 +21,28 @@ type Jagsmodel
 end
 
 function Jagsmodel(;
-  name::String="Noname", 
-  model::String="", 
+  name::String="Noname",
+  model::String="",
   model_file::String="",
   ncommands::Int=1,
   nchains::Int=4,
   adapt::Int=1000,
   update::Int=10000,
   thin::Int=10,
-  monitor=Dict{String,Any}(), 
+  monitor=Dict{String,Any}(),
   deviance::Bool=false,
   dic::Bool=false,
   popt::Bool=false,
   updatejagsfile::Bool=true,
   pdir::String=pwd())
-  
+
   cd(pdir)
-  
+
   tmpdir = Pkg.dir(pdir, "tmp")
   if !isdir(tmpdir)
     mkdir(tmpdir)
   end
-  
+
   # Check if .bugs file needs to be updated.
   if length(model) > 0
     update_bugs_file(Pkg.dir(tmpdir, "$(name).bugs"), strip(model))
@@ -52,7 +52,7 @@ function Jagsmodel(;
     println("No proper model defined.")
   end
   model_file = "$(name).bugs"
-  
+
   # Remove old files created by previous runs
   for i in 1:ncommands
     isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-index0.txt")) &&
@@ -64,7 +64,7 @@ function Jagsmodel(;
         rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-chain$(j).R"));
     end
   end
-  
+
   # Create the command array which will be executed in parallel
   cmdarray = fill(``, ncommands)
   for i in 1:ncommands
@@ -83,18 +83,18 @@ function Jagsmodel(;
   if length(monitor) == 0
     println("No monitors defined!")
   end
-  
+
   data_file = "$(name)-data.R"
-  
+
   jm = Jagsmodel(name,
     ncommands, nchains,
-    adapt, update, thin, 
+    adapt, update, thin,
     monitor,
     deviance, dic, popt,
-    model, model_file, 
+    model, model_file,
     data,
-    data_file, 
-    init, 
+    data_file,
+    init,
     cmdarray,
     tmpdir);
 
@@ -105,7 +105,7 @@ function Jagsmodel(;
       updatejagsfile && update_jags_file(jm, i)
     end
   end
-  
+
   jm
 end
 
@@ -156,7 +156,7 @@ function update_jags_file(model::Jagsmodel)
   end
   for entry in model.monitor
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
     end
   end
   jagsstr = jagsstr*"update $(model.update)\n"
@@ -196,7 +196,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   end
   for entry in model.monitor
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin(1)\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
     end
   end
   jagsstr = jagsstr*"update $(model.update)\n"
@@ -225,7 +225,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
   if compact==true
     println("Jagsmodel(", m.name, ", ",
       m.ncommands, ", ", m.nchains, ", ",
-      m.adapt, ", ", m.update, ", ", m.thin, ", ", 
+      m.adapt, ", ", m.update, ", ", m.thin, ", ",
       m.monitor, ", ",
       m.deviance, ", ", m.dic, ", ", m.popt, ", ",
       m.model_file, ", ", m.data_file, ", ", m.tmpdir, ")")
