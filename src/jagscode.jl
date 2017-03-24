@@ -189,8 +189,8 @@ function mchain(model::Jagsmodel)
   println()
   local totalnchains, curchain
 
-  cnames = String[]
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
+  cnames = String[]
   for i in 1:size(index)[1]
     append!(cnames, [index[i]])
   end
@@ -201,22 +201,17 @@ function mchain(model::Jagsmodel)
     for j in 1:model.nchains
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        # gc()
         res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false)
         curchain = (i-1)*model.nchains + j
-        #println(curchain)
 
         for (k,key) in enumerate(cnames)
           a3d[:, k, curchain] = res[index[k, 2]:index[k, 3], 2]
-          # a3d[:, k, curchain] = res[Int((index[k, 2]-model.adapt+model.thin-1)/model.thin):Int((index[k, 3]-model.adapt+model.thin)/model.thin), 2]
         end
       end
     end
   end
   println()
-  # sr = getindex(a3d, [model.adapt:model.thin:size(a3d)[1];], [1:size(a3d)[2];], [1:size(a3d)[3];])
   sr = getindex(a3d, [1:1:size(a3d)[1];], [1:size(a3d)[2];], [1:size(a3d)[3];])
-  writedlm("inspect_sr.txt",sr)
   Chains(sr, start=model.adapt, thin=model.thin, names=cnames, chains=[i for i in 1:totalnchains])
 end
 
