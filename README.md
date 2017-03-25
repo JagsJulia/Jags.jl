@@ -18,6 +18,10 @@ This version will be kept as the Github branch Jags-j0.5-v1.0.2.
 
 ## What's new
 
+### Version 1.0.3 (Not yet tagged!)
+
+1. Added an option to specify thinning by Jags. Jagsmodel() now accepts a jagsthin arguments. Default is jagsthin=1. Thanks to @hellemo. See examples Line3 and Line4.
+
 ### Version 1.0.2
 
 1. Requires Julia v"0.5.0-rc3".
@@ -229,6 +233,7 @@ function Jagsmodel(;
   adapt=1000,
   update=10000,
   thin=10,
+  jagsthin=1,
   monitor=Dict(), 
   deviance=false,
   dic=false,
