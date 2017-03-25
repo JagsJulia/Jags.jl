@@ -7,6 +7,7 @@ type Jagsmodel
   adapt::Int
   update::Int
   thin::Int
+  jagsthin::Int
   monitor::Dict
   deviance::Bool
   dic::Bool
@@ -28,7 +29,8 @@ function Jagsmodel(;
   nchains::Int=4,
   adapt::Int=1000,
   update::Int=10000,
-  thin::Int=10,
+  thin::Int=1,
+  jagsthin::Int=1,
   monitor=Dict{String,Any}(),
   deviance::Bool=false,
   dic::Bool=false,
@@ -88,7 +90,8 @@ function Jagsmodel(;
 
   jm = Jagsmodel(name,
     ncommands, nchains,
-    adapt, update, thin,
+    adapt, update,
+    thin, jagsthin,
     monitor,
     deviance, dic, popt,
     model, model_file,
@@ -156,7 +159,7 @@ function update_jags_file(model::Jagsmodel)
   end
   for entry in model.monitor
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.jagsthin))\n"
     end
   end
   jagsstr = jagsstr*"update $(model.update)\n"
@@ -196,7 +199,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   end
   for entry in model.monitor
     if entry[2]
-      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.thin))\n"
+      jagsstr = jagsstr*"monitor $(string(entry[1])), thin($(model.jagsthin))\n"
     end
   end
   jagsstr = jagsstr*"update $(model.update)\n"
@@ -225,7 +228,8 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
   if compact==true
     println("Jagsmodel(", m.name, ", ",
       m.ncommands, ", ", m.nchains, ", ",
-      m.adapt, ", ", m.update, ", ", m.thin, ", ",
+      m.adapt, ", ", m.update, ", ",
+      m.thin, ", ", m.jagsthin, ", ",
       m.monitor, ", ",
       m.deviance, ", ", m.dic, ", ", m.popt, ", ",
       m.model_file, ", ", m.data_file, ", ", m.tmpdir, ")")
@@ -236,6 +240,7 @@ function model_show(io::IO, m::Jagsmodel, compact::Bool=false)
     println("  adapt =                   $(m.adapt)")
     println("  update =                  $(m.update)")
     println("  thin =                    $(m.thin)")
+    println("  jagsthin =                $(m.jagsthin)")
     println("  monitor =                 $(m.monitor)")
     println("  deviance =                $(m.deviance)")
     println("  dic =                     $(m.dic)")
