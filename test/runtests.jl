@@ -29,17 +29,19 @@ end
 if isdefined(Main, :JAGS_HOME) && length(JAGS_HOME) > 0
   try
     for my_test in execution_tests
-        println("\n  * $(my_test) *")
+        println("\n\n\n  * $(my_test) *")
         include(my_test)
     end
     println()
   catch e
-     println("Is Jags properly installed?")
+     println("Either Jags is properly installed or")
+     println("an error occurred while running Jags.")
      println(e)
      println("No simulation runs have been performed.")
   end
 else
-  println("\n\nJAGS_HOME not found. Skipping all tests that depend on the Jags executable!\n")  
+  println("\n\nJAGS_HOME not found.")
+  println("Skipping all tests that depend on the Jags executable!\n")  
 end
   
 

@@ -3,7 +3,7 @@
 using Mamba, Jags
 
 ProjDir = joinpath(dirname(@__FILE__))
-cd(ProjDir) #do
+cd(ProjDir) do
 
   line = "
   model {
@@ -120,4 +120,4 @@ cd(ProjDir) #do
     pDmeanAndpopt["popt"] |> display
   end
   
-#end #cd      
+end #cd      
