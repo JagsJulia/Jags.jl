@@ -191,12 +191,10 @@ function mchain(model::Jagsmodel)
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"),
     header=false)
   
-  # Correct index if jagsthin != 0
+  # Correct model.adapt for jagsthin != 1
+  # if jagsthin != 1, adaptation samples are not included.
+  
   if model.jagsthin != 1
-    println("Correct index file")
-    if index[1] == "deviance"
-      index = index[2:end, :]
-    end
     model.adapt = 1
   end
   
@@ -206,7 +204,7 @@ function mchain(model::Jagsmodel)
   end
   
   totalnchains = model.nchains * model.ncommands
-  a3d = fill(0.0, Int(index[1, 3]-index[1, 2] + 1),
+  a3d = fill(0.0, Int(index[1, 3]),
     size(index, 1), totalnchains);
   for i in 1:model.ncommands
     for j in 1:model.nchains

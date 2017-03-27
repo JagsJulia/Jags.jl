@@ -148,7 +148,7 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
   if model.deviance
-    jagsstr = jagsstr*"monitor deviance\n"
+    jagsstr = jagsstr*"monitor deviance, thin($(model.jagsthin))\n"
   end
   if model.dic
     jagsstr = jagsstr*"monitor pD\n"
