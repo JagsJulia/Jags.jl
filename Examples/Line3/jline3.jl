@@ -119,5 +119,5 @@ cd(ProjDir) do
     println()
     pDmeanAndpopt["popt"] |> display
   end
-  
+
 end #cd      
