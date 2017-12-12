@@ -67,7 +67,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
     val = entry[2]
     if replaceNaNs
       if typeof(entry[2]) == Array{Float64, 1}
-        if true in isnan(entry[2])
+        if true in isnan.(entry[2])
           val = convert(DataArray, entry[2])
           for i in 1:length(val)
             if isnan(val[i])
@@ -77,7 +77,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
         end
       end
       if typeof(entry[2]) == Array{Float64, 2}
-        if true in isnan(entry[2])
+        if true in isnan.(entry[2])
           val = convert(DataArray, entry[2])
           k,l = size(val)
           for i in 1:k
