@@ -6,12 +6,12 @@ function jags(
   updatedatafile::Bool=true,
   updateinitfiles::Bool=true
   )
-  
+
   old = pwd()
-  
+
   try
     cd(ProjDir)
-    
+
     if updatedatafile
       if length(keys(data)) > 0
         print("\nCreating data file $(model.name)-data.R - ")
@@ -20,7 +20,7 @@ function jags(
     else
       println("\nData file not updated.")
     end
-    
+
     if updateinitfiles
       if size(init, 1) > 0
         update_init_files(model, init)
@@ -28,7 +28,7 @@ function jags(
     else
       println("\nInit files not updated.")
     end
-    
+
     println()
     curdir = pwd()
     cd(model.tmpdir)
@@ -36,7 +36,7 @@ function jags(
     @time run(pipeline(par(model.command), stdout="$(model.name)-run.log"))
     sim = mchain(model)
     cd(old)
-    return(sim)  
+    return(sim)
   catch e
     println(e)
     cd(old)
@@ -59,15 +59,15 @@ end
 function update_R_file(file::String, dct; replaceNaNs::Bool=true)
   isfile(file) && rm(file)
   strmout = open(file, "w")
-  
+
   str = ""
   for entry in dct
-    
+
     str = "\""*entry[1]*"\""*" <- "
     val = entry[2]
     if replaceNaNs
       if typeof(entry[2]) == Array{Float64, 1}
-        if true in isnan(entry[2])
+        if true in isnan.(entry[2])
           val = convert(DataArray, entry[2])
           for i in 1:length(val)
             if isnan(val[i])
@@ -77,7 +77,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
         end
       end
       if typeof(entry[2]) == Array{Float64, 2}
-        if true in isnan(entry[2])
+        if true in isnan.(entry[2])
           val = convert(DataArray, entry[2])
           k,l = size(val)
           for i in 1:k
@@ -133,25 +133,25 @@ function read_jagsfiles(model::Jagsmodel)
   end
 
   ## Collect the results of a chain in an array ##
-  
+
   chainarray = Dict{String, Any}[]
-  
+
   ## Each chain dictionary can contain up to 4 types of results ##
-  
+
   result_type_files = ["samples"]
   rtdict = Dict{String, Any}()
   res_type = result_type_files[1]
-  
+
   ## tdict contains the arrays of values ##
   tdict = Dict{String, Any}()
-  
+
   println()
   for i in 1:model.ncommands
     tdict = Dict{String, Any}()
     for j in 1:model.nchains
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false);
+        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false, dims=(index[end,end],2));
         for key in index[:, 1]
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
@@ -163,16 +163,16 @@ function read_jagsfiles(model::Jagsmodel)
         end
         ## End of processing result type file ##
         ## If any keys were found, merge it in the rtdict ##
-      
+
         if length(keys(tdict)) > 0
           #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
           rtdict[res_type]=tdict
           tdict = Dict{String, Any}()
         end
       end
-    
+
       ## If rtdict has keys, push it to the chain array ##
-    
+
       if length(keys(rtdict)) > 0
         #println("Pushing the rtdict with keys $(keys(rtdict))")
         push!(chainarray, rtdict)
@@ -190,19 +190,19 @@ function mchain(model::Jagsmodel)
   local totalnchains, curchain
   index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"),
     header=false)
-  
+
   # Correct model.adapt for jagsthin != 1
   # if jagsthin != 1, adaptation samples are not included.
-  
+
   if model.jagsthin != 1
     model.adapt = 1
   end
-  
+
   cnames = String[]
   for i in 1:size(index)[1]
     append!(cnames, [index[i]])
   end
-  
+
   totalnchains = model.nchains * model.ncommands
   a3d = fill(0.0, Int(index[1, 3]),
     size(index, 1), totalnchains);
@@ -211,7 +211,7 @@ function mchain(model::Jagsmodel)
       if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
         res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"),
-          header=false)
+          header=false, dims=(index[end],2))
         curchain = (i-1)*model.nchains + j
         #println(curchain)
         k = 0
@@ -240,23 +240,23 @@ function read_pDfile(model::Jagsmodel)
   end
 
   ## Collect the results of a chain in an array ##
-  
+
   chainarray = Dict{String, Any}[]
-  
+
   ## Each chain dictionary can contain up to 4 types of results ##
-  
+
   result_type_files = ["samples"]
   rtdict = Dict{String, Any}()
   res_type = result_type_files[1]
-  
+
   ## tdict contains the arrays of values ##
   tdict = Dict{String, Any}()
-  
+
   for i in 0:0
     tdict = Dict{String, Any}()
     if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
-      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false);
+      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false, dims=(index[end],2));
       for key in index[:, 1]
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]
@@ -268,16 +268,16 @@ function read_pDfile(model::Jagsmodel)
       end
       ## End of processing result type file ##
       ## If any keys were found, merge it in the rtdict ##
-      
+
       if length(keys(tdict)) > 0
         #println("Merging $(convert(Symbol, res_type)) with keys $(keys(tdict))")
         rtdict = merge(rtdict, Dict(res_type => tdict))
         tdict = Dict{String, Any}()
       end
     end
-    
+
     ## If rtdict has keys, push it to the chain array ##
-    
+
     if length(keys(rtdict)) > 0
       #println("Pushing the rtdict with keys $(keys(rtdict))")
       push!(chainarray, rtdict)
@@ -289,7 +289,12 @@ end
 
 function read_table_file(model::Jagsmodel, len::Int)
   pdpopt = Dict{String, Any}[]
-  res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false)
+  if model.dic && model.popt
+      numrows = 2len
+  else
+      numrows = len
+  end
+  res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false, dims=(numrows,2))
   if model.dic && model.popt
     pdpopt = Dict("pD.mean" => res[1:len, 2])
     pdpopt = merge(pdpopt, Dict("popt" => res[len+1:2len, 2]))
