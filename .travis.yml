@@ -8,7 +8,7 @@ julia:
   - nightly
 matrix:
   allow_failures:
-	-nightly
+   - nightly
 notifications:
   email: true
 script:
