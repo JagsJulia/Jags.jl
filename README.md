@@ -2,9 +2,9 @@
 
 [![Travis Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 
-[![Jags](http://pkg.julialang.org/badges/Jags_0.4.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.4)
-
 [![Jags](http://pkg.julialang.org/badges/Jags_0.5.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.5)
+
+[![Jags](http://pkg.julialang.org/badges/Jags_0.6.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.6)
 
 ## Purpose
 
@@ -14,13 +14,13 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
-This version will be kept as the Github branch Jags-j0.5-v1.0.2.
-
 ## What's new
 
-### Version 1.0.3 (Not yet tagged!)
+### Version 1.0.3 (tagged Jan 2018)
 
 1. Added an option to specify thinning by Jags. Jagsmodel() now accepts a jagsthin arguments. Default is jagsthin=1. Thanks to @hellemo. See examples Line3 and Line4.
+2. Further updates by Hellemo (e.g. to improve readdlm performance).
+3. Tested on Julia 0.6. Not yet on Julia 0.7-.
 
 ### Version 1.0.2
 
