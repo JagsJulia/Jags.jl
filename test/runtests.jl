@@ -11,14 +11,14 @@ code_tests = ["test_cmd.jl";]
 
 println("Run execution_tests only if Jags is available")
 execution_tests = [
-  "test_line1.jl", 
-  "test_line2.jl", 
-  "test_line3.jl", 
-  "test_line4.jl", 
-  "test_rats.jl", 
-  "test_bones1.jl", 
-  "test_bones2.jl", 
-  "test_dyes.jl";
+  "test_line1.jl";
+  "test_line2.jl";
+  "test_line3.jl";
+  "test_line4.jl";
+  "test_rats.jl"; 
+  "test_bones1.jl";
+  "test_bones2.jl";
+  "test_dyes.jl"
 ]
 
 for my_test in code_tests

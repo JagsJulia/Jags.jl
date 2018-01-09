@@ -1,6 +1,6 @@
 import Base: show, showcompact
 
-type Jagsmodel
+mutable struct Jagsmodel
   name::String
   ncommands::Int
   nchains::Int
@@ -71,7 +71,7 @@ function Jagsmodel(;
   cmdarray = fill(``, ncommands)
   for i in 1:ncommands
     jfile = "$(name)-cmd$(i).jags"
-    cmdarray[i] = @static is_windows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
+    cmdarray[i] = @static Sys.iswindows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
   end
 
   # DIC needs at least 2 chains
