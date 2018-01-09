@@ -16,7 +16,7 @@ For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>
 
 ## What's new
 
-### Version 1.0.3 (tagged Jan 2018)
+### Version 1.0.5 (tagged Jan 2018)
 
 1. Added an option to specify thinning by Jags. Jagsmodel() now accepts a jagsthin arguments. Default is jagsthin=1. Thanks to @hellemo. See examples Line3 and Line4.
 2. Further updates by Hellemo (e.g. to improve readdlm performance).
