@@ -1,8 +1,2 @@
-<<<<<<< HEAD
 julia 0.7-
-DataArrays
 Mamba 0.11.0
-=======
-julia 0.5
-Mamba 0.10.0
->>>>>>> master
