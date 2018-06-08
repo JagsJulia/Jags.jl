@@ -34,12 +34,12 @@ Example: `set_JAGS_HOME!(homedir() * "/src/src/cmdstan-2.11.0/")`
 set_JAGS_HOME!(path) = global JAGS_HOME=path
 
 if !isdefined(Main, :JULIA_SVG_BROWSER)
-  JULIA_SVG_BROWSER = ""
+  global JULIA_SVG_BROWSER = ""
   try
-    JULIA_SVG_BROWSER = ENV["JULIA_SVG_BROWSER"]
+    global JULIA_SVG_BROWSER = ENV["JULIA_SVG_BROWSER"]
   catch e
     println("Environment variable JULIA_SVG_BROWSER not found.")
-    JULIA_SVG_BROWSER = ""
+    global JULIA_SVG_BROWSER = ""
   end
 end
 

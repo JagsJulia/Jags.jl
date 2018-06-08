@@ -104,8 +104,7 @@ As in the Jags.jl setting, the Jags program consumes and produces files in a 'tm
 ```
 using Mamba, Jags
 
-old = pwd()
-ProjDir = Pkg.dir("Jags", "Examples", "Line1")
+ProjDir = dirname(@__FILE__)
 cd(ProjDir)
 ```
 Variable `line` holds the model which will be writtten to a file named `$(model.name).bugs` in the 'tmp' subdirectory. The value of model.name is set later on, see the call to Jagsmodel() below.
@@ -211,7 +210,7 @@ draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
 
 ###### Below will only work on OSX, please adjust for your environment.
 ###### JULIA_SVG_BROWSER is set from the environment variable JULIA_SVG_BROWSER
-@static is_apple() ? if length(JULIA_SVG_BROWSER) > 0
+@static Sys.isapple() ? if length(JULIA_SVG_BROWSER) > 0
         for i in 1:3
           isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
             run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)

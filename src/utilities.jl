@@ -24,10 +24,36 @@ if !isdefined(Main, :Stan)
   end
 end
 
+"""
+
+# par 
+
+Rewrite dct to R format in file. 
+
+### Method
+```julia
+par(cmds)
+```
+
+### Required arguments
+```julia
+* `cmds::Array{Base.AbstractCmd,1}`    : Multiple commands to concatenate
+
+or
+
+* `cmd::Base.AbstractCmd`              : Single command to be
+* `n::Number`                            inserted n times into cmd
+
+
+or
+* `cmd::Array{String, 1}`              : Array of cmds as Strings
+```
+
+"""
 function par(cmds::Array{Base.AbstractCmd,1})
   if length(cmds) > 2
-    return(par([cmds[1:(length(cmds)-2)],
-      Base.AndCmds(cmds[length(cmds)-1], cmds[length(cmds)]);]))
+    return(par([cmds[1:(length(cmds)-2)];
+      Base.AndCmds(cmds[length(cmds)-1], cmds[length(cmds)])]))
   elseif length(cmds) == 2
     return(Base.AndCmds(cmds[1], cmds[2]))
   else

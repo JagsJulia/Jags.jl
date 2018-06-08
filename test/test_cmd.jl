@@ -1,6 +1,3 @@
-using Jags
-using Test
-
 ProjDir = dirname(@__FILE__)
 cd(ProjDir) do
 

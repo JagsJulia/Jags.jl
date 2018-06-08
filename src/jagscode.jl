@@ -15,7 +15,7 @@ function jags(
     if updatedatafile
       if length(keys(data)) > 0
         print("\nCreating data file $(model.name)-data.R - ")
-        @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-data.R"), data)
+        @time update_R_file(joinpath(model.tmpdir, "$(model.name)-data.R"), data)
       end
     else
       println("\nData file not updated.")
@@ -52,7 +52,7 @@ function update_init_files(model::Jagsmodel, init)
   indx = filter(x -> x!=0, [%(i, (k+1)) for i in 1:2m])
   for i in 1:m
     print("Creating init file $(model.name)-inits$(i).R - ")
-    @time update_R_file(Pkg.dir(model.tmpdir, "$(model.name)-inits$(i).R"), init[indx[i]])
+    @time update_R_file(joinpath(model.tmpdir, "$(model.name)-inits$(i).R"), init[indx[i]])
   end
 end
 
@@ -126,7 +126,7 @@ end
 #### use readdlm to read in all chains and create a Dict
 
 function read_jagsfiles(model::Jagsmodel)
-  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
+  index = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-index.txt"), header=false)
   idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
     idxdct[index[row, 1]]=[Int(index[row, 2]), Int(index[row, 3])]
@@ -149,9 +149,9 @@ function read_jagsfiles(model::Jagsmodel)
   for i in 1:model.ncommands
     tdict = Dict{String, Any}()
     for j in 1:model.nchains
-      if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
+      if isfile(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false, dims=(index[end,end],2));
+        res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false, dims=(index[end,end],2));
         for key in index[:, 1]
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
@@ -188,7 +188,7 @@ end
 function mchain(model::Jagsmodel)
   println()
   local totalnchains, curchain
-  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index.txt"),
+  index = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-index.txt"),
     header=false)
 
   # Correct model.adapt for jagsthin != 1
@@ -208,9 +208,9 @@ function mchain(model::Jagsmodel)
     size(index, 1), totalnchains);
   for i in 1:model.ncommands
     for j in 1:model.nchains
-      if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
+      if isfile(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"),
+        res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"),
           header=false, dims=(index[end],2))
         curchain = (i-1)*model.nchains + j
         #println(curchain)
@@ -233,7 +233,7 @@ end
 #### Read DIC related results
 
 function read_pDfile(model::Jagsmodel)
-  index = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false);
+  index = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-index0.txt"), header=false);
   idxdct = Dict{String, Any}()
   for row in 1:size(index)[1]
     idxdct[index[row, 1]]=[Int(index[row, 2]), Int(index[row, 3])]
@@ -254,9 +254,9 @@ function read_pDfile(model::Jagsmodel)
 
   for i in 0:0
     tdict = Dict{String, Any}()
-    if isfile(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
+    if isfile(joinpath(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
-      res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false, dims=(index[end],2));
+      res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false, dims=(index[end],2));
       for key in index[:, 1]
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]
@@ -294,7 +294,7 @@ function read_table_file(model::Jagsmodel, len::Int)
   else
       numrows = len
   end
-  res = readdlm(Pkg.dir(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false, dims=(numrows,2))
+  res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false, dims=(numrows,2))
   if model.dic && model.popt
     pdpopt = Dict("pD.mean" => res[1:len, 2])
     pdpopt = merge(pdpopt, Dict("popt" => res[len+1:2len, 2]))

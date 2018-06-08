@@ -1,6 +1,6 @@
 import Base: show, showcompact
 
-type Jagsmodel
+mutable struct Jagsmodel
   name::String
   ncommands::Int
   nchains::Int
@@ -40,16 +40,17 @@ function Jagsmodel(;
 
   cd(pdir)
 
-  tmpdir = Pkg.dir(pdir, "tmp")
+  tmpdir = joinpath(pdir, "tmp")
+  @show tmpdir
   if !isdir(tmpdir)
     mkdir(tmpdir)
   end
 
   # Check if .bugs file needs to be updated.
   if length(model) > 0
-    update_bugs_file(Pkg.dir(tmpdir, "$(name).bugs"), strip(model))
+    update_bugs_file(joinpath(tmpdir, "$(name).bugs"), strip(model))
   elseif length(model) == 0 && length(model_file) >0 && isfile(model_file)
-    cp(model_file, Pkg.dir(tmpdir, "$(name).bugs"))
+    cp(model_file, joinpath(tmpdir, "$(name).bugs"))
   else
     println("No proper model defined.")
   end
@@ -57,13 +58,13 @@ function Jagsmodel(;
 
   # Remove old files created by previous runs
   for i in 1:ncommands
-    isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-index0.txt")) &&
-      rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-index0.txt"));
-    isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-table0.txt")) &&
-      rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-table0.txt"));
+    isfile(joinpath(tmpdir, "$(name)-cmd$(i)-index0.txt")) &&
+      rm(joinpath(tmpdir, "$(name)-cmd$(i)-index0.txt"));
+    isfile(joinpath(tmpdir, "$(name)-cmd$(i)-table0.txt")) &&
+      rm(joinpath(tmpdir, "$(name)-cmd$(i)-table0.txt"));
     for j in 0:nchains
-       isfile(Pkg.dir(tmpdir, "$(name)-cmd$(i)-chain$(j).R")) &&
-        rm(Pkg.dir(tmpdir, "$(name)-cmd$(i)-chain$(j).R"));
+       isfile(joinpath(tmpdir, "$(name)-cmd$(i)-chain$(j).R")) &&
+        rm(joinpath(tmpdir, "$(name)-cmd$(i)-chain$(j).R"));
     end
   end
 
@@ -71,7 +72,7 @@ function Jagsmodel(;
   cmdarray = fill(``, ncommands)
   for i in 1:ncommands
     jfile = "$(name)-cmd$(i).jags"
-    cmdarray[i] = @static is_windows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
+    cmdarray[i] = @static Sys.iswindows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
   end
 
   # DIC needs at least 2 chains
@@ -114,7 +115,7 @@ end
 
 #### Function to update the bugs, init and data files
 
-function update_bugs_file(file::String, str::String)
+function update_bugs_file(file::AbstractString, str::AbstractString)
   str2 = ""
   if isfile(file)
     str2 = open(readstring, file, "r")
@@ -165,7 +166,7 @@ function update_jags_file(model::Jagsmodel)
   jagsstr = jagsstr*"update $(model.update)\n"
   jagsstr = jagsstr*"coda *, stem($(model.name)-cmd1-)\n"
   jagsstr = jagsstr*"exit\n"
-  check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd1.jags"), jagsstr)
+  check_jags_file(joinpath(model.tmpdir, "$(model.name)-cmd1.jags"), jagsstr)
 end
 
 #### Function to update the jags file for ncommand > 1
@@ -205,7 +206,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   jagsstr = jagsstr*"update $(model.update)\n"
   jagsstr = jagsstr*"coda *, stem($(model.name)-cmd$(cmd)-)\n"
   jagsstr = jagsstr*"exit\n"
-  check_jags_file(Pkg.dir(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
+  check_jags_file(joinpath(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
 end
 
 function check_jags_file(file::String, str::String)

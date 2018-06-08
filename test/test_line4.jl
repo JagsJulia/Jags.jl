@@ -1,6 +1,3 @@
-using Jags
-using Base.Test
-
 ProjDir = joinpath(dirname(@__FILE__), "..", "Examples", "Line4")
 cd(ProjDir) do
 
@@ -9,7 +6,7 @@ cd(ProjDir) do
   isdir("tmp") &&
     rm("tmp", recursive=true);
 
-  include(Pkg.dir(ProjDir, "jline4.jl"))
+  include(joinpath(ProjDir, "jline4.jl"))
 
   isdir("tmp") &&
     rm("tmp", recursive=true);
