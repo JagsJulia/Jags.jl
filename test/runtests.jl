@@ -1,19 +1,19 @@
-println("Running tests for Jags-j0.5/0.6-v1.0.6:")
+println("Running tests for Jags-j1.0.0-v2.0.0:")
 
-using Jags, Compat, Test
+using Compat, Jags
 using Test
 
 code_tests = ["test_cmd.jl";]
 
 println("Run execution_tests only if Jags is available")
 execution_tests = [
-  "test_line1.jl"; 
-  "test_line2.jl";
-  "test_line3.jl";
-  "test_line4.jl";
-  "test_rats.jl"; 
-  "test_bones1.jl"; 
-  "test_bones2.jl";
+  "test_line1.jl",
+  "test_line2.jl",
+  "test_line3.jl",
+  "test_line4.jl",
+  "test_rats.jl",
+  "test_bones1.jl",
+  "test_bones2.jl",
   "test_dyes.jl"
 ]
 
@@ -23,17 +23,20 @@ for my_test in code_tests
 end
 
 if isdefined(Main, :JAGS_HOME) && length(JAGS_HOME) > 0
-  try
+  @testset "CmdStan.jl" begin
+    
+    for my_test in code_tests
+        println("\n\n\n  * $(my_test) *")
+        include(my_test)
+    end
+    
     for my_test in execution_tests
         println("\n\n\n  * $(my_test) *")
         include(my_test)
     end
-    println()
-  catch e
-     println("Either Jags is properly installed or")
-     println("an error occurred while running Jags.")
-     println(e)
-     println("No simulation runs have been performed.")
+    
+    println("\n")
+    
   end
 else
   println("\n\nJAGS_HOME not found.")
