@@ -1,6 +1,6 @@
 module Jags
 
-using DataArrays, Mamba
+using Compat, Pkg, Documenter, DelimitedFiles, Unicode
 
 #### Includes ####
 
