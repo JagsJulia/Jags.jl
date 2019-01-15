@@ -16,6 +16,10 @@ For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>
 
 ## What's new
 
+### Version 2.0.0 (tagged Jan 2019)
+
+1. Thanks to Hellema Jags.jl has been updated for Julia 1.
+
 ### Version 1.0.5 (tagged Jan 2018)
 
 1. Added an option to specify thinning by Jags. Jagsmodel() now accepts a jagsthin arguments. Default is jagsthin=1. Thanks to @hellemo. See examples Line3 and Line4.
