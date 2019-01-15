@@ -1,3 +1,7 @@
+function mis2str(x::Missing) return "NA" end
+function mis2str(x::Char) return x end
+function mis2str(x) return string(x) end
+
 function jags(
   model::Jagsmodel,
   data = Dict{String, Any}(),
@@ -68,7 +72,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
     if replaceNaNs
       if typeof(entry[2]) == Array{Float64, 1}
         if true in isnan.(entry[2])
-          val = convert(DataArray, entry[2])
+          val = convert(Array{Union{Float64,Missing}},entry[2])
           for i in 1:length(val)
             if isnan(val[i])
               val[i] = NA
@@ -78,28 +82,29 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
       end
       if typeof(entry[2]) == Array{Float64, 2}
         if true in isnan.(entry[2])
-          val = convert(DataArray, entry[2])
+          val = convert(Array{Union{Float64,Missing}},entry[2])
           k,l = size(val)
           for i in 1:k
             for j in 1:l
               if isnan(val[i, j])
-                val[i, j] = NA
+                val[i, j] = missing
               end
             end
           end
         end
       end
      end
+     
     if typeof(val) <: String
       str = str*"\"$(val)\"\n"
     elseif length(val)==1 && length(size(val))==0
       # Scalar
-      str = str*"$(val)\n"
+      str = str * mis2str(val) * "\n"
     elseif length(val)>=1 && length(size(val))==1
       # Vector
       str = str*"structure(c("
       for i in 1:length(val)
-        str = str*"$(val[i])"
+        str = str*"$(mis2str(val[i]))"
         if i < length(val)
           str = str*", "
         end
@@ -109,7 +114,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
       # Array
       str = str*"structure(c("
       for i in 1:length(val)
-        str = str*"$(val[i])"
+        str = str*"$(mis2str(val[i]))"
         if i < length(val)
           str = str*", "
         end
@@ -225,7 +230,7 @@ function mchain(model::Jagsmodel)
   println()
   sr = getindex(a3d, [model.adapt:model.thin:size(a3d, 1);], [1:size(a3d, 2);],
     [1:size(a3d, 3);])
-  Chains(sr, start=model.adapt, thin=model.thin, names=cnames,
+    Mamba.Chains(sr, start=model.adapt, thin=model.thin, names=cnames,
     chains=[i for i in 1:totalnchains])
 end
 
