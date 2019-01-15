@@ -1,6 +1,6 @@
 module Jags
 
-using Compat, Pkg, Documenter, DelimitedFiles, Unicode
+using Compat, Pkg, Documenter, DelimitedFiles, Unicode, Mamba
 
 #### Includes ####
 

@@ -3,7 +3,7 @@ println("Running tests for Jags-j1.0.0-v2.0.0:")
 using Compat, Jags
 using Test
 
-code_tests = ["test_cmd.jl";]
+code_tests = ["test_cmd.jl"]
 
 println("Run execution_tests only if Jags is available")
 execution_tests = [

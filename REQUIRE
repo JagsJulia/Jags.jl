@@ -1,3 +1,2 @@
-julia 0.6
-DataArrays
-Mamba 0.10.0
+julia 0.7
+Mamba 0.12
