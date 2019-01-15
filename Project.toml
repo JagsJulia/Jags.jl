@@ -1,7 +1,7 @@
 name = "Jags"
 repo = "https://github.com/goedman/Jags.jl.git"
 uuid = "7de783dc-89a7-511c-b223-597fcba0cc71"
-version = "1.0.6"
+version = "2.0.0"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
