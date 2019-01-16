@@ -2,10 +2,6 @@
 
 [![Travis Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 
-[![Jags](http://pkg.julialang.org/badges/Jags_1.0.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.0)
-
-[![Jags](http://pkg.julialang.org/badges/Jags_1.1.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.1)
-
 ## Purpose
 
 A package to use Jags (as an external program) from Julia.
