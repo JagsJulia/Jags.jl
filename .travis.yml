@@ -16,7 +16,7 @@ matrix:
 notifications:
   email: true
   
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg.clone(pwd()); Pkg.test("Jags")'
+#script:
+#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#  - julia -e 'using Pkg; Pkg.test("Jags"; coverage=true)'
 
