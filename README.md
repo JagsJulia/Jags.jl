@@ -12,6 +12,14 @@ For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>
 
 ## What's new
 
+### Version 2.0.2 (tagged Jan 2019)
+
+1. Moved to JagsJulia.
+
+### Version 2.0.1 (tagged Jan 2019)
+
+1. Fixed issues with REQUIRE.
+
 ### Version 2.0.0 (tagged Jan 2019)
 
 1. Thanks to Hellema Jags.jl has been updated for Julia 1.
