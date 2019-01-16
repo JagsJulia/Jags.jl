@@ -18,5 +18,5 @@ notifications:
   email: true
   
 script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg; Pkg.test("Jags"; coverage=true)'
+  #- if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'using Pkg; Pkg.test("Jags")'
