@@ -4,17 +4,13 @@
 
 ## Purpose
 
-A package to use Jags (as an external program) from Julia.
+A package to use Jags (as an external program) from Julia. Jags.jl has been moved to JagsJulia.
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
 
 ## What's new
-
-### Version 2.0.2 (tagged Jan 2019)
-
-1. Moved to JagsJulia.
 
 ### Version 2.0.1 (tagged Jan 2019)
 
