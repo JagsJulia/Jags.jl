@@ -22,7 +22,7 @@ function __init__()
     elseif haskey(ENV, "JAGS_HOME")
         ENV["JAGS_HOME"]
     else
-        warn("Environment variable JAGS_HOME not found. Use set_JAGS_HOME!.")
+        println("Environment variable JAGS_HOME not found. Use set_JAGS_HOME!.")
         ""
     end
 end
