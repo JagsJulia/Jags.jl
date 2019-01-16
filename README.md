@@ -2,9 +2,9 @@
 
 [![Travis Build Status](https://travis-ci.org/goedman/Jags.jl.svg?branch=master)](https://travis-ci.org/goedman/Jags.jl)
 
-[![Jags](http://pkg.julialang.org/badges/Jags_0.5.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.5)
+[![Jags](http://pkg.julialang.org/badges/Jags_1.0.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.0)
 
-[![Jags](http://pkg.julialang.org/badges/Jags_0.6.svg)](http://pkg.julialang.org/?pkg=Jags&ver=0.6)
+[![Jags](http://pkg.julialang.org/badges/Jags_1.1.svg)](http://pkg.julialang.org/?pkg=Jags&ver=1.1)
 
 ## Purpose
 

@@ -17,6 +17,6 @@ matrix:
 notifications:
   email: true
   
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia project=test -e 'using Pkg; Pkg.test("Jags")'
+#script:
+#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#  - julia project=@. -e 'using Pkg; Pkg.test("Jags")'

@@ -10,4 +10,4 @@ CODA*.txt
 *-inits*.R
 *-data.R
 Examples/*/tmp
-Manifest
+Manifest.yml
