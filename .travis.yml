@@ -19,5 +19,4 @@ notifications:
   
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg; Pkg.develop("Jags"); Pkg.test("Jags"; coverage=true)'
-
+  - julia -e 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/goedman/Jags.jl")); Pkg.test("Jags"; coverage=true)'
