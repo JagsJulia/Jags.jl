@@ -26,9 +26,9 @@ end
 
 """
 
-# par 
+# par
 
-Rewrite dct to R format in file. 
+Rewrite dct to R format in file.
 
 ### Method
 ```julia
@@ -78,4 +78,3 @@ function par(cmd::Array{String, 1})
   end
   res
 end
-
