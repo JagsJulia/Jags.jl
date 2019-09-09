@@ -8,9 +8,12 @@ A package to use Jags (as an external program) from Julia. Jags.jl has been move
 
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
-For more info on Mamba, please go to <http://mambajl.readthedocs.org/en/latest/>.
-
 ## What's new
+
+### Version 3.0.0
+
+1. MCMCChains for storage and diagnostics (thanks to Chris Fisher)
+2. No longer depends on Mamba and Gadfly
 
 ### Version 2.0.1 (tagged Jan 2019)
 
@@ -86,16 +89,6 @@ The two most important features introduced in version 0.1.0 are:
 This version of the Jags.jl package assumes that: 
 
 1. Jags is installed and the jags binary is on $PATH. The variable JAGS_HOME is currently initialized either from ~/.juliarc.jl or from an environment variable JAGS_HOME. JAGS_HOME currently only used in runtests.jl to disable attempting to run tests that need the Jags executable on $PATH.
-
-2. Mamba (see <https://github.com/brian-j-smith/Mamba.jl>) is installed.
-
-3. DataArrays (see <https://github.com/JuliaStats/DataArrays.jl>) is installed.
-
-4. On OSX, all Jags-j03-v0.2.0 examples check the environment variable JULIA_SVG_BROWSER to automatically display (in a browser) the simulation results (after creating .svg files), e.g. on my system I have exported JULIA_SVG_BROWSER="Google Chrome.app". For other platforms the final lines in the Examples/xxxx.jl files may need to be adjusted (or removed). In any case, on all platforms, both a .svg and a .pdf file will be created and left behind in the working directory.
-
-JAGS_HOME and JULIA_SVG_BROWSER can also be defined in ~/.juliarc.jl.
-
-This version of the package has primarily been tested on Mac OSX 10.10, Julia 0.3.3, Jags 3.4.0 and Mamba 0.4.3. A limited amount of testing has taken place on other platforms by other users of the package (see note 1 in the 'To Do' section below).
 
 To test and run the examples:
 
