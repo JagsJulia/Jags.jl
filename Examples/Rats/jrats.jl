@@ -1,40 +1,40 @@
-using Jags, Mamba, Gadfly
+using StatsPlots, Jags, Statistics
 
 ProjDir = dirname(@__FILE__)
 cd(ProjDir) do
 
   ## Data
   rats = Dict{String, Any}(
-    "Y" => 
+    "Y" =>
       [151 199 246 283 320;
-       145 199 249 293 354; 
-       147 214 263 312 328; 
-       155 200 237 272 297; 
-       135 188 230 280 323; 
-       159 210 252 298 331; 
-       141 189 231 275 305; 
-       159 201 248 297 338; 
-       177 236 285 350 376; 
-       134 182 220 260 296; 
-       160 208 261 313 352; 
-       143 188 220 273 314; 
-       154 200 244 289 325; 
-       171 221 270 326 358; 
-       163 216 242 281 312; 
-       160 207 248 288 324; 
-       142 187 234 280 316; 
-       156 203 243 283 317; 
-       157 212 259 307 336; 
-       152 203 246 286 321; 
-       154 205 253 298 334; 
-       139 190 225 267 302; 
-       146 191 229 272 302; 
-       157 211 250 285 323; 
-       132 185 237 286 331; 
-       160 207 257 303 345; 
-       169 216 261 295 333; 
-       157 205 248 289 316; 
-       137 180 219 258 291; 
+       145 199 249 293 354;
+       147 214 263 312 328;
+       155 200 237 272 297;
+       135 188 230 280 323;
+       159 210 252 298 331;
+       141 189 231 275 305;
+       159 201 248 297 338;
+       177 236 285 350 376;
+       134 182 220 260 296;
+       160 208 261 313 352;
+       143 188 220 273 314;
+       154 200 244 289 325;
+       171 221 270 326 358;
+       163 216 242 281 312;
+       160 207 248 288 324;
+       142 187 234 280 316;
+       156 203 243 283 317;
+       157 212 259 307 336;
+       152 203 246 286 321;
+       154 205 253 298 334;
+       139 190 225 267 302;
+       146 191 229 272 302;
+       157 211 250 285 323;
+       132 185 237 286 331;
+       160 207 257 303 345;
+       169 216 261 295 333;
+       157 205 248 289 316;
+       137 180 219 258 291;
        153 200 244 286 324],
     "x" => [8.0, 15.0, 22.0, 29.0, 36.0]
   )
@@ -88,7 +88,7 @@ cd(ProjDir) do
     adapt=1000, update=10000, thin=10,
     #deviance=true, dic=true, popt=true,
     pdir=ProjDir);
-  
+
   println("Jagsmodel that will be used:")
   jagsmodel |> display
   println("Input observed data dictionary:")
@@ -98,21 +98,9 @@ cd(ProjDir) do
   println()
 
   @time sim = jags(jagsmodel, rats, inits, ProjDir)
-  describe(sim)
   println()
 
   ## Plotting
-  p = plot(sim, [:trace, :mean, :density, :autocor], legend=true);
-  draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:svg)
-  # draw(p, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
-
-  # Below will only work on OSX, please adjust for your environment.
-  # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-  @static Sys.isapple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
-          for i in 1:4
-            isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
-              run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
-          end
-        end : println()
+  p = plot(sim)
 
 end #cd

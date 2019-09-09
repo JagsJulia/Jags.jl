@@ -94,7 +94,7 @@ function update_R_file(file::String, dct; replaceNaNs::Bool=true)
         end
       end
      end
-     
+
     if typeof(val) <: String
       str = str*"\"$(val)\"\n"
     elseif length(val)==1 && length(size(val))==0
@@ -188,7 +188,7 @@ function read_jagsfiles(model::Jagsmodel)
   (idxdct, chainarray)
 end
 
-#### Create a Mamba::Chains result
+#### Create a MCMCChains::Chains result
 
 function mchain(model::Jagsmodel)
   println()
@@ -228,10 +228,7 @@ function mchain(model::Jagsmodel)
     end
   end
   println()
-  sr = getindex(a3d, [model.adapt:model.thin:size(a3d, 1);], [1:size(a3d, 2);],
-    [1:size(a3d, 3);])
-    Mamba.Chains(sr, start=model.adapt, thin=model.thin, names=cnames,
-    chains=[i for i in 1:totalnchains])
+  MCMCChains.Chains(a3d,cnames)
 end
 
 

@@ -1,6 +1,6 @@
 module Jags
 
-using Compat, Pkg, Documenter, DelimitedFiles, Unicode, Mamba
+using Compat, Pkg, Documenter, DelimitedFiles, Unicode, MCMCChains, StatsPlots
 
 #### Includes ####
 
@@ -28,7 +28,7 @@ function __init__()
 end
 
 """Set the path for `Jags`.
-    
+
 Example: `set_JAGS_HOME!(homedir() * "/src/src/cmdstan-2.11.0/")`
 """
 set_JAGS_HOME!(path) = global JAGS_HOME=path
@@ -51,10 +51,10 @@ export
 # From Jags.jl
   JAGS_HOME,
   JULIA_SVG_BROWSER,
-  
+
 # From jagsmodel.jl
   Jagsmodel,
-  
+
 # From jagscode.jl
   jags
 

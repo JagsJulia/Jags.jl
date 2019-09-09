@@ -1,6 +1,6 @@
 ######### Jags line program example  ###########
 
-using Mamba, Jags
+using StatsPlots, Jags, Statistics
 
 ProjDir = joinpath(dirname(@__FILE__))
 cd(ProjDir) do
@@ -27,7 +27,7 @@ cd(ProjDir) do
     )
 
   jagsmodel = Jagsmodel(
-    name="line2", 
+    name="line2",
     model=line,
     monitor=monitors,
     ncommands=4, nchains=1,
@@ -58,45 +58,9 @@ cd(ProjDir) do
   println()
 
   sim = jags(jagsmodel, data, inits, ProjDir)
-  describe(sim)
   println()
 
-
-  ## Brooks, Gelman and Rubin Convergence Diagnostic
-  try
-    gelmandiag(sim1, mpsrf=true, transform=true) |> display
-  catch e
-    #println(e)
-    gelmandiag(sim, mpsrf=false, transform=true) |> display
-  end
-
-  ## Geweke Convergence Diagnostic
-  gewekediag(sim) |> display
-
-  ## Highest Posterior Density Intervals
-  hpd(sim) |> display
-
-  ## Cross-Correlations
-  cor(sim) |> display
-
-  ## Lag-Autocorrelations
-  autocor(sim) |> display
-
-  ## Deviance Information Criterion
-  #dic(sim) |> display
-
   ## Plotting
-  p = plot(sim, [:trace, :mean, :density, :autocor], legend=true);
-  draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:svg)
-  # draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
-
-  # Below will only work on OSX, please adjust for your environment.
-  # JULIA_SVG_BROWSER is set from environment variable JULIA_SVG_BROWSER
-  @static Sys.isapple() ? if isdefined(Main, :JULIA_SVG_BROWSER) && length(JULIA_SVG_BROWSER) > 0
-          for i in 1:4
-            isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
-              run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
-          end
-        end : println()
+  p = plot(sim)
 
 end #cd
