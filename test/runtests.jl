@@ -1,4 +1,4 @@
-println("Running tests for Jags-j1.0.0-v2.0.0:")
+println("Running tests for Jags-j1.2-v.0.0:")
 
 using Compat, Jags
 using Test

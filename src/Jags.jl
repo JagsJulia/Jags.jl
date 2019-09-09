@@ -58,8 +58,4 @@ export
 # From jagscode.jl
   jags
 
-#### Deprecated ####
-
-include("deprecated.jl")
-
 end # module
