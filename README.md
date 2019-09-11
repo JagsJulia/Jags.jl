@@ -99,7 +99,7 @@ To test and run the examples:
 
 As in the Jags.jl setting, the Jags program consumes and produces files in a 'tmp' subdirectory of the current directory, it is useful to control the current working directory and restore the original directory at the end of the script.
 ```
-using Mamba, Jags
+using Jags
 
 ProjDir = dirname(@__FILE__)
 cd(ProjDir)
@@ -177,42 +177,6 @@ Run the mcmc simulation, passing in the model, the data, the initial values and 
 sim = jags(jagsmodel, data, inits, ProjDir)
 describe(sim)
 println()
-```
-Below Mamba.jl based tools are available to diagnose and plot the simulation results:
-```
-###### Brooks, Gelman and Rubin Convergence Diagnostic
-try
-  gelmandiag(sim1, mpsrf=true, transform=true) |> display
-catch e
-  #println(e)
-  gelmandiag(sim, mpsrf=false, transform=true) |> display
-end
-
-###### Geweke Convergence Diagnostic
-gewekediag(sim) |> display
-
-###### Highest Posterior Density Intervals
-hpd(sim) |> display
-
-###### Cross-Correlations
-cor(sim) |> display
-
-###### Lag-Autocorrelations
-autocor(sim) |> display
-
-###### Plotting
-p = plot(sim, [:trace, :mean, :density, :autocor], legend=true);
-draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:svg)
-draw(p, nrow=4, ncol=4, filename="$(jagsmodel.name)-summaryplot", fmt=:pdf)
-
-###### Below will only work on OSX, please adjust for your environment.
-###### JULIA_SVG_BROWSER is set from the environment variable JULIA_SVG_BROWSER
-@static Sys.isapple() ? if length(JULIA_SVG_BROWSER) > 0
-        for i in 1:3
-          isfile("$(jagsmodel.name)-summaryplot-$(i).svg") &&
-            run(`open -a $(JULIA_SVG_BROWSER) "$(jagsmodel.name)-summaryplot-$(i).svg"`)
-        end
-      end : println()
 ```
 ## Running a Jags script, some details
 
