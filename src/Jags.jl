@@ -31,15 +31,15 @@ end
 
 Example: `set_JAGS_HOME!(homedir() * "/src/src/cmdstan-2.11.0/")`
 """
-set_JAGS_HOME!(path) = global JAGS_HOME=path
+set_jags_home!(path) = global JAGS_HOME=path
 
 #### Exports ####
 
 export
 # From this file
-  set_JAGS_HOME!,
+  set_jags_home!,
 # From Jags.jl
-  JAGS_HOME
+  JAGS_HOME,
 
 # From jagsmodel.jl
   Jagsmodel,
