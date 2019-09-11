@@ -13,7 +13,7 @@ end
 
 """The directory which contains the executable `bin/stanc`. Inferred
 from `Main.JAGS_HOME` or `ENV["JAGS_HOME"]` when available. Use
-`set_JAGS_HOME!` to modify."""
+`set_jags_home!` to modify."""
 JAGS_HOME=""
 
 function __init__()
@@ -22,14 +22,14 @@ function __init__()
     elseif haskey(ENV, "JAGS_HOME")
         ENV["JAGS_HOME"]
     else
-        println("Environment variable JAGS_HOME not found. Use set_JAGS_HOME!.")
+        println("Environment variable JAGS_HOME not found. Use set_jags_home!.")
         ""
     end
 end
 
 """Set the path for `Jags`.
 
-Example: `set_JAGS_HOME!(homedir() * "/src/src/cmdstan-2.11.0/")`
+Example: `set_jags_home!(homedir() * "/src/src/cmdstan-2.11.0/")`
 """
 set_jags_home!(path) = global JAGS_HOME=path
 
