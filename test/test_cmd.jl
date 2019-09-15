@@ -53,7 +53,7 @@ cd(ProjDir) do
   )
 
   jagsmodel = Jagsmodel(name="line1", model=line, monitor=monitors,
-    ncommands=1, nchains=4, adapt=1000, update=10000, thin=1,
+    ncommands=1, nchains=4, adapt=1000, nsamples=10000, thin=1,
     deviance=true, dic=true, popt=true, pdir=ProjDir);
 
   println("\nJagsmodel that will be used:")

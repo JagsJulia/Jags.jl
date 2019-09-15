@@ -85,7 +85,7 @@ cd(ProjDir) do
     model=ratsmodel,
     monitor=monitors,
     #ncommands=4, nchains=1,
-    adapt=1000, update=10000, thin=10,
+    adapt=1000, nsamples=10000, thin=10,
     #deviance=true, dic=true, popt=true,
     pdir=ProjDir);
 
