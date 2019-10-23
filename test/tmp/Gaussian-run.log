@@ -1,0 +1,14 @@
+Welcome to JAGS 4.3.0 on Thu Oct  3 14:56:02 2019
+JAGS is free software and comes with ABSOLUTELY NO WARRANTY
+Loading module: basemod: ok
+Loading module: bugs: ok
+Reading data file Gaussian-data.R
+Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes
+Graph information:
+   Observed stochastic nodes: 50
+   Unobserved stochastic nodes: 51
+   Total graph size: 106
+Reading parameter file Gaussian-inits1.R
+Deleting model
