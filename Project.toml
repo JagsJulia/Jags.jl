@@ -1,7 +1,7 @@
 name = "Jags"
 uuid = "7de783dc-89a7-511c-b223-597fcba0cc71"
 repo = "https://github.com/goedman/Jags.jl.git"
-version = "3.0.1"
+version = "3.0.2"
 
 [deps]
 Compat = "34da2185-b29b-5c13-b0c7-acf172513d20"
@@ -18,7 +18,7 @@ Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [compat]
 Compat = "2.2"
 Documenter = "0.24"
-MCMCChains = "3.0"
+MCMCChains = "3.0, 4.0"
 StatsPlots = "0.13, 0.14"
 julia = "^1"
 
