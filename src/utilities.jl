@@ -80,3 +80,8 @@ function par(cmd::Array{String, 1})
   end
   res
 end
+
+function readdlmcsv(fn)
+  tmp = CSV.File(fn; header=0, delim=' ', ignorerepeated=true, type=Float64)
+  return hcat(tmp.Column1, tmp.Column2)
+end
