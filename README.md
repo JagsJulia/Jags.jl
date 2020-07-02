@@ -10,6 +10,10 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 ## What's new
 
+### Version 3.0.3
+
+1. Please note that version 3.0.2 `allows` MCMCChains v 4.0 which can introduce breaking changes in handling of Chains. If this is a problem, please force usage of Jags@3.0.1.
+
 ### Version 3.0.0
 
 1. MCMCChains for storage and diagnostics (thanks to Chris Fisher)
