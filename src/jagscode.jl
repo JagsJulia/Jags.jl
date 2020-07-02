@@ -156,7 +156,7 @@ function read_jagsfiles(model::Jagsmodel)
     for j in 1:model.nchains
       if isfile(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"), header=false, dims=(index[end,end],2));
+        res = readdlmcsv(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         for key in index[:, 1]
           indx1 = idxdct[key][1]
           indx2 = idxdct[key][2]
@@ -215,8 +215,7 @@ function mchain(model::Jagsmodel)
     for j in 1:model.nchains
       if isfile(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         println("Reading $(model.name)-cmd$(i)-chain$(j).txt")
-        res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"),
-          header=false, dims=(index[end],2))
+        res = readdlmcsv(joinpath(model.tmpdir, "$(model.name)-cmd$(i)-chain$(j).txt"))
         curchain = (i-1)*model.nchains + j
         #println(curchain)
         k = 0
@@ -258,7 +257,7 @@ function read_pDfile(model::Jagsmodel)
     tdict = Dict{String, Any}()
     if isfile(joinpath(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       println("Reading $(model.name)-cmd1-chain$(i).txt")
-      res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"), header=false, dims=(index[end],2));
+      res = readdlmcsv(joinpath(model.tmpdir, "$(model.name)-cmd1-chain$(i).txt"))
       for key in index[:, 1]
         indx1 = idxdct[key][1]
         indx2 = idxdct[key][2]
@@ -296,7 +295,7 @@ function read_table_file(model::Jagsmodel, len::Int)
   else
       numrows = len
   end
-  res = readdlm(joinpath(model.tmpdir, "$(model.name)-cmd1-table0.txt"), header=false, dims=(numrows,2))
+  res = readdlmcsv(joinpath(model.tmpdir, "$(model.name)-cmd1-table0.txt"))
   if model.dic && model.popt
     pdpopt = Dict("pD.mean" => res[1:len, 2])
     pdpopt = merge(pdpopt, Dict("popt" => res[len+1:2len, 2]))

@@ -1,6 +1,6 @@
 module Jags
 
-using Compat, Pkg, Documenter, DelimitedFiles, Unicode, MCMCChains, StatsPlots
+using Compat, CSV, Pkg, Documenter, DelimitedFiles, Unicode, MCMCChains, StatsPlots
 
 #### Includes ####
 
