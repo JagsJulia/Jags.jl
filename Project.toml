@@ -1,7 +1,7 @@
 name = "Jags"
 uuid = "7de783dc-89a7-511c-b223-597fcba0cc71"
-repo = "https://github.com/goedman/Jags.jl.git"
-version = "3.0.3"
+repo = "https://github.com/JagsJulia/Jags.jl.git"
+version = "3.0.4"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -18,8 +18,8 @@ Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
 [compat]
 CSV = "0.7"
-Compat = "2.2"
-Documenter = "0.24"
+Compat = "2, 3"
+Documenter = "0.24, 0.25"
 MCMCChains = "3.0, 4.0"
 StatsPlots = "0.13, 0.14"
 julia = "^1"
