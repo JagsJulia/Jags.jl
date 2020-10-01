@@ -1,6 +1,6 @@
 # Jags
 
-[![Travis Build Status](https://travis-ci.org/JagsJulia/Jags.jl.svg?branch=master)](https://travis-ci.org/JagsJulia/Jags.jl)
+[![Travis Build Status](https://travis-ci.com/JagsJulia/Jags.jl.svg?branch=master)](https://travis-ci.com/JagsJulia/Jags.jl)
 
 ## Purpose
 
