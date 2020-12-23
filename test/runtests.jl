@@ -17,12 +17,13 @@ execution_tests = [
   "test_dyes.jl"
 ]
 
-for my_test in code_tests
-    println("\n  * $(my_test) *")
-    include(my_test)
-end
-
 if isdefined(Main, :JAGS_HOME) && length(JAGS_HOME) > 0
+  
+  for my_test in code_tests
+      println("\n  * $(my_test) *")
+      include(my_test)
+  end
+
   @testset "Jags.jl" begin
     
     for my_test in code_tests
