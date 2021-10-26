@@ -1,6 +1,6 @@
 # Jags
 
-[![Travis Build Status](https://travis-ci.com/JagsJulia/Jags.jl.svg?branch=master)](https://travis-ci.com/JagsJulia/Jags.jl)
+[![Build Status](https://github.com/jagsjulia/Jags.jl/workflows/CI/badge.svg?branch=master)
 
 ## Purpose
 
