@@ -1,6 +1,8 @@
 # Jags
 
-[![Build Status](https://github.com/jagsjulia/Jags.jl/workflows/CI/badge.svg?branch=master)
+![][CI-build]
+
+[CI-build]: https://github.com/jagsjulia/Jags.jl/workflows/CI/badge.svg?branch=master
 
 ## Purpose
 
@@ -9,6 +11,14 @@ A package to use Jags (as an external program) from Julia. Jags.jl has been move
 For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 ## What's new
+
+### Version 3.2.0
+
+1. Attempting to fix issue #23.
+
+### Version 3.1.0
+
+1. Reactivate Github actions.
 
 ### Version 3.0.3
 
