@@ -32,7 +32,7 @@ jagsmodel = Jagsmodel(
   name="line1",
   model=line,
   ncommands=1,
-  nchains=2,
+  nchains=4,
   monitor=monitors,
   deviance=true, dic=true, popt=true,
   pdir=ProjDir
@@ -49,9 +49,9 @@ data = Dict(
 
 inits = [
   Dict("alpha" => 0,"beta" => 0,"tau" => 1),
-  #Dict("alpha" => 1,"beta" => 2,"tau" => 1),
-  #Dict("alpha" => 3,"beta" => 3,"tau" => 2),
-  #Dict("alpha" => 5,"beta" => 2,"tau" => 5)
+  Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+  Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+  Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
 
 println("Input observed data dictionary:")
@@ -66,3 +66,4 @@ println()
 
 ## Plotting
 p = plot(sim)
+savefig(p, "sim_plot.png")
