@@ -12,9 +12,12 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 
 ## What's new
 
-### Version 3.2.0
+### Version 3.2.0 (unfinished)
 
 1. Attempting to fix issue #23.
+
+Warning: I have seen many cases where the Jags binary simply hangs. This happens
+immediatiately after the line "xecuting n commands, each with M chains".
 
 ### Version 3.1.0
 
@@ -181,6 +184,8 @@ inits = [
   Dict("alpha" => 3,"beta" => 3,"tau" => 2),
   Dict("alpha" => 5,"beta" => 2,"tau" => 5)
 ]
+
+#### Note: Multiple init sets is the best option to get independent chains.
 
 println("\nInput initial values dictionary:")
 inits |> display
