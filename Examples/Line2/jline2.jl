@@ -30,7 +30,9 @@ cd(ProjDir) do
     name="line2",
     model=line,
     monitor=monitors,
-    ncommands=4, nchains=1,
+    ncommands=4,
+    #ncommands=1,
+    nchains=4,
     #deviance=true, dic=true, popt=true,
     pdir=ProjDir
     );
@@ -45,11 +47,29 @@ cd(ProjDir) do
   )
 
   inits = [
+    Dict("alpha" => 0,"beta" => 0,"tau" => 1),
+    Dict("alpha" => 1,"beta" => 2,"tau" => 1),
+    Dict("alpha" => 3,"beta" => 3,"tau" => 2),
+    Dict("alpha" => 5,"beta" => 2,"tau" => 5)
+  ]
+
+  #=
+  inits = [
+    Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Mersenne-Twister"),
+    Dict("alpha" => 1,"beta" => 2,"tau" => 1,".RNG.name" => "base::Mersenne-Twister"),
+    Dict("alpha" => 3,"beta" => 3,"tau" => 2,".RNG.name" => "base::Mersenne-Twister"),
+    Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
+  ]
+  =#
+
+  #=
+  inits = [
     Dict("alpha" => 0,"beta" => 0,"tau" => 1,".RNG.name" => "base::Wichmann-Hill"),
     Dict("alpha" => 1,"beta" => 2,"tau" => 1,".RNG.name" => "base::Marsaglia-Multicarry"),
     Dict("alpha" => 3,"beta" => 3,"tau" => 2,".RNG.name" => "base::Super-Duper"),
     Dict("alpha" => 5,"beta" => 2,"tau" => 5,".RNG.name" => "base::Mersenne-Twister")
   ]
+  =#
 
   println("Input observed data dictionary:")
   data |> display
@@ -57,7 +77,7 @@ cd(ProjDir) do
   inits |> display
   println()
 
-  sim = jags(jagsmodel, data, inits, ProjDir)
+  global sim = jags(jagsmodel, data, inits, ProjDir)
   println()
 
   ## Plotting
