@@ -17,7 +17,7 @@ For more info on Jags, please go to <http://mcmc-jags.sourceforge.net>.
 1. Attempting to fix issue #23.
 
 Warning: I have seen many cases where the Jags binary simply hangs. This happens
-immediatiately after the line "xecuting n commands, each with M chains".
+immediatiately after the line "Executing `n` command(s), each with `m` chain(s) took:".
 
 ### Version 3.1.0
 
