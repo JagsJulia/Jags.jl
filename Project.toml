@@ -20,7 +20,7 @@ Unicode = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 CSV = "0.7, 0.8, 0.9, 0.10"
 Compat = "2, 3"
 Documenter = "0.24, 0.25, 0.26, 0.27"
-MCMCChains = "4, 5"
+MCMCChains = "4, 5, 6"
 StatsPlots = "0.13, 0.14"
 julia = "^1"
 
