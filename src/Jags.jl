@@ -18,11 +18,22 @@ JAGS_HOME=""
 
 function __init__()
     global JAGS_HOME = if isdefined(Main, :JAGS_HOME)
-        eval(Main, :JAGS_HOME)
+        getproperty(Main, :JAGS_HOME)
     elseif haskey(ENV, "JAGS_HOME")
         ENV["JAGS_HOME"]
     else
-        println("Environment variable JAGS_HOME not found. Use set_jags_home!.")
+        try # finding Jags in path
+            jags_home = ""
+            if Sys.iswindows()
+                jags_home = splitdir(strip(read(`where jags`, String)))[1]
+            elseif Sys.isunix()
+                jags_home = splitdir(strip(read(`which jags`, String)))[1]
+            end
+            set_jags_home!(jags_home)
+        catch
+            warn("Did not find JAGS in the PATH.")
+            warn("Environment variable JAGS_HOME not found. Use set_jags_home!.")
+        end
         ""
     end
 end
