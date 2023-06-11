@@ -1,6 +1,7 @@
 module Jags
 
 using Compat, CSV, Pkg, Documenter, DelimitedFiles, Unicode, MCMCChains
+using PrecompileTools
 
 #### Includes ####
 
@@ -10,6 +11,14 @@ include("jagscode.jl")
 if !isdefined(Main, :Stanmodel)
   include("utilities.jl")
 end
+
+if VERSION >= v"1.9"
+    include("precompile.jl")
+    @compile_workload begin
+        Jags.precompile_model()
+    end
+end
+
 
 """The directory which contains the executable `bin/stanc`. Inferred
 from `Main.JAGS_HOME` or `ENV["JAGS_HOME"]` when available. Use
