@@ -40,8 +40,8 @@ function __init__()
             end
             set_jags_home!(jags_home)
         catch
-            warn("Did not find JAGS in the PATH.")
-            warn("Environment variable JAGS_HOME not found. Use set_jags_home!.")
+            @warn("Did not find JAGS in the PATH.")
+            @warn("Environment variable JAGS_HOME not found. Use set_jags_home!.")
         end
         ""
     end
