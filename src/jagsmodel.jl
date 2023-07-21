@@ -38,6 +38,7 @@ function Jagsmodel(;
   updatejagsfile::Bool=true,
   pdir::String=pwd())
 
+  old = pwd()
   cd(pdir)
 
   tmpdir = joinpath(pdir, "tmp")
@@ -109,7 +110,7 @@ function Jagsmodel(;
       updatejagsfile && update_jags_file(jm, i)
     end
   end
-
+  cd(old)
   jm
 end
 
