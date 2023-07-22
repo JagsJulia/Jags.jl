@@ -38,9 +38,6 @@ function Jagsmodel(;
   updatejagsfile::Bool=true,
   pdir::String=pwd())
 
-  old = pwd()
-  cd(pdir)
-
   tmpdir = joinpath(pdir, "tmp")
   @show tmpdir
   if !isdir(tmpdir)
@@ -72,7 +69,7 @@ function Jagsmodel(;
   # Create the command array which will be executed in parallel
   cmdarray = fill(``, ncommands)
   for i in 1:ncommands
-    jfile = "$(name)-cmd$(i).jags"
+    jfile = joinpath(tmpdir, "$(name)-cmd$(i).jags")
     cmdarray[i] = @static Sys.iswindows() ? `cmd /c jags $(jfile)` : `jags $(jfile)`
   end
 
@@ -88,7 +85,7 @@ function Jagsmodel(;
     println("No monitors defined!")
   end
 
-  data_file = "$(name)-data.R"
+  data_file = joinpath(tmpdir, "$(name)-data.R")
 
   jm = Jagsmodel(name,
     ncommands, nchains,
@@ -110,7 +107,6 @@ function Jagsmodel(;
       updatejagsfile && update_jags_file(jm, i)
     end
   end
-  cd(old)
   jm
 end
 
