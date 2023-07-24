@@ -137,12 +137,12 @@ function update_jags_file(model::Jagsmodel)
     jagsstr = jagsstr*"load dic\n"
   end
   modelfile = joinpath(model.tmpdir, basename(model.model_file))
-  jagsstr = jagsstr* "model in $(modelfile)\n"
-  jagsstr = jagsstr*"data in $(joinpath(model.tmpdir, model.data_file))\n"
+  jagsstr = jagsstr* "model in \"$(modelfile)\"\n"
+  jagsstr = jagsstr*"data in \"$(joinpath(model.tmpdir, model.data_file))\"\n"
   jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
   for i in 1:model.nchains
     fname = "$(model.name)-inits$(i).R"
-    jagsstr = jagsstr*"parameters in $(joinpath(model.tmpdir, fname)), chain($(i))\n"
+    jagsstr = jagsstr*"parameters in \"$(joinpath(model.tmpdir, fname))\", chain($(i))\n"
   end
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
@@ -162,7 +162,7 @@ function update_jags_file(model::Jagsmodel)
     end
   end
   jagsstr = jagsstr*"update $(model.nsamples)\n"
-  jagsstr = jagsstr*"coda *, stem($(joinpath(model.tmpdir, model.name))-cmd1-)\n"
+  jagsstr = jagsstr*"coda *, stem(\"$(joinpath(model.tmpdir, model.name))-cmd1-\")\n"
   jagsstr = jagsstr*"exit\n"
   check_jags_file(joinpath(model.tmpdir, "$(model.name)-cmd1.jags"), jagsstr)
 end
@@ -177,12 +177,12 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   if model.deviance || model.dic || model.popt
     jagsstr = jagsstr*"load dic\n"
   end
-  jagsstr = jagsstr* "model in " * joinpath(model.tmpdir,  basename(model.model_file)) * "\n"
-  jagsstr = jagsstr*"data in $(joinpath(model.tmpdir, model.data_file))\n"
+  jagsstr = jagsstr* "model in \"" * joinpath(model.tmpdir,  basename(model.model_file)) * "\"\n"
+  jagsstr = jagsstr*"data in \"$(joinpath(model.tmpdir, model.data_file))\"\n"
   jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
   for i in 1:model.nchains
     fname = joinpath(model.tmpdir, "$(model.name)-inits$(indx[i]).R")
-    jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
+    jagsstr = jagsstr*"parameters in \"$(fname)\", chain($(i))\n"
   end
   jagsstr = jagsstr*"initialize\n"
   jagsstr = jagsstr*"update $(model.adapt)\n"
@@ -202,7 +202,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
     end
   end
   jagsstr = jagsstr*"update $(model.nsamples)\n"
-  jagsstr = jagsstr*"coda *, stem($(joinpath(model.tmpdir, model.name))-cmd$(cmd)-)\n"
+  jagsstr = jagsstr*"coda *, stem(\"$(joinpath(model.tmpdir, model.name))-cmd$(cmd)-\")\n"
   jagsstr = jagsstr*"exit\n"
   check_jags_file(joinpath(model.tmpdir, "$(model.name)-cmd$(cmd).jags"), jagsstr)
 end
