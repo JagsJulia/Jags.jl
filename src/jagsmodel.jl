@@ -181,7 +181,7 @@ function update_jags_file(model::Jagsmodel, cmd::Int)
   jagsstr = jagsstr*"data in $(joinpath(model.tmpdir, model.data_file))\n"
   jagsstr = jagsstr*"compile, nchains($(model.nchains))\n"
   for i in 1:model.nchains
-    fname = "$(model.name)-inits$(indx[i]).R"
+    fname = joinpath(model.tmpdir, "$(model.name)-inits$(indx[i]).R")
     jagsstr = jagsstr*"parameters in $(fname), chain($(i))\n"
   end
   jagsstr = jagsstr*"initialize\n"
