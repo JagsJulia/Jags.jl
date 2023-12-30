@@ -11,11 +11,7 @@ function jags(
   updateinitfiles::Bool=true
   )
 
-  old = pwd()
-
   try
-    cd(ProjDir)
-
     if updatedatafile
       if length(keys(data)) > 0
         print("\nCreating data file $(model.name)-data.R - ")
@@ -34,16 +30,12 @@ function jags(
     end
 
     println()
-    curdir = pwd()
-    cd(model.tmpdir)
     println("Executing $(model.ncommands) command(s), each with $(model.nchains) chain(s) took:")
     @time run(pipeline(par(model.command), stdout="$(model.name)-run.log"))
     sim = mchain(model)
-    cd(old)
     return(sim)
   catch e
     println(e)
-    cd(old)
   end
 end
 

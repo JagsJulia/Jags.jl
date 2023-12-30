@@ -1,5 +1,6 @@
 ProjDir = dirname(@__FILE__)
-cd(ProjDir) do
+tmpdir = joinpath(ProjDir, "tmp")
+
 
   inits1 = [
     Dict("alpha" => 0,"beta" => 0,"tau" => 1),
@@ -63,8 +64,6 @@ cd(ProjDir) do
   println("\nInput initial values dictionary:")
   inits |> display
 
-  cd(ProjDir)
-  isdir("tmp") &&
-    rm("tmp", recursive=true);
-
-end
+  
+  isdir(tmpdir) &&
+    rm(tmpdir, recursive=true);
